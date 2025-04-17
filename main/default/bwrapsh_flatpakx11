@@ -1,0 +1,271 @@
+#!/bin/bash
+
+
+
+### init
+## name
+declare -x "XDG_RUNTIME_DIR"
+declare -x "DISPLAY"
+declare "_gs_init_name"
+declare "_gs_test_x11"
+declare "_gs_path_x11socket"
+declare "_gs_stps_xephyr"
+declare "_gs_stps_bwrapicewm"
+declare -i "_gi_init_x11"
+declare -i "_gi_stat_xephyr"
+declare -i "_gi_proc_xephyr"
+declare -i "_gi_stat_bwrapicewm"
+declare -i "_gi_proc_bwrapicewm"
+declare -a "_ga_args_xephyr"
+declare -a "_ga_arg1_xephyr"
+declare -a "_ga_args_bwrapicewm"
+declare -a "_ga_arg1_bwrapicewm"
+declare -a "_ga_arg2_bwrapicewm"
+declare -a "_ga_args_flatpak"
+declare -a "_ga_arg1_flatpak"
+declare -f "_gf_tool_echo"
+declare -f "_ef_load_init"
+declare -f "_ef_load_xephyr"
+declare -f "_ef_load_bwrapicewm"
+declare -f "_ef_load_flatpak"
+
+
+## function
+function _gf_tool_echo () 
+{
+        declare -a "_la_args_notifysend" ;
+        #       #
+        echo -e "\n${4}\033[${1:?}${2:?}: ${3:?}\033[0m" ;
+        #       #
+        _la_args_notifysend=(
+                "${2}"
+                "${3}"
+        )
+        #       #
+        '/usr/bin/notify-send' "${_la_args_notifysend[@]}" ;
+}
+
+
+## load
+declare -F "_ef_load_init"
+#       #
+if [[ "${?}" == "0" ]] ; then
+        '_ef_load_init'
+fi
+
+
+## variable
+if [[ -e "${XDG_RUNTIME_DIR}" ]] ; then
+        XDG_RUNTIME_DIR="/run/user/$('/usr/bin/id' -u)"
+fi
+
+if [[ -z "${_gs_init_name}" ]] ; then
+        _gs_init_name="${1:?}"
+        #       #
+        shift "1" || exit
+fi
+
+
+
+### flatpak pre
+## check
+'/usr/bin/flatpak' info -M "${_gs_init_name}" 1>"/dev/null" || exit
+
+'/usr/bin/flatpak' ps | '/usr/bin/grep' "${_gs_init_name}"
+#       #
+if [[ "${?}" == "0" ]] ; then
+        '_gf_tool_echo' "33m" "WARNING" "The program is running."
+fi
+
+
+
+### x11
+## socket
+if [[ -z "${_gi_init_x11}" ]] ; then
+        _gi_init_x11="$(( "$('/usr/bin/id' -u)" + "11" ))"
+else
+        _gs_test_x11="yes"
+fi
+
+while true ; do
+        '/usr/bin/ss' -a "${_gs_path_x11socket}"
+        #       #
+        if [[ "${_gi_init_x11}" -lt "1" ]] ; then
+                '_gf_tool_echo' "31m" "ERROR" "Display is unavailable."
+        elif [[ "${_gi_init_x11}" -gt "60000" ]] ; then
+                '_gf_tool_echo' "31m" "ERROR" "Display is unavailable."
+        elif [[ "${?}" == "0" && "${_gs_test_x11}" == "yes" ]] ; then
+                '_gf_tool_echo' "31m" "ERROR" "Display is unavailable."
+        elif [[ "${_gi_init_x11}" == "${DISPLAY}" ]] ; then
+                _gi_init_x11="$(( "${_gi_init_x11}" + "1" ))"
+        elif [[ -e "/tmp/.X${_gi_init_x11}-lock" ]] ; then
+                _gi_init_x11="$(( "${_gi_init_x11}" + "1" ))"
+        elif [[ "${?}" == "0" ]] ; then
+                _gi_init_x11="$(( "${_gi_init_x11}" + "1" ))"
+        else
+                break
+        fi
+done
+
+_gs_path_x11socket="/tmp/.X11-unix/X${_gi_init_x11}"
+
+
+## load
+declare -F "_ef_load_xephyr"
+#       #
+if [[ "${?}" == "0" ]] ; then
+        '_ef_load_xephyr'
+fi
+
+
+## xephyr
+_ga_args_xephyr=(
+        ":${_gi_init_x11}"
+        -br
+        -resizeable
+        -dpi "125"
+        -screen "1920x980"
+        -title "${_gi_init_x11}#${_gs_init_name}"
+        "${_ga_arg1_xephyr[@]}"
+)
+#       #
+'/usr/bin/Xephyr' "${_ga_args_xephyr[@]}" &
+
+_gs_stps_xephyr="${?}:${!}"
+_gi_stat_xephyr="${_gs_stps_xephyr%%:*}"
+_gi_proc_xephyr="${_gs_stps_xephyr##*:}"
+#       #
+if [[ "${_gi_stat_xephyr}" != "0" ]] ; then
+        exit "${_gi_stat_xephyr}"
+fi
+
+
+## wait
+for _gi_loop in {1..100} ; do
+        if [[ -r "${_gs_path_x11socket}" ]] ; then
+                break
+        elif [[ "${_gi_loop}" -lt "10" ]] ; then
+                '/usr/bin/sleep' "0.5s"
+        else
+                exit "1"
+        fi
+done
+
+
+## load
+declare -F "_ef_load_bwrapicewm"
+#       #
+if [[ "${?}" == "0" ]] ; then
+        '_ef_load_bwrapicewm'
+fi
+
+
+## icewm
+_ga_args_bwrapicewm=(
+        --unshare-all
+        --die-with-parent
+        --proc "/proc"
+        --dev "/dev"
+        --tmpfs "/tmp"
+        --tmpfs "${XDG_RUNTIME_DIR}"
+        --tmpfs "${HOME}"
+        --ro-bind "/etc" "/etc"
+        --ro-bind "/srv" "/srv"
+        --ro-bind "/opt" "/opt"
+        --ro-bind "/usr/bin" "/usr/bin"
+        --ro-bind "/usr/include" "/usr/include"
+        --ro-bind "/usr/lib" "/usr/lib"
+        --ro-bind "/usr/lib64" "/usr/lib64"
+        --ro-bind "/usr/libexec" "/usr/libexec"
+        --ro-bind "/usr/share" "/usr/share"
+        --ro-bind "/usr/src" "/usr/src"
+        --symlink "/usr/bin" "/bin"
+        --symlink "/usr/lib" "/lib"
+        --symlink "/usr/lib64" "/lib64"
+        --dev-bind "/dev/dri" "/dev/dri"
+        --ro-bind-try "${XDG_RUNTIME_DIR}/pulse" "${XDG_RUNTIME_DIR}/pulse"
+        --ro-bind-try "${HOME}/.config/kdedefaults" "${HOME}/.config/kdedefaults"
+        --ro-bind-try "${HOME}/.config/kcminputrc" "${HOME}/.config/kcminputrc"
+        --ro-bind-try "${HOME}/.config/kdeglobals" "${HOME}/.config/kdeglobals"
+        --ro-bind-try "${HOME}/.config/kwinrc" "${HOME}/.config/kwinrc"
+        --ro-bind-try "${HOME}/.config/package" "${HOME}/.config/package"
+        --ro-bind-try "${HOME}/.config/plasma-localerc" "${HOME}/.config/plasma-localerc"
+        --ro-bind-try "${HOME}/.gtkrc-2.0" "${HOME}/.gtkrc-2.0"
+        --ro-bind-try "${HOME}/.config/dconf" "${HOME}/.config/dconf"
+        --ro-bind-try "${HOME}/.config/gtkrc" "${HOME}/.config/gtkrc"
+        --ro-bind-try "${HOME}/.config/gtkrc-2.0" "${HOME}/.config/gtkrc-2.0"
+        --ro-bind-try "${HOME}/.config/gtkrc-3.0/assets" "${HOME}/.config/gtkrc-3.0/assets" 
+        --ro-bind-try "${HOME}/.config/gtkrc-3.0/color.css" "${HOME}/.config/gtkrc-3.0/color.css" 
+        --ro-bind-try "${HOME}/.config/gtkrc-3.0/gtk.css" "${HOME}/.config/gtkrc-3.0/gtk.css" 
+        --ro-bind-try "${HOME}/.config/gtkrc-3.0/settings.ini" "${HOME}/.config/gtkrc-3.0/settings.ini" 
+        --ro-bind-try "${HOME}/.config/gtkrc-3.0/window_decorations.css" "${HOME}/.config/gtkrc-3.0/window_decorations.css"
+        --ro-bind-try "${HOME}/.config/gtkrc-4.0/assets" "${HOME}/.config/gtkrc-4.0/assets"
+        --ro-bind-try "${HOME}/.config/gtkrc-4.0/color.css" "${HOME}/.config/gtkrc-4.0/color.css"
+        --ro-bind-try "${HOME}/.config/gtkrc-4.0/gtk.css" "${HOME}/.config/gtkrc-4.0/gtk.css"
+        --ro-bind-try "${HOME}/.config/gtkrc-4.0/settings.ini" "${HOME}/.config/gtkrc-4.0/settings.ini"
+        --ro-bind-try "${HOME}/.config/gtkrc-4.0/window_decorations.css" "${HOME}/.config/gtkrc-4.0/window_decorations.css"
+        --ro-bind-try "${HOME}/.config/user-dirs.locale" "${HOME}/.config/user-dirs.locale"
+        --ro-bind-try "${HOME}/.config/user-dirs.dirs" "${HOME}/.config/user-dirs.dirs"
+        --ro-bind "${XDG_RUNTIME_DIR}/${WAYLAND_DISPLAY}" "${XDG_RUNTIME_DIR}/${WAYLAND_DISPLAY}"
+        --setenv "WAYLAND_DISPLAY" "${WAYLAND_DISPLAY}"
+        --setenv "XDG_SESSION_TYPE" "x11"
+        --ro-bind "${_gs_path_x11socket}" "${_gs_path_x11socket}"
+        --setenv "DISPLAY" ":${_gi_init_x11}"
+        --ro-bind "/dev/null" "/usr/share/icewm/keys"
+        --ro-bind "/dev/null" "/usr/share/icewm/menu"
+        --ro-bind "/dev/null" "/usr/share/icewm/toolbar"
+        --ro-bind-try "/_and/config/bwrapsh/patches/icewm/keys" "/usr/share/icewm/keys"
+        --ro-bind-try "/_and/config/bwrapsh/patches/icewm/toolbar" "/usr/share/icewm/toolbar"
+        "${_ga_arg1_bwrapicewm[@]}"
+        --remount-ro "/"
+        '/usr/bin/icewm'
+        --theme="Infadel2"
+        "${_ga_arg2_bwrapicewm[@]}"
+)
+#       #
+'/usr/bin/bwrap' "${_ga_args_bwrapicewm[@]}" &
+
+_gs_stps_bwrapicewm="${?}:${!}"
+_gi_stat_bwrapicewm="${_gs_stps_bwrapicewm%%:*}"
+_gi_proc_bwrapicewm="${_gs_stps_bwrapicewm##*:}"
+#       #
+if [[ "${_gi_stat_bwrapicewm}" != "0" ]] ; then
+        exit "${_gi_stat_bwrapicewm}"
+fi
+
+
+
+### flatpak
+## load
+declare -F "_ef_load_flatpak"
+#       #
+if [[ "${?}" == "0" ]] ; then
+        '_ef_load_flatpak'
+fi
+
+
+## env
+DISPLAY=":${_gi_init_x11}"
+
+
+## command
+_ga_args_flatpak=(
+        run
+        --socket="x11"
+        --env=GTK_IM_MODULE="${GTK_IM_MODULE}"
+        --env=QT_IM_MODULE="${QT_IM_MODULE}"
+        --env=SDL_IM_MODULE="${SDL_IM_MODULE}"
+        "${_ga_arg1_flatpak[@]}"
+        "${_gs_init_name}"
+        "${@}"
+)
+#       #
+'/usr/bin/flatpak' "${_ga_args_flatpak[@]}"
+
+
+
+### over
+## kill
+'/usr/bin/kill' "${_gi_proc_bwrapicewm}"
+'/usr/bin/kill' "${_gi_proc_xephyr}"
+

@@ -1,0 +1,6 @@
+[Desktop Entry]
+Type=Application
+Name={FLATPAK} WPS Office
+Icon=com.wps.Office
+Exec="/_and/config/bwrapsh/default/bwrapsh_flatpakx11" "com.wps.Office"
+

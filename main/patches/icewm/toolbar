@@ -1,0 +1,8 @@
+## clipboard
+prog "Clip-Copy" "edit-copy" '/bin/bash' -c "xsel -ob | wl-copy -n"
+prog "Clip-Paste" "edit-paste" '/bin/bash' -c "wl-paste -n | xsel -ib"
+
+## application
+prog "Konsole" "utilities-terminal" '/usr/bin/konsole'
+prog "Dolphin" "system-file-manager" '/usr/bin/dolphin'
+

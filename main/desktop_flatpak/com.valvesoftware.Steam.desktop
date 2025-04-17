@@ -1,0 +1,6 @@
+[Desktop Entry]
+Type=Application
+Name={FLATPAK} Steam
+Icon=com.valvesoftware.Steam
+Exec="/_and/config/bwrapsh/default/bwrapsh_flatpakx11" "com.valvesoftware.Steam"
+

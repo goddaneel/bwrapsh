@@ -1,0 +1,6 @@
+[Desktop Entry]
+Type=Application
+Name={FLATPAK} Heroic Games Launcher
+Icon=com.heroicgameslauncher.hgl
+Exec="/_and/config/bwrapsh/default/bwrapsh_flatpakx11" "com.heroicgameslauncher.hgl"
+

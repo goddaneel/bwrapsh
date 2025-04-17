@@ -1,0 +1,205 @@
+#!/bin/bash
+
+
+
+### init
+## name
+declare -x "XDG_RUNTIME_DIR"
+declare "_gs_init_name"
+declare "_gs_init_exec"
+declare "_gs_load_testnet"
+declare "_gs_test_net"
+declare "_gs_dirs_dbusproxy"
+declare "_gs_path_dbusproxy"
+declare "_gs_stps_xdgdbusproxy"
+declare -i "_gi_stat_xdgdbusproxy"
+declare -i "_gi_proc_xdgdbusproxy"
+declare -i "_gi_loop"
+declare -a "_ga_args_xdgdbusproxy"
+declare -a "_ga_arg1_xdgdbusproxy"
+declare -a "_ga_args_bwrapsh"
+declare -a "_ga_arg1_bwrapsh"
+declare -a "_ga_arg2_bwrapsh"
+declare -f "_gf_tool_echo"
+declare -f "_ef_load_init"
+declare -f "_ef_load_dbusproxy"
+declare -f "_ef_load_bwrapsh"
+
+
+## function
+function _gf_tool_echo () 
+{
+        declare -a "_la_args_notifysend" ;
+        #       #
+        echo -e "\n${4}\033[${1:?}${2:?}: ${3:?}\033[0m" ;
+        #       #
+        _la_args_notifysend=(
+                "${2}"
+                "${3}"
+        )
+        #       #
+        '/usr/bin/notify-send' "${_la_args_notifysend[@]}" ;
+}
+
+
+## load
+declare -F "_ef_load_init"
+#       #
+if [[ "${?}" == "0" ]] ; then
+        '_ef_load_init'
+fi
+
+
+## variable
+if [[ -e "${XDG_RUNTIME_DIR}" ]] ; then
+        XDG_RUNTIME_DIR="/run/user/$('/usr/bin/id' -u)"
+fi
+
+if [[ -z "${_gs_init_name}" && -z "${_gs_init_exec}" ]] ; then
+        _gs_init_name="${1:?}"
+        _gs_init_exec="${2:?}"
+        #       #
+        shift "2" || exit
+fi
+
+_gs_dirs_dbusproxy="${XDG_RUNTIME_DIR}/_bwrapsh/dbusproxy"
+_gs_path_dbusproxy="${_gs_dirs_dbusproxy}/${_gs_init_name}"
+
+
+
+### xdg-dbus-proxy
+## load
+declare -F "_ef_load_dbusproxy"
+#       #
+if [[ "${?}" == "0" ]] ; then
+        '_ef_load_dbusproxy'
+fi
+
+
+## check
+'/usr/bin/ss' -a | grep "${_gs_path_dbusproxy}"
+#       #
+if [[ "${?}" == "0" ]] ; then
+        '_gf_tool_echo' "33m" "WARNING" "The program is running."
+        exit "1"
+fi
+
+
+## directory
+'/usr/bin/mkdir' -pv "${_gs_dirs_dbusproxy}" || exit
+
+
+## xdg-dbus-proxy
+_ga_args_xdgdbusproxy=(
+        ${DBUS_SESSION_BUS_ADDRESS}
+        "${_gs_path_dbusproxy}"
+        --filter
+        --talk="org.kde.StatusNotifierWatcher"
+        "${_ga_arg1_xdgdbusproxy[@]}"
+)
+#       #
+'/usr/bin/xdg-dbus-proxy' "${_ga_args_xdgdbusproxy[@]}" &
+
+_gs_stps_xdgdbusproxy="${?}:${!}"
+_gi_stat_xdgdbusproxy="${_gs_stps_xdgdbusproxy%%:*}"
+_gi_proc_xdgdbusproxy="${_gs_stps_xdgdbusproxy##*:}"
+#       #
+if [[ "${_gi_stat_xdgdbusproxy}" != "0" ]] ; then
+        exit "${_gi_stat_xdgdbusproxy}"
+fi
+
+
+## wait
+for _gi_loop in {1..100} ; do
+        if [[ -r "${_gs_path_dbusproxy}" ]] ; then
+                break
+        elif [[ "${_gi_loop}" -lt "10" ]] ; then
+                '/usr/bin/sleep' "0.5s"
+        else
+                exit "1"
+        fi
+done
+
+
+
+### bwrapsh
+## load
+declare -F "_ef_load_bwrapsh"
+#       #
+if [[ "${?}" == "0" ]] ; then
+        '_ef_load_bwrapsh'
+fi
+
+if [[ "${_gs_load_testnet}" == "yes" ]] ; then
+        _gs_test_net="--share-net"
+else
+        _gs_test_net="--unshare-net"
+fi
+
+
+## bwrap
+_ga_args_bwrapsh=(
+        --unshare-all
+        --die-with-parent
+        --proc "/proc"
+        --dev "/dev"
+        --tmpfs "/tmp"
+        --tmpfs "${XDG_RUNTIME_DIR}"
+        --tmpfs "${HOME}"
+        --ro-bind "/etc" "/etc"
+        --ro-bind "/srv" "/srv"
+        --ro-bind "/opt" "/opt"
+        --ro-bind "/usr/bin" "/usr/bin"
+        --ro-bind "/usr/include" "/usr/include"
+        --ro-bind "/usr/lib" "/usr/lib"
+        --ro-bind "/usr/lib64" "/usr/lib64"
+        --ro-bind "/usr/libexec" "/usr/libexec"
+        --ro-bind "/usr/share" "/usr/share"
+        --ro-bind "/usr/src" "/usr/src"
+        --symlink "/usr/bin" "/bin"
+        --symlink "/usr/lib" "/lib"
+        --symlink "/usr/lib64" "/lib64"
+        --dev-bind "/dev/dri" "/dev/dri"
+        --ro-bind "${XDG_RUNTIME_DIR}/${WAYLAND_DISPLAY}" "${XDG_RUNTIME_DIR}/${WAYLAND_DISPLAY}"
+        --setenv "WAYLAND_DISPLAY" "${WAYLAND_DISPLAY}"
+        --ro-bind-try "${XDG_RUNTIME_DIR}/pulse" "${XDG_RUNTIME_DIR}/pulse"
+        --ro-bind-try "${HOME}/.config/kdedefaults" "${HOME}/.config/kdedefaults"
+        --ro-bind-try "${HOME}/.config/kcminputrc" "${HOME}/.config/kcminputrc"
+        --ro-bind-try "${HOME}/.config/kdeglobals" "${HOME}/.config/kdeglobals"
+        --ro-bind-try "${HOME}/.config/kwinrc" "${HOME}/.config/kwinrc"
+        --ro-bind-try "${HOME}/.config/package" "${HOME}/.config/package"
+        --ro-bind-try "${HOME}/.config/plasma-localerc" "${HOME}/.config/plasma-localerc"
+        --ro-bind-try "${HOME}/.gtkrc-2.0" "${HOME}/.gtkrc-2.0"
+        --ro-bind-try "${HOME}/.config/dconf" "${HOME}/.config/dconf"
+        --ro-bind-try "${HOME}/.config/gtkrc" "${HOME}/.config/gtkrc"
+        --ro-bind-try "${HOME}/.config/gtkrc-2.0" "${HOME}/.config/gtkrc-2.0"
+        --ro-bind-try "${HOME}/.config/gtkrc-3.0/assets" "${HOME}/.config/gtkrc-3.0/assets" 
+        --ro-bind-try "${HOME}/.config/gtkrc-3.0/color.css" "${HOME}/.config/gtkrc-3.0/color.css" 
+        --ro-bind-try "${HOME}/.config/gtkrc-3.0/gtk.css" "${HOME}/.config/gtkrc-3.0/gtk.css" 
+        --ro-bind-try "${HOME}/.config/gtkrc-3.0/settings.ini" "${HOME}/.config/gtkrc-3.0/settings.ini" 
+        --ro-bind-try "${HOME}/.config/gtkrc-3.0/window_decorations.css" "${HOME}/.config/gtkrc-3.0/window_decorations.css"
+        --ro-bind-try "${HOME}/.config/gtkrc-4.0/assets" "${HOME}/.config/gtkrc-4.0/assets"
+        --ro-bind-try "${HOME}/.config/gtkrc-4.0/color.css" "${HOME}/.config/gtkrc-4.0/color.css"
+        --ro-bind-try "${HOME}/.config/gtkrc-4.0/gtk.css" "${HOME}/.config/gtkrc-4.0/gtk.css"
+        --ro-bind-try "${HOME}/.config/gtkrc-4.0/settings.ini" "${HOME}/.config/gtkrc-4.0/settings.ini"
+        --ro-bind-try "${HOME}/.config/gtkrc-4.0/window_decorations.css" "${HOME}/.config/gtkrc-4.0/window_decorations.css"
+        --ro-bind-try "${HOME}/.config/user-dirs.locale" "${HOME}/.config/user-dirs.locale"
+        --ro-bind-try "${HOME}/.config/user-dirs.dirs" "${HOME}/.config/user-dirs.dirs"
+        --ro-bind "${_gs_path_dbusproxy}" "${XDG_RUNTIME_DIR}/bus"
+        --setenv "DBUS_SESSION_BUS_ADDRESS" "unix:path=${XDG_RUNTIME_DIR}/bus"
+        "${_gs_test_net}"
+        "${_ga_arg1_bwrapsh[@]}"
+        --remount-ro "/"
+        "${_gs_init_exec}"
+        "${_ga_arg2_bwrapsh[@]}"
+        "${@}"
+)
+#       #
+'/usr/bin/bwrap' "${_ga_args_bwrapsh[@]}"
+
+
+
+### over
+## kill
+'/usr/bin/kill' "${_gi_proc_xdgdbusproxy}"
+

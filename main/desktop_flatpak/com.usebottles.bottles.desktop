@@ -1,0 +1,6 @@
+[Desktop Entry]
+Type=Application
+Name={FLATPAK} Bottles
+Icon=com.usebottles.bottles
+Exec="/_and/config/bwrapsh/default/bwrapsh_flatpakx11" "com.usebottles.bottles"
+

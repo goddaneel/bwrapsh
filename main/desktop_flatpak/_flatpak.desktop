@@ -1,0 +1,6 @@
+[Desktop Entry]
+Type=Application
+Name={FLATPAK}
+Icon=
+Exec="/_and/config/bwrapsh/default/bwrapsh_flatpakx11"
+
