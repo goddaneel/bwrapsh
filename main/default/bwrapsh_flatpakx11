@@ -6,16 +6,25 @@
 ## name
 declare -x "XDG_RUNTIME_DIR"
 declare -x "DISPLAY"
+declare -x "XAUTHORITY"
 declare "_gs_init_name"
-declare "_gs_test_x11"
+declare "_gs_mode_x11"
+declare "_gs_mode_xserver"
+declare "_gs_mode_icewm"
+declare "_gs_x11_screen"
+declare "_gs_dirs_xauth"
+declare "_gs_path_xauth"
 declare "_gs_path_x11socket"
 declare "_gs_stps_xephyr"
 declare "_gs_stps_bwrapicewm"
 declare -i "_gi_init_x11"
+declare -i "_gi_stat_ss"
 declare -i "_gi_stat_xephyr"
 declare -i "_gi_proc_xephyr"
 declare -i "_gi_stat_bwrapicewm"
 declare -i "_gi_proc_bwrapicewm"
+declare -a "_ga_args_xauth"
+declare -a "_ga_arg1_xauth"
 declare -a "_ga_args_xephyr"
 declare -a "_ga_arg1_xephyr"
 declare -a "_ga_args_bwrapicewm"
@@ -66,8 +75,6 @@ if [[ -z "${_gs_init_name}" ]] ; then
 fi
 
 
-
-### flatpak pre
 ## check
 '/usr/bin/flatpak' info -M "${_gs_init_name}" 1>"/dev/null" || exit
 
@@ -80,36 +87,81 @@ fi
 
 
 ### x11
-## socket
+## mode
 if [[ -z "${_gi_init_x11}" ]] ; then
         _gi_init_x11="$(( "$('/usr/bin/id' -u)" + "11" ))"
-else
-        _gs_test_x11="yes"
+        _gs_mode_x11="auto"
 fi
 
+if [[ "${_gs_mode_x11}" != "minor" ]] ; then
+        _gs_mode_xserver="true"
+        _gs_mode_icewm="true"
+fi
+
+
+## check
 while true ; do
-        '/usr/bin/ss' -a "${_gs_path_x11socket}"
+        _gs_path_x11socket="/tmp/.X11-unix/X${_gi_init_x11}"
         #       #
-        if [[ "${_gi_init_x11}" -lt "1" ]] ; then
+        '/usr/bin/ss' -a | grep "${_gs_path_x11socket}"
+        #       #
+        _gi_stat_ss="${?}"
+        #       #
+        if [[ "${_gi_init_x11}" -lt "1" || "${_gi_init_x11}" -gt "60000" ]] ; then
                 '_gf_tool_echo' "31m" "ERROR" "Display is unavailable."
-        elif [[ "${_gi_init_x11}" -gt "60000" ]] ; then
+        elif [[ "${_gs_mode_x11}" == "major" && "${_gi_stat_ss}" == "0" ]] ; then
                 '_gf_tool_echo' "31m" "ERROR" "Display is unavailable."
-        elif [[ "${?}" == "0" && "${_gs_test_x11}" == "yes" ]] ; then
-                '_gf_tool_echo' "31m" "ERROR" "Display is unavailable."
+                exit "1"
+        elif [[ "${_gs_mode_x11}" == "minor" ]] ; then
+                break
         elif [[ "${_gi_init_x11}" == "${DISPLAY}" ]] ; then
                 _gi_init_x11="$(( "${_gi_init_x11}" + "1" ))"
         elif [[ -e "/tmp/.X${_gi_init_x11}-lock" ]] ; then
                 _gi_init_x11="$(( "${_gi_init_x11}" + "1" ))"
-        elif [[ "${?}" == "0" ]] ; then
+        elif [[ "${_gi_stat_ss}" == "0" ]] ; then
                 _gi_init_x11="$(( "${_gi_init_x11}" + "1" ))"
         else
                 break
         fi
 done
 
-_gs_path_x11socket="/tmp/.X11-unix/X${_gi_init_x11}"
 
 
+### xauth
+## load
+declare -F "_ef_load_xauth"
+#       #
+if [[ "${?}" == "0" ]] ; then
+        '_ef_load_xauth'
+fi
+
+
+## variable
+_gs_dirs_xauth="${XDG_RUNTIME_DIR}/_bwrapsh/xauth"
+_gs_path_xauth="${_gs_dirs_xauth}/${_gi_init_x11}"
+
+
+## mkdir
+'/usr/bin/mkdir' -pv "${_gs_dirs_xauth}" || exit
+
+
+## command
+_ga_args_xauth=(
+        -f "${_gs_path_xauth}"
+        add
+        "${HOST}:${_gi_init_x11}"
+        "."
+        "$(mcookie)"
+        "${_ga_arg1_xauth[@]}"
+)
+#       #
+if [[ "${_gs_mode_xserver}" == "true" ]] ; then
+        '/usr/bin/xauth' "${_ga_args_xauth[@]}"
+fi
+
+
+
+### xephyr
 ## load
 declare -F "_ef_load_xephyr"
 #       #
@@ -118,19 +170,26 @@ if [[ "${?}" == "0" ]] ; then
 fi
 
 
-## xephyr
+## command
 _ga_args_xephyr=(
         ":${_gi_init_x11}"
         -br
         -resizeable
+        -auth "${_gs_path_xauth}"
         -dpi "125"
-        -screen "1920x980"
+        -screen "${_gs_x11_screen-"1920x980"}"
         -title "${_gi_init_x11}#${_gs_init_name}"
         "${_ga_arg1_xephyr[@]}"
 )
 #       #
-'/usr/bin/Xephyr' "${_ga_args_xephyr[@]}" &
+if [[ "${_gs_mode_xserver}" == "true" ]] ; then
+        '/usr/bin/Xephyr' "${_ga_args_xephyr[@]}" &
+else
+        true
+fi
 
+
+## watch
 _gs_stps_xephyr="${?}:${!}"
 _gi_stat_xephyr="${_gs_stps_xephyr%%:*}"
 _gi_proc_xephyr="${_gs_stps_xephyr##*:}"
@@ -144,6 +203,8 @@ fi
 for _gi_loop in {1..100} ; do
         if [[ -r "${_gs_path_x11socket}" ]] ; then
                 break
+        elif [[ "${_gs_mode_xserver}" != "true" ]] ; then
+                break
         elif [[ "${_gi_loop}" -lt "10" ]] ; then
                 '/usr/bin/sleep' "0.5s"
         else
@@ -152,6 +213,8 @@ for _gi_loop in {1..100} ; do
 done
 
 
+
+### icewm
 ## load
 declare -F "_ef_load_bwrapicewm"
 #       #
@@ -160,7 +223,7 @@ if [[ "${?}" == "0" ]] ; then
 fi
 
 
-## icewm
+## command
 _ga_args_bwrapicewm=(
         --unshare-all
         --die-with-parent
@@ -210,7 +273,9 @@ _ga_args_bwrapicewm=(
         --setenv "WAYLAND_DISPLAY" "${WAYLAND_DISPLAY}"
         --setenv "XDG_SESSION_TYPE" "x11"
         --ro-bind "${_gs_path_x11socket}" "${_gs_path_x11socket}"
+        --ro-bind "${_gs_path_xauth}" "${XDG_RUNTIME_DIR}/xauth"
         --setenv "DISPLAY" ":${_gi_init_x11}"
+        --setenv "XAUTHORITY" "${XDG_RUNTIME_DIR}/xauth"
         --ro-bind "/dev/null" "/usr/share/icewm/keys"
         --ro-bind "/dev/null" "/usr/share/icewm/menu"
         --ro-bind "/dev/null" "/usr/share/icewm/toolbar"
@@ -223,8 +288,14 @@ _ga_args_bwrapicewm=(
         "${_ga_arg2_bwrapicewm[@]}"
 )
 #       #
-'/usr/bin/bwrap' "${_ga_args_bwrapicewm[@]}" &
+if [[ "${_gs_mode_icewm}" == "true" ]] ; then
+        '/usr/bin/bwrap' "${_ga_args_bwrapicewm[@]}" &
+else
+        true
+fi
 
+
+## watch
 _gs_stps_bwrapicewm="${?}:${!}"
 _gi_stat_bwrapicewm="${_gs_stps_bwrapicewm%%:*}"
 _gi_proc_bwrapicewm="${_gs_stps_bwrapicewm##*:}"
@@ -244,8 +315,9 @@ if [[ "${?}" == "0" ]] ; then
 fi
 
 
-## env
+## variable
 DISPLAY=":${_gi_init_x11}"
+XAUTHORITY="${_gs_path_xauth}"
 
 
 ## command

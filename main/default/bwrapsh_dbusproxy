@@ -7,11 +7,13 @@
 declare -x "XDG_RUNTIME_DIR"
 declare "_gs_init_name"
 declare "_gs_init_exec"
-declare "_gs_load_testnet"
-declare "_gs_test_net"
+declare "_gs_mode_dbusproxy"
+declare "_gs_mode_net"
+declare "_gs_bwrapsh_net"
 declare "_gs_dirs_dbusproxy"
 declare "_gs_path_dbusproxy"
 declare "_gs_stps_xdgdbusproxy"
+declare -i "_gi_stat_ss"
 declare -i "_gi_stat_xdgdbusproxy"
 declare -i "_gi_proc_xdgdbusproxy"
 declare -i "_gi_loop"
@@ -62,9 +64,6 @@ if [[ -z "${_gs_init_name}" && -z "${_gs_init_exec}" ]] ; then
         shift "2" || exit
 fi
 
-_gs_dirs_dbusproxy="${XDG_RUNTIME_DIR}/_bwrapsh/dbusproxy"
-_gs_path_dbusproxy="${_gs_dirs_dbusproxy}/${_gs_init_name}"
-
 
 
 ### xdg-dbus-proxy
@@ -76,20 +75,33 @@ if [[ "${?}" == "0" ]] ; then
 fi
 
 
+## variable
+_gs_dirs_dbusproxy="${XDG_RUNTIME_DIR}/_bwrapsh/dbusproxy"
+_gs_path_dbusproxy="${_gs_dirs_dbusproxy}/${_gs_init_name}"
+
+
+## mode
+if [[ -z "${_gs_mode_dbusproxy}" ]] ; then
+        _gs_mode_dbusproxy="true"
+fi
+
+
 ## check
 '/usr/bin/ss' -a | grep "${_gs_path_dbusproxy}"
 #       #
-if [[ "${?}" == "0" ]] ; then
+_gi_stat_ss="${?}"
+#       #
+if [[ "${_gi_stat_ss}" == "0" ]] ; then
         '_gf_tool_echo' "33m" "WARNING" "The program is running."
         exit "1"
 fi
 
 
-## directory
+## mkdir
 '/usr/bin/mkdir' -pv "${_gs_dirs_dbusproxy}" || exit
 
 
-## xdg-dbus-proxy
+## command
 _ga_args_xdgdbusproxy=(
         ${DBUS_SESSION_BUS_ADDRESS}
         "${_gs_path_dbusproxy}"
@@ -98,8 +110,14 @@ _ga_args_xdgdbusproxy=(
         "${_ga_arg1_xdgdbusproxy[@]}"
 )
 #       #
-'/usr/bin/xdg-dbus-proxy' "${_ga_args_xdgdbusproxy[@]}" &
+if [[ "${_gs_mode_dbusproxy}" == "true" ]] ; then
+        '/usr/bin/xdg-dbus-proxy' "${_ga_args_xdgdbusproxy[@]}" &
+else
+        true
+fi
 
+
+## watch
 _gs_stps_xdgdbusproxy="${?}:${!}"
 _gi_stat_xdgdbusproxy="${_gs_stps_xdgdbusproxy%%:*}"
 _gi_proc_xdgdbusproxy="${_gs_stps_xdgdbusproxy##*:}"
@@ -130,14 +148,16 @@ if [[ "${?}" == "0" ]] ; then
         '_ef_load_bwrapsh'
 fi
 
-if [[ "${_gs_load_testnet}" == "yes" ]] ; then
-        _gs_test_net="--share-net"
+
+## mode
+if [[ "${_gs_mode_net}" == "true" ]] ; then
+        _gs_bwrapsh_net="--share-net"
 else
-        _gs_test_net="--unshare-net"
+        _gs_bwrapsh_net="--unshare-net"
 fi
 
 
-## bwrap
+## command
 _ga_args_bwrapsh=(
         --unshare-all
         --die-with-parent
@@ -187,7 +207,7 @@ _ga_args_bwrapsh=(
         --ro-bind-try "${HOME}/.config/user-dirs.dirs" "${HOME}/.config/user-dirs.dirs"
         --ro-bind "${_gs_path_dbusproxy}" "${XDG_RUNTIME_DIR}/bus"
         --setenv "DBUS_SESSION_BUS_ADDRESS" "unix:path=${XDG_RUNTIME_DIR}/bus"
-        "${_gs_test_net}"
+        "${_gs_bwrapsh_net}"
         "${_ga_arg1_bwrapsh[@]}"
         --remount-ro "/"
         "${_gs_init_exec}"

@@ -1,6 +1,6 @@
 [Desktop Entry]
 Type=Application
-Name={FLATPAK} WeChat
+Name={BWRAPSH} WeChat
 Icon=com.tencent.WeChat
 Exec="/_and/config/bwrapsh/default/bwrapsh_flatpakx11" "com.tencent.WeChat"
 

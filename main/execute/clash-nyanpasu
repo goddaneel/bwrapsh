@@ -9,7 +9,7 @@ function _ef_load_init ()
         ## variable
         _gs_init_name="clash-nyanpasu" ;
         _gs_init_exec="/usr/bin/clash-nyanpasu" ;
-        _gs_load_testnet="yes" ;
+        _gs_mode_net="true" ;
         _gs_fork_home="/_end/${USER}/_0_data/bwrapsh/home/clash-nyanpasu" ;
         #       #
         _ga_arg1_bwrapsh=(
@@ -45,6 +45,6 @@ function _ef_load_bwrapsh ()
 declare -fx "_ef_load_bwrapsh"
 
 
-## execute
+## command
 '/_and/config/bwrapsh/default/bwrapsh_dbusproxy' "${@}"
 

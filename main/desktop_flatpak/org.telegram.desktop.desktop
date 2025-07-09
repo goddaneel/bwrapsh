@@ -1,6 +1,6 @@
 [Desktop Entry]
 Type=Application
-Name={FLATPAK} Telegram
+Name={BWRAPSH} Telegram
 Icon=org.telegram.desktop
 Exec="/_and/config/bwrapsh/default/bwrapsh_flatpakx11" "org.telegram.desktop"
 
