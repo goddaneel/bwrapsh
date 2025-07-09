@@ -8,8 +8,7 @@ declare -x "XDG_RUNTIME_DIR"
 declare "_gs_init_name"
 declare "_gs_init_exec"
 declare "_gs_mode_dbusproxy"
-declare "_gs_mode_net"
-declare "_gs_bwrapsh_net"
+declare "_gs_mode_network"
 declare "_gs_dirs_dbusproxy"
 declare "_gs_path_dbusproxy"
 declare "_gs_stps_xdgdbusproxy"
@@ -22,6 +21,9 @@ declare -a "_ga_arg1_xdgdbusproxy"
 declare -a "_ga_args_bwrapsh"
 declare -a "_ga_arg1_bwrapsh"
 declare -a "_ga_arg2_bwrapsh"
+declare -a "_ga_bwrapsh_dbusproxy"
+declare -a "_ga_bwrapsh_dbusproxy_true"
+declare -a "_ga_bwrapsh_network"
 declare -f "_gf_tool_echo"
 declare -f "_ef_load_init"
 declare -f "_ef_load_dbusproxy"
@@ -52,7 +54,7 @@ if [[ "${?}" == "0" ]] ; then
 fi
 
 
-## variable
+## environment
 if [[ -e "${XDG_RUNTIME_DIR}" ]] ; then
         XDG_RUNTIME_DIR="/run/user/$('/usr/bin/id' -u)"
 fi
@@ -66,7 +68,7 @@ fi
 
 
 
-### xdg-dbus-proxy
+### dbusproxy
 ## load
 declare -F "_ef_load_dbusproxy"
 #       #
@@ -75,42 +77,54 @@ if [[ "${?}" == "0" ]] ; then
 fi
 
 
-## variable
-_gs_dirs_dbusproxy="${XDG_RUNTIME_DIR}/_bwrapsh/dbusproxy"
-_gs_path_dbusproxy="${_gs_dirs_dbusproxy}/${_gs_init_name}"
-
-
 ## mode
 if [[ -z "${_gs_mode_dbusproxy}" ]] ; then
         _gs_mode_dbusproxy="true"
 fi
 
 
+## variable
+_gs_dirs_dbusproxy="${XDG_RUNTIME_DIR}/_bwrapsh/dbusproxy"
+_gs_path_dbusproxy="${_gs_dirs_dbusproxy}/${_gs_init_name}"
+
+
 ## check
-'/usr/bin/ss' -a | grep "${_gs_path_dbusproxy}"
-#       #
+if [[ "${_gs_mode_dbusproxy}" == "true" ]] ; then
+        '/usr/bin/ss' -a | grep "${_gs_path_dbusproxy}"
+else
+        false
+fi
+
 _gi_stat_ss="${?}"
-#       #
+
 if [[ "${_gi_stat_ss}" == "0" ]] ; then
         '_gf_tool_echo' "33m" "WARNING" "The program is running."
         exit "1"
 fi
 
 
-## mkdir
-'/usr/bin/mkdir' -pv "${_gs_dirs_dbusproxy}" || exit
-
-
-## command
+## args
 _ga_args_xdgdbusproxy=(
         ${DBUS_SESSION_BUS_ADDRESS}
         "${_gs_path_dbusproxy}"
         --filter
+        --talk="org.freedesktop.Notifications"
         --talk="org.kde.StatusNotifierWatcher"
         "${_ga_arg1_xdgdbusproxy[@]}"
 )
-#       #
+
+_ga_bwrapsh_dbusproxy_true=(
+        --ro-bind "${_gs_path_dbusproxy}" "${XDG_RUNTIME_DIR}/bus"
+        --setenv "DBUS_SESSION_BUS_ADDRESS" "unix:path=${XDG_RUNTIME_DIR}/bus"
+)
+
+
+## exec
 if [[ "${_gs_mode_dbusproxy}" == "true" ]] ; then
+        _ga_bwrapsh_dbusproxy=("${_ga_bwrapsh_dbusproxy_true[@]}")
+        #       #
+        '/usr/bin/mkdir' -pv "${_gs_dirs_dbusproxy}" || exit
+        #       #
         '/usr/bin/xdg-dbus-proxy' "${_ga_args_xdgdbusproxy[@]}" &
 else
         true
@@ -121,7 +135,7 @@ fi
 _gs_stps_xdgdbusproxy="${?}:${!}"
 _gi_stat_xdgdbusproxy="${_gs_stps_xdgdbusproxy%%:*}"
 _gi_proc_xdgdbusproxy="${_gs_stps_xdgdbusproxy##*:}"
-#       #
+
 if [[ "${_gi_stat_xdgdbusproxy}" != "0" ]] ; then
         exit "${_gi_stat_xdgdbusproxy}"
 fi
@@ -129,7 +143,15 @@ fi
 
 ## wait
 for _gi_loop in {1..100} ; do
-        if [[ -r "${_gs_path_dbusproxy}" ]] ; then
+        if [[ "${_gs_mode_dbusproxy}" != "true" ]] ; then
+                break
+        fi
+        #       #
+        '/usr/bin/ss' -a | grep "${_gs_path_dbusproxy}"
+        #       #
+        _gi_stat_ss="${?}"
+        #       #
+        if [[ "${_gi_stat_ss}" == "0" ]] ; then
                 break
         elif [[ "${_gi_loop}" -lt "10" ]] ; then
                 '/usr/bin/sleep' "0.5s"
@@ -150,14 +172,14 @@ fi
 
 
 ## mode
-if [[ "${_gs_mode_net}" == "true" ]] ; then
-        _gs_bwrapsh_net="--share-net"
+if [[ "${_gs_mode_network}" == "true" ]] ; then
+        _ga_bwrapsh_network=(--share-net)
 else
-        _gs_bwrapsh_net="--unshare-net"
+        _ga_bwrapsh_network=(--unshare-net)
 fi
 
 
-## command
+## args
 _ga_args_bwrapsh=(
         --unshare-all
         --die-with-parent
@@ -205,16 +227,17 @@ _ga_args_bwrapsh=(
         --ro-bind-try "${HOME}/.config/gtkrc-4.0/window_decorations.css" "${HOME}/.config/gtkrc-4.0/window_decorations.css"
         --ro-bind-try "${HOME}/.config/user-dirs.locale" "${HOME}/.config/user-dirs.locale"
         --ro-bind-try "${HOME}/.config/user-dirs.dirs" "${HOME}/.config/user-dirs.dirs"
-        --ro-bind "${_gs_path_dbusproxy}" "${XDG_RUNTIME_DIR}/bus"
-        --setenv "DBUS_SESSION_BUS_ADDRESS" "unix:path=${XDG_RUNTIME_DIR}/bus"
-        "${_gs_bwrapsh_net}"
+        "${_ga_bwrapsh_dbusproxy[@]}"
+        "${_ga_bwrapsh_network[@]}"
         "${_ga_arg1_bwrapsh[@]}"
         --remount-ro "/"
         "${_gs_init_exec}"
         "${_ga_arg2_bwrapsh[@]}"
         "${@}"
 )
-#       #
+
+
+## exec
 '/usr/bin/bwrap' "${_ga_args_bwrapsh[@]}"
 
 
