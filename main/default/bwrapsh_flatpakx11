@@ -22,18 +22,16 @@ declare "_gs_stps_xephyr"
 declare "_gs_stps_bwrapicewm"
 declare -i "_gi_init_x11"
 declare -i "_gi_stat_ss"
-declare -i "_gi_stat_xephyr"
 declare -i "_gi_proc_xephyr"
-declare -i "_gi_stat_bwrapicewm"
 declare -i "_gi_proc_bwrapicewm"
-declare -a "_ga_args_xauth"
+declare -a "_ga_exec_xauth"
 declare -a "_ga_arg1_xauth"
-declare -a "_ga_args_xephyr"
+declare -a "_ga_exec_xephyr"
 declare -a "_ga_arg1_xephyr"
-declare -a "_ga_args_bwrapicewm"
+declare -a "_ga_exec_bwrapicewm"
 declare -a "_ga_arg1_bwrapicewm"
 declare -a "_ga_arg2_bwrapicewm"
-declare -a "_ga_args_flatpak"
+declare -a "_ga_exec_flatpak"
 declare -a "_ga_arg1_flatpak"
 declare -a "_ga_xephyr_xauth"
 declare -a "_ga_xephyr_xauth_true"
@@ -41,6 +39,7 @@ declare -a "_ga_bwrapicewm_xauth"
 declare -a "_ga_bwrapicewm_xauth_true"
 declare -a "_ga_flatpak_test"
 declare -f "_gf_tool_echo"
+declare -f "_gf_tool_stps"
 declare -f "_ef_load_init"
 declare -f "_ef_load_xephyr"
 declare -f "_ef_load_bwrapicewm"
@@ -50,16 +49,42 @@ declare -f "_ef_load_flatpak"
 ## function
 function _gf_tool_echo () 
 {
-        declare -a "_la_args_notifysend" ;
+        declare -a "_la_exec_notifysend" ;
         #       #
         echo -e "\n${4}\033[${1:?}${2:?}: ${3:?}\033[0m" ;
         #       #
-        _la_args_notifysend=(
+        _la_exec_notifysend=(
+                '/usr/bin/notify-send'
                 "${2}"
                 "${3}"
         )
         #       #
-        '/usr/bin/notify-send' "${_la_args_notifysend[@]}" ;
+        "${_la_exec_notifysend[@]}" ;
+}
+
+function _gf_tool_stps () 
+{
+        declare -i "_li_stat" ;
+        declare -i "_li_ppid" ;
+        declare -i "_li_proc" ;
+        declare -a "_la_exec_pgrep" ;
+        #       #
+        _li_stat="${1:?}" || exit ;
+        _li_ppid="${2:?}" || exit ;
+        #       #
+        _la_exec_pgrep=(
+                '/usr/bin/pgrep'
+                -P "${_li_ppid}"
+                -x "${4:?}"
+        )
+        #       #
+        if [[ "${_li_stat}" != "0" ]] ; then
+                exit "${_li_stat}" ;
+        fi
+        #       #
+        _li_proc="$("${_la_exec_pgrep[@]}")" || exit ;
+        #       #
+        declare -g "_gi_proc_${3:?}"="${_li_proc}" ;
 }
 
 
@@ -154,7 +179,8 @@ _gs_path_xauth="${_gs_dirs_xauth}/${_gi_init_x11}"
 
 
 ## args
-_ga_args_xauth=(
+_ga_exec_xauth=(
+        '/usr/bin/xauth'
         -f "${_gs_path_xauth}"
         add
         "${HOST}:${_gi_init_x11}"
@@ -180,7 +206,7 @@ if [[ "${_gs_mode_xauth}" == "true" ]] ; then
         #       #
         '/usr/bin/mkdir' -pv "${_gs_dirs_xauth}" || exit
         #       #
-        '/usr/bin/xauth' "${_ga_args_xauth[@]}"
+        "${_ga_exec_xauth[@]}" || exit
 fi
 
 
@@ -195,7 +221,8 @@ fi
 
 
 ## args
-_ga_args_xephyr=(
+_ga_exec_xephyr=(
+        '/usr/bin/Xephyr'
         ":${_gi_init_x11}"
         -br
         -resizeable
@@ -209,21 +236,16 @@ _ga_args_xephyr=(
 
 ## exec
 if [[ "${_gs_mode_xephyr}" == "true" ]] ; then
-        '/usr/bin/Xephyr' "${_ga_args_xephyr[@]}" &
+        (
+        "${_ga_exec_xephyr[@]}"
+        exit ) &
 else
         true
 fi
 
 
 ## watch
-_gs_stps_xephyr="${?}:${!}"
-_gi_stat_xephyr="${_gs_stps_xephyr%%:*}"
-_gi_proc_xephyr="${_gs_stps_xephyr##*:}"
-
-if [[ "${_gi_stat_xephyr}" != "0" ]] ; then
-        exit "${_gi_stat_xephyr}"
-fi
-
+'_gf_tool_stps' "${?}" "${!}" "xephyr" "Xephyr"
 
 
 ### x11socket
@@ -254,7 +276,8 @@ fi
 
 
 ## args
-_ga_args_bwrapicewm=(
+_ga_exec_bwrapicewm=(
+        '/usr/bin/bwrap'
         --unshare-all
         --die-with-parent
         --proc "/proc"
@@ -320,20 +343,16 @@ _ga_args_bwrapicewm=(
 
 ## exec
 if [[ "${_gs_mode_icewm}" == "true" ]] ; then
-        '/usr/bin/bwrap' "${_ga_args_bwrapicewm[@]}" &
+        (
+        "${_ga_exec_bwrapicewm[@]}"
+        exit ) &
 else
         true
 fi
 
 
 ## watch
-_gs_stps_bwrapicewm="${?}:${!}"
-_gi_stat_bwrapicewm="${_gs_stps_bwrapicewm%%:*}"
-_gi_proc_bwrapicewm="${_gs_stps_bwrapicewm##*:}"
-#       #
-if [[ "${_gi_stat_bwrapicewm}" != "0" ]] ; then
-        exit "${_gi_stat_bwrapicewm}"
-fi
+'_gf_tool_stps' "${?}" "${!}" "bwrapicewm" "icewm"
 
 
 
@@ -358,7 +377,8 @@ fi
 
 
 ## args
-_ga_args_flatpak=(
+_ga_exec_flatpak=(
+        '/usr/bin/flatpak'
         run
         --socket="x11"
         --env=GTK_IM_MODULE="${GTK_IM_MODULE}"
@@ -372,14 +392,15 @@ _ga_args_flatpak=(
 
 
 ## exec
-'/usr/bin/flatpak' "${_ga_args_flatpak[@]}"
+"${_ga_exec_flatpak[@]}"
 
 
 
 ### over
 ## kill
 if [[ "${_gs_mode_x11}" == "auto" ]] ; then
-        '/usr/bin/kill' "${_gi_proc_bwrapicewm}"
-        '/usr/bin/kill' "${_gi_proc_xephyr}"
+        '/usr/bin/kill' -15 "${_gi_proc_bwrapicewm}"
+        wait "${!}"
+        '/usr/bin/kill' -15 "${_gi_proc_xephyr}"
 fi
 

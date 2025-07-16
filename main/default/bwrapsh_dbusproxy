@@ -11,20 +11,20 @@ declare "_gs_mode_dbusproxy"
 declare "_gs_mode_network"
 declare "_gs_dirs_dbusproxy"
 declare "_gs_path_dbusproxy"
-declare "_gs_stps_xdgdbusproxy"
+declare "_gs_stps_dbusproxy"
 declare -i "_gi_stat_ss"
-declare -i "_gi_stat_xdgdbusproxy"
-declare -i "_gi_proc_xdgdbusproxy"
+declare -i "_gi_proc_dbusproxy"
 declare -i "_gi_loop"
-declare -a "_ga_args_xdgdbusproxy"
-declare -a "_ga_arg1_xdgdbusproxy"
-declare -a "_ga_args_bwrapsh"
+declare -a "_ga_exec_dbusproxy"
+declare -a "_ga_arg1_dbusproxy"
+declare -a "_ga_exec_bwrapsh"
 declare -a "_ga_arg1_bwrapsh"
 declare -a "_ga_arg2_bwrapsh"
 declare -a "_ga_bwrapsh_dbusproxy"
 declare -a "_ga_bwrapsh_dbusproxy_true"
 declare -a "_ga_bwrapsh_network"
 declare -f "_gf_tool_echo"
+declare -f "_gf_tool_stps"
 declare -f "_ef_load_init"
 declare -f "_ef_load_dbusproxy"
 declare -f "_ef_load_bwrapsh"
@@ -33,16 +33,42 @@ declare -f "_ef_load_bwrapsh"
 ## function
 function _gf_tool_echo () 
 {
-        declare -a "_la_args_notifysend" ;
+        declare -a "_la_exec_notifysend" ;
         #       #
         echo -e "\n${4}\033[${1:?}${2:?}: ${3:?}\033[0m" ;
         #       #
-        _la_args_notifysend=(
+        _la_exec_notifysend=(
+                '/usr/bin/notify-send'
                 "${2}"
                 "${3}"
         )
         #       #
-        '/usr/bin/notify-send' "${_la_args_notifysend[@]}" ;
+        "${_la_exec_notifysend[@]}" ;
+}
+
+function _gf_tool_stps () 
+{
+        declare -i "_li_stat" ;
+        declare -i "_li_ppid" ;
+        declare -i "_li_proc" ;
+        declare -a "_la_exec_pgrep" ;
+        #       #
+        _li_stat="${1:?}" || exit ;
+        _li_ppid="${2:?}" || exit ;
+        #       #
+        if [[ "${_li_stat}" != "0" ]] ; then
+                exit "${_li_stat}"
+        fi
+        #       #
+        _la_exec_pgrep=(
+                '/usr/bin/pgrep'
+                -P "${_li_ppid}"
+                -x "${4:?}"
+        )
+        #       #
+        _li_proc="$("${_la_exec_pgrep[@]}")" || exit ;
+        #       #
+        declare -g "_gi_proc_${3:?}"="${_li_proc}" ;
 }
 
 
@@ -103,14 +129,15 @@ if [[ "${_gi_stat_ss}" == "0" ]] ; then
 fi
 
 
-## args
-_ga_args_xdgdbusproxy=(
+## array
+_ga_exec_dbusproxy=(
+        '/usr/bin/xdg-dbus-proxy'
         ${DBUS_SESSION_BUS_ADDRESS}
         "${_gs_path_dbusproxy}"
         --filter
         --talk="org.freedesktop.Notifications"
         --talk="org.kde.StatusNotifierWatcher"
-        "${_ga_arg1_xdgdbusproxy[@]}"
+        "${_ga_arg1_dbusproxy[@]}"
 )
 
 _ga_bwrapsh_dbusproxy_true=(
@@ -119,26 +146,22 @@ _ga_bwrapsh_dbusproxy_true=(
 )
 
 
-## exec
+## execute
 if [[ "${_gs_mode_dbusproxy}" == "true" ]] ; then
         _ga_bwrapsh_dbusproxy=("${_ga_bwrapsh_dbusproxy_true[@]}")
         #       #
         '/usr/bin/mkdir' -pv "${_gs_dirs_dbusproxy}" || exit
         #       #
-        '/usr/bin/xdg-dbus-proxy' "${_ga_args_xdgdbusproxy[@]}" &
+        (
+        "${_ga_exec_dbusproxy[@]}"
+        exit ) &
 else
         true
 fi
 
 
 ## watch
-_gs_stps_xdgdbusproxy="${?}:${!}"
-_gi_stat_xdgdbusproxy="${_gs_stps_xdgdbusproxy%%:*}"
-_gi_proc_xdgdbusproxy="${_gs_stps_xdgdbusproxy##*:}"
-
-if [[ "${_gi_stat_xdgdbusproxy}" != "0" ]] ; then
-        exit "${_gi_stat_xdgdbusproxy}"
-fi
+'_gf_tool_stps' "${?}" "${!}" "dbusproxy" "xdg-dbus-proxy"
 
 
 ## wait
@@ -180,7 +203,8 @@ fi
 
 
 ## args
-_ga_args_bwrapsh=(
+_ga_exec_bwrapsh=(
+        '/usr/bin/bwrap'
         --unshare-all
         --die-with-parent
         --proc "/proc"
@@ -237,12 +261,12 @@ _ga_args_bwrapsh=(
 )
 
 
-## exec
-'/usr/bin/bwrap' "${_ga_args_bwrapsh[@]}"
+## execute
+"${_ga_exec_bwrapsh[@]}"
 
 
 
 ### over
 ## kill
-'/usr/bin/kill' "${_gi_proc_xdgdbusproxy}"
+'/usr/bin/kill' -15 "${_gi_proc_dbusproxy}"
 
