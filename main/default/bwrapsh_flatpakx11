@@ -64,27 +64,26 @@ function _gf_tool_echo ()
 
 function _gf_tool_stps () 
 {
-        declare -i "_li_stat" ;
-        declare -i "_li_ppid" ;
+        declare "_ls_stps"="${?}:${!}" ;
+        declare -i "_li_stat"="${_ls_stps%%:*}" ;
+        declare -i "_li_ppid"="${_ls_stps##*:}" ;
+        #       #
         declare -i "_li_proc" ;
         declare -a "_la_exec_pgrep" ;
-        #       #
-        _li_stat="${1:?}" || exit ;
-        _li_ppid="${2:?}" || exit ;
         #       #
         _la_exec_pgrep=(
                 '/usr/bin/pgrep'
                 -P "${_li_ppid}"
-                -x "${4:?}"
+                -x "${2:?}"
         )
         #       #
         if [[ "${_li_stat}" != "0" ]] ; then
                 exit "${_li_stat}" ;
         fi
         #       #
-        _li_proc="$("${_la_exec_pgrep[@]}")" || exit ;
+        _li_proc="$("${_la_exec_pgrep[@]}")" ;
         #       #
-        declare -g "_gi_proc_${3:?}"="${_li_proc}" ;
+        declare -g "_gi_proc_${1:?}"="${_li_proc}" ;
 }
 
 
@@ -245,7 +244,7 @@ fi
 
 
 ## watch
-'_gf_tool_stps' "${?}" "${!}" "xephyr" "Xephyr"
+'_gf_tool_stps' "xephyr" "Xephyr"
 
 
 ### x11socket
@@ -352,7 +351,7 @@ fi
 
 
 ## watch
-'_gf_tool_stps' "${?}" "${!}" "bwrapicewm" "icewm"
+'_gf_tool_stps' "bwrapicewm" "bwrap"
 
 
 
