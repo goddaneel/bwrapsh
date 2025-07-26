@@ -8,6 +8,7 @@ declare -x "XDG_RUNTIME_DIR"
 declare -x "DISPLAY"
 declare -x "XAUTHORITY"
 declare "_gs_init_name"
+declare "_gs_mode_profile"
 declare "_gs_mode_x11"
 declare "_gs_mode_xauth"
 declare "_gs_mode_xephyr"
@@ -15,6 +16,8 @@ declare "_gs_mode_icewm"
 declare "_gs_mode_test"
 declare "_gs_x11_screen"
 declare "_gs_x11_dpi"
+declare "_gs_dirs_profile"
+declare "_gs_path_profile"
 declare "_gs_dirs_xauth"
 declare "_gs_path_xauth"
 declare "_gs_path_x11socket"
@@ -71,15 +74,15 @@ function _gf_tool_stps ()
         declare -i "_li_proc" ;
         declare -a "_la_exec_pgrep" ;
         #       #
+        if [[ "${_li_stat}" != "0" ]] ; then
+                exit "${_li_stat}" ;
+        fi
+        #       #
         _la_exec_pgrep=(
                 '/usr/bin/pgrep'
                 -P "${_li_ppid}"
                 -x "${2:?}"
         )
-        #       #
-        if [[ "${_li_stat}" != "0" ]] ; then
-                exit "${_li_stat}" ;
-        fi
         #       #
         _li_proc="$("${_la_exec_pgrep[@]}")" ;
         #       #
@@ -87,23 +90,36 @@ function _gf_tool_stps ()
 }
 
 
+## initialation
+if [[ -z "${_gs_init_name}" ]] ; then
+        _gs_init_name="${1:?}" || exit
+fi
+
+
+## profile
+_gs_dirs_profile="/_and/config/bwrapsh/profile_flatpak"
+_gs_path_profile="${_gs_dirs_profile}/${_gs_init_name}"
+
+if [[ -z "${_gs_mode_profile}" ]] ; then
+        _gs_mode_profile="true"
+fi
+
+if [[ "${_gs_mode_profile}" == "true" && -r "${_gs_path_profile}" ]] ; then
+        source "${_gs_path_profile}"
+fi
+
+
 ## load
 declare -F "_ef_load_init"
-#       #
+
 if [[ "${?}" == "0" ]] ; then
         '_ef_load_init'
 fi
 
 
-## variable
+## environment
 if [[ -e "${XDG_RUNTIME_DIR}" ]] ; then
         XDG_RUNTIME_DIR="/run/user/$('/usr/bin/id' -u)"
-fi
-
-if [[ -z "${_gs_init_name}" ]] ; then
-        _gs_init_name="${1:?}"
-        #       #
-        shift "1" || exit
 fi
 
 
@@ -166,7 +182,7 @@ fi
 ### xauth
 ## load
 declare -F "_ef_load_xauth"
-#       #
+
 if [[ "${?}" == "0" ]] ; then
         '_ef_load_xauth'
 fi
@@ -177,7 +193,7 @@ _gs_dirs_xauth="${XDG_RUNTIME_DIR}/_bwrapsh/xauth"
 _gs_path_xauth="${_gs_dirs_xauth}/${_gi_init_x11}"
 
 
-## args
+## array
 _ga_exec_xauth=(
         '/usr/bin/xauth'
         -f "${_gs_path_xauth}"
@@ -213,13 +229,13 @@ fi
 ### xephyr
 ## load
 declare -F "_ef_load_xephyr"
-#       #
+
 if [[ "${?}" == "0" ]] ; then
         '_ef_load_xephyr'
 fi
 
 
-## args
+## array
 _ga_exec_xephyr=(
         '/usr/bin/Xephyr'
         ":${_gi_init_x11}"
@@ -268,13 +284,13 @@ done
 ### icewm
 ## load
 declare -F "_ef_load_bwrapicewm"
-#       #
+
 if [[ "${?}" == "0" ]] ; then
         '_ef_load_bwrapicewm'
 fi
 
 
-## args
+## array
 _ga_exec_bwrapicewm=(
         '/usr/bin/bwrap'
         --unshare-all
@@ -298,6 +314,7 @@ _ga_exec_bwrapicewm=(
         --symlink "/usr/lib" "/lib"
         --symlink "/usr/lib64" "/lib64"
         --dev-bind "/dev/dri" "/dev/dri"
+        --unsetenv "PS1"
         --ro-bind-try "${XDG_RUNTIME_DIR}/pulse" "${XDG_RUNTIME_DIR}/pulse"
         --ro-bind-try "${HOME}/.config/kdedefaults" "${HOME}/.config/kdedefaults"
         --ro-bind-try "${HOME}/.config/kcminputrc" "${HOME}/.config/kcminputrc"
@@ -329,8 +346,10 @@ _ga_exec_bwrapicewm=(
         --ro-bind "/dev/null" "/usr/share/icewm/keys"
         --ro-bind "/dev/null" "/usr/share/icewm/menu"
         --ro-bind "/dev/null" "/usr/share/icewm/toolbar"
+        --ro-bind "/dev/null" "/usr/share/icewm/preferences"
         --ro-bind-try "/_and/config/bwrapsh/patches/icewm/keys" "/usr/share/icewm/keys"
         --ro-bind-try "/_and/config/bwrapsh/patches/icewm/toolbar" "/usr/share/icewm/toolbar"
+        --ro-bind-try "/_and/config/bwrapsh/patches/icewm/preferences" "/usr/share/icewm/preferences"
         "${_ga_bwrapicewm_xauth[@]}"
         "${_ga_arg1_bwrapicewm[@]}"
         --remount-ro "/"
@@ -358,7 +377,7 @@ fi
 ### flatpak
 ## load
 declare -F "_ef_load_flatpak"
-#       #
+
 if [[ "${?}" == "0" ]] ; then
         '_ef_load_flatpak'
 fi
@@ -375,7 +394,11 @@ if [[ "${_gs_mode_test}" == "true" ]] ; then
 fi
 
 
-## args
+## argument
+shift 1
+
+
+## array
 _ga_exec_flatpak=(
         '/usr/bin/flatpak'
         run

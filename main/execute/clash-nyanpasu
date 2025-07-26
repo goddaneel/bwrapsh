@@ -27,7 +27,7 @@ declare -fx "_ef_load_init"
 
 function _ef_load_bwrapsh () 
 {
-        ## command
+        ## mkdir
         if [[ -z "${_gs_fork_home}" ]] ; then
                 exit "1" ;
         else

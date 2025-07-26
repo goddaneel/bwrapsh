@@ -1,0 +1,7 @@
+#!/bin/bash
+
+
+## variable
+_gs_mode_x11="minor"
+_gi_init_x11="$(( "$('/usr/bin/id' -u)" - "31" ))"
+

@@ -7,8 +7,12 @@
 declare -x "XDG_RUNTIME_DIR"
 declare "_gs_init_name"
 declare "_gs_init_exec"
+declare "_gs_mode_profile"
 declare "_gs_mode_dbusproxy"
 declare "_gs_mode_network"
+declare "_gs_mode_test"
+declare "_gs_dirs_profile"
+declare "_gs_path_profile"
 declare "_gs_dirs_dbusproxy"
 declare "_gs_path_dbusproxy"
 declare "_gs_stps_dbusproxy"
@@ -71,9 +75,28 @@ function _gf_tool_stps ()
 }
 
 
+## initialation
+if [[ -z "${_gs_init_name}" ]] ; then
+        _gs_init_name="${1:?}" || exit
+fi
+
+
+## profile
+_gs_dirs_profile="/_and/config/bwrapsh/profile"
+_gs_path_profile="${_gs_dirs_profile}/${_gs_init_name}"
+
+if [[ -z "${_gs_mode_profile}" ]] ; then
+        _gs_mode_profile="true"
+fi
+
+if [[ "${_gs_mode_profile}" == "true" && -r "${_gs_path_profile}" ]] ; then
+        source "${_gs_path_profile}"
+fi
+
+
 ## load
 declare -F "_ef_load_init"
-#       #
+
 if [[ "${?}" == "0" ]] ; then
         '_ef_load_init'
 fi
@@ -84,19 +107,12 @@ if [[ -e "${XDG_RUNTIME_DIR}" ]] ; then
         XDG_RUNTIME_DIR="/run/user/$('/usr/bin/id' -u)"
 fi
 
-if [[ -z "${_gs_init_name}" && -z "${_gs_init_exec}" ]] ; then
-        _gs_init_name="${1:?}"
-        _gs_init_exec="${2:?}"
-        #       #
-        shift "2" || exit
-fi
-
 
 
 ### dbusproxy
 ## load
 declare -F "_ef_load_dbusproxy"
-#       #
+
 if [[ "${?}" == "0" ]] ; then
         '_ef_load_dbusproxy'
 fi
@@ -184,10 +200,10 @@ done
 
 
 
-### bwrapsh
+### bwrap
 ## load
 declare -F "_ef_load_bwrapsh"
-#       #
+
 if [[ "${?}" == "0" ]] ; then
         '_ef_load_bwrapsh'
 fi
@@ -200,8 +216,19 @@ else
         _ga_bwrapsh_network=(--unshare-net)
 fi
 
+if [[ "${_gs_mode_test}" == "true" ]] ; then
+        _gs_init_exec="bash"
+elif [[ -z "${_gs_init_exec}" ]] ; then
+        _gs_init_exec="${2:?}" || exit
+fi
 
-## args
+
+## argument
+shift 1
+shift 1
+
+
+## array
 _ga_exec_bwrapsh=(
         '/usr/bin/bwrap'
         --unshare-all
@@ -225,6 +252,7 @@ _ga_exec_bwrapsh=(
         --symlink "/usr/lib" "/lib"
         --symlink "/usr/lib64" "/lib64"
         --dev-bind "/dev/dri" "/dev/dri"
+        --unsetenv "PS1"
         --ro-bind "${XDG_RUNTIME_DIR}/${WAYLAND_DISPLAY}" "${XDG_RUNTIME_DIR}/${WAYLAND_DISPLAY}"
         --setenv "WAYLAND_DISPLAY" "${WAYLAND_DISPLAY}"
         --ro-bind-try "${XDG_RUNTIME_DIR}/pulse" "${XDG_RUNTIME_DIR}/pulse"
