@@ -4,7 +4,7 @@
 ## variable
 declare -x "_gs_init_name"
 #       #
-_gs_init_name="clash-nyanpasu"
+_gs_init_name="flclash"
 
 
 ## function
@@ -13,9 +13,13 @@ function _ef_load_init ()
         ## name
         declare -g "_gs_fork_home" ;
         ## variable
-        _gs_init_exec="/usr/bin/clash-nyanpasu" ;
+        _gs_init_exec="/usr/bin/FlClash" ;
         _gs_mode_network="true" ;
-        _gs_fork_home="/_end/${USER}/_0_data/bwrapsh/home/clash-nyanpasu" ;
+        _gs_fork_home="/_end/${USER}/_0_data/bwrapsh/home/flclash" ;
+        #       #
+        _ga_arg1_dbusproxy=(
+                --own="com.follow.clash"
+        )
         #       #
         _ga_arg1_bwrapsh=(
                 --unsetenv "GTK_IM_MODULE"
@@ -23,8 +27,6 @@ function _ef_load_init ()
                 --unsetenv "SDL_IM_MODULE"
                 --bind "${_gs_fork_home}" "${HOME}"
                 --tmpfs "${HOME}/.cache"
-                --bind "${XDG_RUNTIME_DIR}/tao" "${XDG_RUNTIME_DIR}/tao"
-                --setenv "WEBKIT_DISABLE_DMABUF_RENDERER" "1"
         )
 }
 #       #
@@ -37,13 +39,6 @@ function _ef_load_bwrapsh ()
                 exit 1 ;
         else
                 '/usr/bin/mkdir' -pv "${_gs_fork_home}" ;
-        fi
-        #       #
-        if [[ -z "${XDG_RUNTIME_DIR}" ]] ; then
-                exit 1 ;
-        else
-                '/usr/bin/rm' -rfv "${XDG_RUNTIME_DIR}/tao" ;
-                '/usr/bin/mkdir' -pv "${XDG_RUNTIME_DIR}/tao" ;
         fi
 }
 #       #

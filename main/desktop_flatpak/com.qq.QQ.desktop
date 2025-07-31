@@ -2,5 +2,5 @@
 Type=Application
 Name={BWRAPSH} QQ
 Icon=com.qq.QQ
-Exec="/_and/config/bwrapsh/default/bwrapsh_flatpakx11" "com.qq.QQ"
+Exec="/_and/config/bwrapsh/default/bwrapsh_flatpakx11" "com.qq.QQ" _null
 

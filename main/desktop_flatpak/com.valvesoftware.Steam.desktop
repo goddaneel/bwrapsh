@@ -2,5 +2,5 @@
 Type=Application
 Name={BWRAPSH} Steam
 Icon=com.valvesoftware.Steam
-Exec="/_and/config/bwrapsh/default/bwrapsh_flatpakx11" "com.valvesoftware.Steam"
+Exec="/_and/config/bwrapsh/default/bwrapsh_flatpakx11" "com.valvesoftware.Steam" _null
 

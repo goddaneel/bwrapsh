@@ -2,5 +2,5 @@
 Type=Application
 Name={BWRAPSH} WPS Office
 Icon=com.wps.Office
-Exec="/_and/config/bwrapsh/default/bwrapsh_flatpakx11" "com.wps.Office"
+Exec="/_and/config/bwrapsh/default/bwrapsh_flatpakx11" "com.wps.Office" _null
 

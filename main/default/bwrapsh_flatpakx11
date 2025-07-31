@@ -8,6 +8,7 @@ declare -x "XDG_RUNTIME_DIR"
 declare -x "DISPLAY"
 declare -x "XAUTHORITY"
 declare "_gs_init_name"
+declare "_gs_init_exec"
 declare "_gs_mode_profile"
 declare "_gs_mode_x11"
 declare "_gs_mode_xauth"
@@ -40,7 +41,7 @@ declare -a "_ga_xephyr_xauth"
 declare -a "_ga_xephyr_xauth_true"
 declare -a "_ga_bwrapicewm_xauth"
 declare -a "_ga_bwrapicewm_xauth_true"
-declare -a "_ga_flatpak_test"
+declare -a "_ga_flatpak_exec"
 declare -f "_gf_tool_echo"
 declare -f "_gf_tool_stps"
 declare -f "_ef_load_init"
@@ -243,7 +244,7 @@ _ga_exec_xephyr=(
         -resizeable
         -dpi "${_gs_x11_dpi-"125"}"
         -screen "${_gs_x11_screen-"1920x980"}"
-        -title "${_gi_init_x11}#${_gs_init_name}"
+        -title "${_gi_init_x11}"
         "${_ga_xephyr_xauth[@]}"
         "${_ga_arg1_xephyr[@]}"
 )
@@ -347,9 +348,7 @@ _ga_exec_bwrapicewm=(
         --ro-bind "/dev/null" "/usr/share/icewm/menu"
         --ro-bind "/dev/null" "/usr/share/icewm/toolbar"
         --ro-bind "/dev/null" "/usr/share/icewm/preferences"
-        --ro-bind-try "/_and/config/bwrapsh/patches/icewm/keys" "/usr/share/icewm/keys"
-        --ro-bind-try "/_and/config/bwrapsh/patches/icewm/toolbar" "/usr/share/icewm/toolbar"
-        --ro-bind-try "/_and/config/bwrapsh/patches/icewm/preferences" "/usr/share/icewm/preferences"
+        --ro-bind-try "/_and/config/bwrapsh/patches_flatpak/icewm" "${HOME}/.config/icewm"
         "${_ga_bwrapicewm_xauth[@]}"
         "${_ga_arg1_bwrapicewm[@]}"
         --remount-ro "/"
@@ -390,11 +389,22 @@ XAUTHORITY="${_gs_path_xauth}"
 
 ## mode
 if [[ "${_gs_mode_test}" == "true" ]] ; then
-        _ga_flatpak_test=(--command="bash")
+        _gs_init_exec="bash"
+elif [[ -z "${_gs_init_exec}" ]] ; then
+        _gs_init_exec="${2:?}" || exit
+fi
+
+if [[ "${_gs_init_exec}" == "_null" ]] ; then
+        unset -v "_gs_init_exec"
+fi
+
+if [[ -n "${_gs_init_exec}" ]] ; then
+        _ga_flatpak_exec=(--command="${_gs_init_exec}")
 fi
 
 
 ## argument
+shift 1
 shift 1
 
 
@@ -406,7 +416,7 @@ _ga_exec_flatpak=(
         --env=GTK_IM_MODULE="${GTK_IM_MODULE}"
         --env=QT_IM_MODULE="${QT_IM_MODULE}"
         --env=SDL_IM_MODULE="${SDL_IM_MODULE}"
-        "${_ga_flatpak_test[@]}"
+        "${_ga_flatpak_exec[@]}"
         "${_ga_arg1_flatpak[@]}"
         "${_gs_init_name}"
         "${@}"

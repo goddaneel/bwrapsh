@@ -1,4 +1,0 @@
-## clipboard
-key "Alt+Shift+c" '/bin/bash' -c "xsel -ob | wl-copy -n"
-key "Alt+Shift+v" '/bin/bash' -c "wl-paste -n | xsel -ib"
-

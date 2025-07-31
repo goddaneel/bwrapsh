@@ -217,9 +217,13 @@ else
 fi
 
 if [[ "${_gs_mode_test}" == "true" ]] ; then
-        _gs_init_exec="bash"
+        _gs_init_exec="/bin/bash"
 elif [[ -z "${_gs_init_exec}" ]] ; then
         _gs_init_exec="${2:?}" || exit
+fi
+
+if [[ "${_gs_init_exec}" == "_null" ]] ; then
+        _gs_init_exec="/bin/sh"
 fi
 
 
