@@ -9,43 +9,42 @@ declare -x "DISPLAY"
 declare -x "XAUTHORITY"
 declare "_gs_init_name"
 declare "_gs_init_exec"
+declare "_gs_init_geometry"
 declare "_gs_mode_profile"
 declare "_gs_mode_x11"
 declare "_gs_mode_xauth"
-declare "_gs_mode_xephyr"
+declare "_gs_mode_xwayland"
 declare "_gs_mode_icewm"
 declare "_gs_mode_test"
-declare "_gs_x11_screen"
-declare "_gs_x11_dpi"
 declare "_gs_dirs_profile"
 declare "_gs_path_profile"
 declare "_gs_dirs_xauth"
 declare "_gs_path_xauth"
 declare "_gs_path_x11socket"
-declare "_gs_stps_xephyr"
+declare "_gs_stps_xwayland"
 declare "_gs_stps_bwrapicewm"
 declare -i "_gi_init_x11"
 declare -i "_gi_stat_ss"
-declare -i "_gi_proc_xephyr"
+declare -i "_gi_proc_xwayland"
 declare -i "_gi_proc_bwrapicewm"
 declare -a "_ga_exec_xauth"
 declare -a "_ga_arg1_xauth"
-declare -a "_ga_exec_xephyr"
-declare -a "_ga_arg1_xephyr"
+declare -a "_ga_exec_xwayland"
+declare -a "_ga_arg1_xwayland"
 declare -a "_ga_exec_bwrapicewm"
 declare -a "_ga_arg1_bwrapicewm"
 declare -a "_ga_arg2_bwrapicewm"
 declare -a "_ga_exec_flatpak"
 declare -a "_ga_arg1_flatpak"
-declare -a "_ga_xephyr_xauth"
-declare -a "_ga_xephyr_xauth_true"
+declare -a "_ga_xwayland_xauth"
+declare -a "_ga_xwayland_xauth_true"
 declare -a "_ga_bwrapicewm_xauth"
 declare -a "_ga_bwrapicewm_xauth_true"
 declare -a "_ga_flatpak_exec"
 declare -f "_gf_tool_echo"
 declare -f "_gf_tool_stps"
 declare -f "_ef_load_init"
-declare -f "_ef_load_xephyr"
+declare -f "_ef_load_xwayland"
 declare -f "_ef_load_bwrapicewm"
 declare -f "_ef_load_flatpak"
 
@@ -170,12 +169,12 @@ done
 
 ## mode
 if [[ "${_gs_mode_x11}" != "minor" ]] ; then
-        _gs_mode_xephyr="true"
+        _gs_mode_xwayland="true"
         _gs_mode_icewm="true"
 fi
 
 if [[ -z "${_gs_mode_xauth}" ]] ; then
-        _gs_mode_xauth="${_gs_mode_xephyr}"
+        _gs_mode_xauth="${_gs_mode_xwayland}"
 fi
 
 
@@ -205,7 +204,7 @@ _ga_exec_xauth=(
         "${_ga_arg1_xauth[@]}"
 )
 
-_ga_xephyr_xauth_true=(
+_ga_xwayland_xauth_true=(
         -auth "${_gs_path_xauth}"
 )
 
@@ -217,7 +216,7 @@ _ga_bwrapicewm_xauth_true=(
 
 ## exec
 if [[ "${_gs_mode_xauth}" == "true" ]] ; then
-        _ga_xephyr_xauth=("${_ga_xephyr_xauth_true[@]}")
+        _ga_xwayland_xauth=("${_ga_xwayland_xauth_true[@]}")
         _ga_bwrapicewm_xauth=("${_ga_bwrapicewm_xauth_true[@]}")
         #       #
         '/usr/bin/mkdir' -pv "${_gs_dirs_xauth}" || exit
@@ -229,31 +228,28 @@ fi
 
 ### xephyr
 ## load
-declare -F "_ef_load_xephyr"
+declare -F "_ef_load_xwayland"
 
 if [[ "${?}" == "0" ]] ; then
-        '_ef_load_xephyr'
+        '_ef_load_xwayland'
 fi
 
 
 ## array
-_ga_exec_xephyr=(
-        '/usr/bin/Xephyr'
+_ga_exec_xwayland=(
+        '/usr/bin/Xwayland'
         ":${_gi_init_x11}"
-        -br
-        -resizeable
-        -dpi "${_gs_x11_dpi-"125"}"
-        -screen "${_gs_x11_screen-"1920x980"}"
-        -title "${_gi_init_x11}"
-        "${_ga_xephyr_xauth[@]}"
-        "${_ga_arg1_xephyr[@]}"
+        -decorate
+        -geometry "${_gs_init_geometry:-"1534x790"}"
+        "${_ga_xwayland_xauth[@]}"
+        "${_ga_arg1_xwayland[@]}"
 )
 
 
 ## exec
-if [[ "${_gs_mode_xephyr}" == "true" ]] ; then
+if [[ "${_gs_mode_xwayland}" == "true" ]] ; then
         (
-        "${_ga_exec_xephyr[@]}"
+        "${_ga_exec_xwayland[@]}"
         exit ) &
 else
         true
@@ -433,6 +429,6 @@ _ga_exec_flatpak=(
 if [[ "${_gs_mode_x11}" == "auto" ]] ; then
         '/usr/bin/kill' -15 "${_gi_proc_bwrapicewm}"
         wait "${!}"
-        '/usr/bin/kill' -15 "${_gi_proc_xephyr}"
+        '/usr/bin/kill' -15 "${_gi_proc_xwayland}"
 fi
 
