@@ -9,6 +9,7 @@ declare -x "DISPLAY"
 declare -x "XAUTHORITY"
 declare "_gs_init_name"
 declare "_gs_init_exec"
+declare "_gs_init_dpi"
 declare "_gs_init_geometry"
 declare "_gs_mode_profile"
 declare "_gs_mode_x11"
@@ -240,7 +241,9 @@ _ga_exec_xwayland=(
         '/usr/bin/Xwayland'
         ":${_gi_init_x11}"
         -decorate
-        -geometry "${_gs_init_geometry:-"1534x790"}"
+        -hidpi
+        -dpi "${_gs_init_dpi:-"125"}"
+        -geometry "${_gs_init_geometry:-"1227x632"}"
         "${_ga_xwayland_xauth[@]}"
         "${_ga_arg1_xwayland[@]}"
 )
@@ -257,7 +260,8 @@ fi
 
 
 ## watch
-'_gf_tool_stps' "xephyr" "Xephyr"
+'_gf_tool_stps' "xwayland" "Xwayland"
+
 
 
 ### x11socket
@@ -297,48 +301,48 @@ _ga_exec_bwrapicewm=(
         --tmpfs "/tmp"
         --tmpfs "${XDG_RUNTIME_DIR}"
         --tmpfs "${HOME}"
-        --ro-bind "/etc" "/etc"
-        --ro-bind "/srv" "/srv"
-        --ro-bind "/opt" "/opt"
-        --ro-bind "/usr/bin" "/usr/bin"
-        --ro-bind "/usr/include" "/usr/include"
-        --ro-bind "/usr/lib" "/usr/lib"
-        --ro-bind "/usr/lib64" "/usr/lib64"
-        --ro-bind "/usr/libexec" "/usr/libexec"
-        --ro-bind "/usr/share" "/usr/share"
-        --ro-bind "/usr/src" "/usr/src"
+        --ro-bind "/etc"{,}
+        --ro-bind "/srv"{,}
+        --ro-bind "/opt"{,}
+        --ro-bind "/usr/bin"{,}
+        --ro-bind "/usr/include"{,}
+        --ro-bind "/usr/lib"{,}
+        --ro-bind "/usr/lib64"{,}
+        --ro-bind "/usr/libexec"{,}
+        --ro-bind "/usr/share"{,}
+        --ro-bind "/usr/src"{,}
         --symlink "/usr/bin" "/bin"
         --symlink "/usr/lib" "/lib"
         --symlink "/usr/lib64" "/lib64"
-        --dev-bind "/dev/dri" "/dev/dri"
+        --dev-bind "/dev/dri"{,}
         --unsetenv "PS1"
-        --ro-bind-try "${XDG_RUNTIME_DIR}/pulse" "${XDG_RUNTIME_DIR}/pulse"
-        --ro-bind-try "${HOME}/.config/kdedefaults" "${HOME}/.config/kdedefaults"
-        --ro-bind-try "${HOME}/.config/kcminputrc" "${HOME}/.config/kcminputrc"
-        --ro-bind-try "${HOME}/.config/kdeglobals" "${HOME}/.config/kdeglobals"
-        --ro-bind-try "${HOME}/.config/kwinrc" "${HOME}/.config/kwinrc"
-        --ro-bind-try "${HOME}/.config/package" "${HOME}/.config/package"
-        --ro-bind-try "${HOME}/.config/plasma-localerc" "${HOME}/.config/plasma-localerc"
-        --ro-bind-try "${HOME}/.gtkrc-2.0" "${HOME}/.gtkrc-2.0"
-        --ro-bind-try "${HOME}/.config/dconf" "${HOME}/.config/dconf"
-        --ro-bind-try "${HOME}/.config/gtkrc" "${HOME}/.config/gtkrc"
-        --ro-bind-try "${HOME}/.config/gtkrc-2.0" "${HOME}/.config/gtkrc-2.0"
-        --ro-bind-try "${HOME}/.config/gtkrc-3.0/assets" "${HOME}/.config/gtkrc-3.0/assets" 
-        --ro-bind-try "${HOME}/.config/gtkrc-3.0/color.css" "${HOME}/.config/gtkrc-3.0/color.css" 
-        --ro-bind-try "${HOME}/.config/gtkrc-3.0/gtk.css" "${HOME}/.config/gtkrc-3.0/gtk.css" 
-        --ro-bind-try "${HOME}/.config/gtkrc-3.0/settings.ini" "${HOME}/.config/gtkrc-3.0/settings.ini" 
-        --ro-bind-try "${HOME}/.config/gtkrc-3.0/window_decorations.css" "${HOME}/.config/gtkrc-3.0/window_decorations.css"
-        --ro-bind-try "${HOME}/.config/gtkrc-4.0/assets" "${HOME}/.config/gtkrc-4.0/assets"
-        --ro-bind-try "${HOME}/.config/gtkrc-4.0/color.css" "${HOME}/.config/gtkrc-4.0/color.css"
-        --ro-bind-try "${HOME}/.config/gtkrc-4.0/gtk.css" "${HOME}/.config/gtkrc-4.0/gtk.css"
-        --ro-bind-try "${HOME}/.config/gtkrc-4.0/settings.ini" "${HOME}/.config/gtkrc-4.0/settings.ini"
-        --ro-bind-try "${HOME}/.config/gtkrc-4.0/window_decorations.css" "${HOME}/.config/gtkrc-4.0/window_decorations.css"
-        --ro-bind-try "${HOME}/.config/user-dirs.locale" "${HOME}/.config/user-dirs.locale"
-        --ro-bind-try "${HOME}/.config/user-dirs.dirs" "${HOME}/.config/user-dirs.dirs"
-        --ro-bind "${XDG_RUNTIME_DIR}/${WAYLAND_DISPLAY}" "${XDG_RUNTIME_DIR}/${WAYLAND_DISPLAY}"
+        --ro-bind-try "${XDG_RUNTIME_DIR}/pulse"{,}
+        --ro-bind-try "${HOME}/.config/kdedefaults"{,}
+        --ro-bind-try "${HOME}/.config/kcminputrc"{,}
+        --ro-bind-try "${HOME}/.config/kdeglobals"{,}
+        --ro-bind-try "${HOME}/.config/kwinrc"{,}
+        --ro-bind-try "${HOME}/.config/package"{,}
+        --ro-bind-try "${HOME}/.config/plasma-localerc"{,}
+        --ro-bind-try "${HOME}/.gtkrc-2.0"{,}
+        --ro-bind-try "${HOME}/.config/dconf"{,}
+        --ro-bind-try "${HOME}/.config/gtkrc"{,}
+        --ro-bind-try "${HOME}/.config/gtkrc-2.0"{,}
+        --ro-bind-try "${HOME}/.config/gtkrc-3.0/assets"{,}
+        --ro-bind-try "${HOME}/.config/gtkrc-3.0/color.css"{,}
+        --ro-bind-try "${HOME}/.config/gtkrc-3.0/gtk.css"{,}
+        --ro-bind-try "${HOME}/.config/gtkrc-3.0/settings.ini"{,}
+        --ro-bind-try "${HOME}/.config/gtkrc-3.0/window_decorations.css"{,}
+        --ro-bind-try "${HOME}/.config/gtkrc-4.0/assets"{,}
+        --ro-bind-try "${HOME}/.config/gtkrc-4.0/color.css"{,}
+        --ro-bind-try "${HOME}/.config/gtkrc-4.0/gtk.css"{,}
+        --ro-bind-try "${HOME}/.config/gtkrc-4.0/settings.ini"{,}
+        --ro-bind-try "${HOME}/.config/gtkrc-4.0/window_decorations.css"{,}
+        --ro-bind-try "${HOME}/.config/user-dirs.locale"{,}
+        --ro-bind-try "${HOME}/.config/user-dirs.dirs"{,}
+        --ro-bind "${XDG_RUNTIME_DIR}/${WAYLAND_DISPLAY}"{,}
         --setenv "WAYLAND_DISPLAY" "${WAYLAND_DISPLAY}"
         --setenv "XDG_SESSION_TYPE" "x11"
-        --ro-bind "${_gs_path_x11socket}" "${_gs_path_x11socket}"
+        --ro-bind "${_gs_path_x11socket}"{,}
         --setenv "DISPLAY" ":${_gi_init_x11}"
         --ro-bind "/dev/null" "/usr/share/icewm/keys"
         --ro-bind "/dev/null" "/usr/share/icewm/menu"

@@ -23,7 +23,7 @@ function _ef_load_init ()
                 --unsetenv "SDL_IM_MODULE"
                 --bind "${_gs_fork_home}" "${HOME}"
                 --tmpfs "${HOME}/.cache"
-                --bind "${XDG_RUNTIME_DIR}/tao" "${XDG_RUNTIME_DIR}/tao"
+                --bind "${XDG_RUNTIME_DIR}/tao"{,}
                 --setenv "WEBKIT_DISABLE_DMABUF_RENDERER" "1"
         )
 }
