@@ -260,28 +260,20 @@ _ga_exec_bwrapsh=(
         --ro-bind "${XDG_RUNTIME_DIR}/${WAYLAND_DISPLAY}"{,}
         --setenv "WAYLAND_DISPLAY" "${WAYLAND_DISPLAY}"
         --ro-bind-try "${XDG_RUNTIME_DIR}/pulse"{,}
-        --ro-bind-try "${HOME}/.config/kdedefaults"{,}
-        --ro-bind-try "${HOME}/.config/kcminputrc"{,}
-        --ro-bind-try "${HOME}/.config/kdeglobals"{,}
-        --ro-bind-try "${HOME}/.config/kwinrc"{,}
-        --ro-bind-try "${HOME}/.config/package"{,}
-        --ro-bind-try "${HOME}/.config/plasma-localerc"{,}
         --ro-bind-try "${HOME}/.gtkrc-2.0"{,}
-        --ro-bind-try "${HOME}/.config/dconf"{,}
         --ro-bind-try "${HOME}/.config/gtkrc"{,}
         --ro-bind-try "${HOME}/.config/gtkrc-2.0"{,}
-        --ro-bind-try "${HOME}/.config/gtkrc-3.0/assets"{,}
-        --ro-bind-try "${HOME}/.config/gtkrc-3.0/color.css"{,}
-        --ro-bind-try "${HOME}/.config/gtkrc-3.0/gtk.css"{,}
-        --ro-bind-try "${HOME}/.config/gtkrc-3.0/settings.ini"{,}
-        --ro-bind-try "${HOME}/.config/gtkrc-3.0/window_decorations.css"{,}
-        --ro-bind-try "${HOME}/.config/gtkrc-4.0/assets"{,}
-        --ro-bind-try "${HOME}/.config/gtkrc-4.0/color.css"{,}
-        --ro-bind-try "${HOME}/.config/gtkrc-4.0/gtk.css"{,}
-        --ro-bind-try "${HOME}/.config/gtkrc-4.0/settings.ini"{,}
-        --ro-bind-try "${HOME}/.config/gtkrc-4.0/window_decorations.css"{,}
+        --ro-bind-try "${HOME}/.config/gtk-3.0/assets"{,}
+        --ro-bind-try "${HOME}/.config/gtk-3.0/color.css"{,}
+        --ro-bind-try "${HOME}/.config/gtk-3.0/gtk.css"{,}
+        --ro-bind-try "${HOME}/.config/gtk-3.0/settings.ini"{,}
+        --ro-bind-try "${HOME}/.config/gtk-3.0/window_decorations.css"{,}
+        --ro-bind-try "${HOME}/.config/gtk-4.0/assets"{,}
+        --ro-bind-try "${HOME}/.config/gtk-4.0/color.css"{,}
+        --ro-bind-try "${HOME}/.config/gtk-4.0/gtk.css"{,}
+        --ro-bind-try "${HOME}/.config/gtk-4.0/settings.ini"{,}
+        --ro-bind-try "${HOME}/.config/gtk-4.0/window_decorations.css"{,}
         --ro-bind-try "${HOME}/.config/user-dirs.locale"{,}
-        --ro-bind-try "${HOME}/.config/user-dirs.dirs"{,}
         "${_ga_bwrapsh_dbusproxy[@]}"
         "${_ga_bwrapsh_network[@]}"
         "${_ga_arg1_bwrapsh[@]}"
