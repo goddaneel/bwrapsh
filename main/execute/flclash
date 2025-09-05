@@ -15,7 +15,7 @@ function _ef_load_init ()
         _gs_part_home="true" ;
         _gs_part_network="true" ;
         #       #
-        _ga_arg1_dbusproxy=(
+        _ga_arg1_userbus=(
                 --own="com.follow.clash"
         )
         #       #
