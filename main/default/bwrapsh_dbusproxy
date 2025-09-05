@@ -5,33 +5,35 @@
 ### init
 ## name
 declare -x "XDG_RUNTIME_DIR"
-declare "_gs_init_name"
-declare "_gs_init_exec"
-declare "_gs_mode_profile"
-declare "_gs_mode_dbusproxy"
-declare "_gs_mode_network"
-declare "_gs_mode_test"
-declare "_gs_dirs_profile"
-declare "_gs_path_profile"
-declare "_gs_dirs_dbusproxy"
-declare "_gs_path_dbusproxy"
-declare "_gs_stps_dbusproxy"
-declare -i "_gi_stat_ss"
-declare -i "_gi_proc_dbusproxy"
 declare -i "_gi_loop"
-declare -a "_ga_exec_dbusproxy"
-declare -a "_ga_arg1_dbusproxy"
+declare -i "_gi_stat_ss"
+declare -a "_ga_exec_userbus"
+declare -a "_ga_exec_systembus"
 declare -a "_ga_exec_bwrapsh"
-declare -a "_ga_arg1_bwrapsh"
-declare -a "_ga_arg2_bwrapsh"
-declare -a "_ga_bwrapsh_dbusproxy"
-declare -a "_ga_bwrapsh_dbusproxy_true"
-declare -a "_ga_bwrapsh_network"
-declare -f "_gf_tool_echo"
-declare -f "_gf_tool_stps"
-declare -f "_ef_load_init"
-declare -f "_ef_load_dbusproxy"
-declare -f "_ef_load_bwrapsh"
+declare -a "_ga_exec_bwrapsh_userbus"
+declare -a "_ga_exec_bwrapsh_systembus"
+declare -a "_ga_exec_bwrapsh_home"
+declare -a "_ga_exec_bwrapsh_network"
+
+declare -g "_gs_init_name"
+declare -g "_gs_init_exec"
+declare -g "_gs_mode_profile"
+declare -g "_gs_mode_test"
+declare -g "_gs_part_userbus"
+declare -g "_gs_part_systembus"
+declare -g "_gs_part_network"
+declare -g "_gs_dirs_profile"
+declare -g "_gs_path_profile"
+declare -g "_gs_dirs_userbus"
+declare -g "_gs_path_userbus"
+declare -g "_gs_dirs_systembus"
+declare -g "_gs_path_systembus"
+declare -g "_gs_dirs_home"
+declare -g "_gs_path_home"
+declare -ga "_ga_arg1_userbus"
+declare -ga "_ga_arg1_systembus"
+declare -ga "_ga_arg1_bwrapsh"
+declare -ga "_ga_arg2_bwrapsh"
 
 
 ## function
@@ -49,6 +51,7 @@ function _gf_tool_echo ()
         #       #
         "${_la_exec_notifysend[@]}" ;
 }
+declare -F "_gf_tool_echo"
 
 function _gf_tool_stps () 
 {
@@ -71,8 +74,19 @@ function _gf_tool_stps ()
         #       #
         _li_proc="$("${_la_exec_pgrep[@]}")" ;
         #       #
-        declare -g "_gi_proc_${1:?}"="${_li_proc}" ;
+        declare -gi "_gi_proc_${1:?}"="${_li_proc}" ;
 }
+declare -F "_gf_tool_stps"
+
+function _gf_tool_load () 
+{
+        declare -F "_ef_load_${1:?}" ;
+        #       #
+        if [[ "${?}" == "0" ]] ; then
+                "_ef_load_${1}" ;
+        fi
+}
+declare -F "_gf_tool_load"
 
 
 ## initialation
@@ -95,11 +109,7 @@ fi
 
 
 ## load
-declare -F "_ef_load_init"
-
-if [[ "${?}" == "0" ]] ; then
-        '_ef_load_init'
-fi
+'_gf_tool_load' "init"
 
 
 ## environment
@@ -109,29 +119,25 @@ fi
 
 
 
-### dbusproxy
+### userbus
 ## load
-declare -F "_ef_load_dbusproxy"
-
-if [[ "${?}" == "0" ]] ; then
-        '_ef_load_dbusproxy'
-fi
+'_gf_tool_load' "userbus"
 
 
-## mode
-if [[ -z "${_gs_mode_dbusproxy}" ]] ; then
-        _gs_mode_dbusproxy="true"
+## part
+if [[ -z "${_gs_part_userbus}" ]] ; then
+        _gs_part_userbus="true"
 fi
 
 
 ## variable
-_gs_dirs_dbusproxy="${XDG_RUNTIME_DIR}/_bwrapsh/dbusproxy"
-_gs_path_dbusproxy="${_gs_dirs_dbusproxy}/${_gs_init_name}"
+_gs_dirs_userbus="${XDG_RUNTIME_DIR}/_bwrapsh/userbus"
+_gs_path_userbus="${_gs_dirs_userbus}/${_gs_init_name}"
 
 
 ## check
-if [[ "${_gs_mode_dbusproxy}" == "true" ]] ; then
-        '/usr/bin/ss' -a | grep "${_gs_path_dbusproxy}"
+if [[ "${_gs_part_userbus}" == "true" ]] ; then
+        '/usr/bin/ss' -a | grep "${_gs_path_userbus}"
 else
         false
 fi
@@ -145,30 +151,28 @@ fi
 
 
 ## array
-_ga_exec_dbusproxy=(
+_ga_exec_userbus=(
         '/usr/bin/xdg-dbus-proxy'
         ${DBUS_SESSION_BUS_ADDRESS}
-        "${_gs_path_dbusproxy}"
+        "${_gs_path_userbus}"
         --filter
         --talk="org.freedesktop.Notifications"
         --talk="org.kde.StatusNotifierWatcher"
-        "${_ga_arg1_dbusproxy[@]}"
-)
-
-_ga_bwrapsh_dbusproxy_true=(
-        --ro-bind "${_gs_path_dbusproxy}" "${XDG_RUNTIME_DIR}/bus"
-        --setenv "DBUS_SESSION_BUS_ADDRESS" "unix:path=${XDG_RUNTIME_DIR}/bus"
+        "${_ga_arg1_userbus[@]}"
 )
 
 
 ## execute
-if [[ "${_gs_mode_dbusproxy}" == "true" ]] ; then
-        _ga_bwrapsh_dbusproxy=("${_ga_bwrapsh_dbusproxy_true[@]}")
+if [[ "${_gs_part_userbus}" == "true" ]] ; then
+        _ga_exec_bwrapsh_userbus=(
+                --ro-bind "${_gs_path_userbus}" "${XDG_RUNTIME_DIR}/bus"
+                --setenv "DBUS_SESSION_BUS_ADDRESS" "unix:path=${XDG_RUNTIME_DIR}/bus"
+        )
         #       #
-        '/usr/bin/mkdir' -pv "${_gs_dirs_dbusproxy}" || exit
+        '/usr/bin/mkdir' -pv "${_gs_dirs_userbus}" || exit
         #       #
         (
-        "${_ga_exec_dbusproxy[@]}"
+        "${_ga_exec_userbus[@]}"
         exit ) &
 else
         true
@@ -176,16 +180,16 @@ fi
 
 
 ## watch
-'_gf_tool_stps' "dbusproxy" "xdg-dbus-proxy"
+'_gf_tool_stps' "userbus" "xdg-dbus-proxy"
 
 
 ## wait
 for _gi_loop in {1..100} ; do
-        if [[ "${_gs_mode_dbusproxy}" != "true" ]] ; then
+        if [[ "${_gs_part_userbus}" != "true" ]] ; then
                 break
         fi
         #       #
-        '/usr/bin/ss' -a | grep "${_gs_path_dbusproxy}"
+        '/usr/bin/ss' -a | grep "${_gs_path_userbus}"
         #       #
         _gi_stat_ss="${?}"
         #       #
@@ -200,22 +204,134 @@ done
 
 
 
+### systembus
+## load
+'_gf_tool_load' "systembus"
+
+
+## part
+if [[ -z "${_gs_part_systembus}" ]] ; then
+        _gs_part_systembus="true"
+fi
+
+
+## variable
+_gs_dirs_systembus="${XDG_RUNTIME_DIR}/_bwrapsh/systembus"
+_gs_path_systembus="${_gs_dirs_systembus}/${_gs_init_name}"
+
+
+## check
+if [[ "${_gs_part_systembus}" == "true" ]] ; then
+        '/usr/bin/ss' -a | grep "${_gs_path_systembus}"
+else
+        false
+fi
+
+_gi_stat_ss="${?}"
+
+if [[ "${_gi_stat_ss}" == "0" ]] ; then
+        '_gf_tool_echo' "33m" "WARNING" "The program is running."
+        exit "1"
+fi
+
+
+## array
+_ga_exec_systembus=(
+        '/usr/bin/xdg-dbus-proxy'
+        "unix:path=/run/dbus/system_bus_socket"
+        "${_gs_path_systembus}"
+        --filter
+        "${_ga_arg1_systembus[@]}"
+)
+
+
+## execute
+if [[ "${_gs_part_systembus}" == "true" ]] ; then
+        _ga_exec_bwrapsh_systembus=(
+                --ro-bind "${_gs_path_systembus}" "/run/dbus/system_bus_socket"
+        )
+        #       #
+        '/usr/bin/mkdir' -pv "${_gs_dirs_systembus}" || exit
+        #       #
+        (
+        "${_ga_exec_systembus[@]}"
+        exit ) &
+else
+        true
+fi
+
+
+## watch
+'_gf_tool_stps' "systembus" "xdg-dbus-proxy"
+
+
+## wait
+for _gi_loop in {1..100} ; do
+        if [[ "${_gs_part_systembus}" != "true" ]] ; then
+                break
+        fi
+        #       #
+        '/usr/bin/ss' -a | grep "${_gs_path_systembus}"
+        #       #
+        _gi_stat_ss="${?}"
+        #       #
+        if [[ "${_gi_stat_ss}" == "0" ]] ; then
+                break
+        elif [[ "${_gi_loop}" -lt "10" ]] ; then
+                '/usr/bin/sleep' "0.5s"
+        else
+                exit "1"
+        fi
+done
+
+
+
+### home
+## load
+'_gf_tool_load' "home"
+
+
+## part
+if [[ -z "${_gs_part_home}" ]] ; then
+        _gs_part_home="false"
+fi
+
+
+## variable
+_gs_dirs_home="/_end/${USER}/_0_data/bwrapsh/home"
+_gs_path_home="${_gs_dirs_home}/${_gs_init_name}"
+
+
+## execute
+if [[ "${_gs_part_home}" == "true" ]] ; then
+        _ga_exec_bwrapsh_home=(
+                --bind "${_gs_path_home}" "${HOME}"
+                --tmpfs "${HOME}/.cache"
+        )
+        #       #
+        '/usr/bin/mkdir' -pv "${_gs_path_home}"
+fi
+
+
+
 ### bwrap
 ## load
-declare -F "_ef_load_bwrapsh"
+'_gf_tool_load' "bwrapsh"
 
-if [[ "${?}" == "0" ]] ; then
-        '_ef_load_bwrapsh'
+
+## part
+if [[ "${_gs_part_network}" == "true" ]] ; then
+        _ga_exec_bwrapsh_network=(
+                --share-net
+        )
+else
+        _ga_exec_bwrapsh_network=(
+                --unshare-net
+        )
 fi
 
 
 ## mode
-if [[ "${_gs_mode_network}" == "true" ]] ; then
-        _ga_bwrapsh_network=(--share-net)
-else
-        _ga_bwrapsh_network=(--unshare-net)
-fi
-
 if [[ "${_gs_mode_test}" == "true" ]] ; then
         _gs_init_exec="/bin/bash"
 elif [[ -z "${_gs_init_exec}" ]] ; then
@@ -239,9 +355,10 @@ _ga_exec_bwrapsh=(
         --die-with-parent
         --proc "/proc"
         --dev "/dev"
+        --tmpfs "/var"
+        --tmpfs "/run"
         --tmpfs "/tmp"
-        --tmpfs "${XDG_RUNTIME_DIR}"
-        --tmpfs "${HOME}"
+        --tmpfs "/home"
         --ro-bind "/etc"{,}
         --ro-bind "/srv"{,}
         --ro-bind "/opt"{,}
@@ -255,11 +372,15 @@ _ga_exec_bwrapsh=(
         --symlink "/usr/bin" "/bin"
         --symlink "/usr/lib" "/lib"
         --symlink "/usr/lib64" "/lib64"
-        --dev-bind "/dev/dri"{,}
+        --symlink "/run" "/var/run"
+        --tmpfs "${XDG_RUNTIME_DIR}"
+        --tmpfs "${HOME}"
         --unsetenv "PS1"
+        --dev-bind "/dev/dri"{,}
+        --ro-bind "/sys/dev/char"{,}
+        --ro-bind "/sys/devices/pci0000:00"{,}
         --ro-bind "${XDG_RUNTIME_DIR}/${WAYLAND_DISPLAY}"{,}
         --setenv "WAYLAND_DISPLAY" "${WAYLAND_DISPLAY}"
-        --ro-bind-try "${XDG_RUNTIME_DIR}/pulse"{,}
         --ro-bind-try "${HOME}/.gtkrc-2.0"{,}
         --ro-bind-try "${HOME}/.config/gtkrc"{,}
         --ro-bind-try "${HOME}/.config/gtkrc-2.0"{,}
@@ -274,10 +395,13 @@ _ga_exec_bwrapsh=(
         --ro-bind-try "${HOME}/.config/gtk-4.0/settings.ini"{,}
         --ro-bind-try "${HOME}/.config/gtk-4.0/window_decorations.css"{,}
         --ro-bind-try "${HOME}/.config/user-dirs.locale"{,}
-        "${_ga_bwrapsh_dbusproxy[@]}"
-        "${_ga_bwrapsh_network[@]}"
+        "${_ga_exec_bwrapsh_userbus[@]}"
+        "${_ga_exec_bwrapsh_systembus[@]}"
+        "${_ga_exec_bwrapsh_home[@]}"
+        "${_ga_exec_bwrapsh_network[@]}"
         "${_ga_arg1_bwrapsh[@]}"
         --remount-ro "/"
+        --
         "${_gs_init_exec}"
         "${_ga_arg2_bwrapsh[@]}"
         "${@}"
@@ -291,5 +415,6 @@ _ga_exec_bwrapsh=(
 
 ### over
 ## kill
-'/usr/bin/kill' -15 "${_gi_proc_dbusproxy}"
+'/usr/bin/kill' -15 "${_gi_proc_userbus}"
+'/usr/bin/kill' -15 "${_gi_proc_systembus}"
 

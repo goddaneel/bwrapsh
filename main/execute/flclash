@@ -10,12 +10,10 @@ _gs_init_name="flclash"
 ## function
 function _ef_load_init () 
 {
-        ## name
-        declare -g "_gs_fork_home" ;
         ## variable
         _gs_init_exec="/usr/bin/FlClash" ;
-        _gs_mode_network="true" ;
-        _gs_fork_home="/_end/${USER}/_0_data/bwrapsh/home/flclash" ;
+        _gs_part_home="true" ;
+        _gs_part_network="true" ;
         #       #
         _ga_arg1_dbusproxy=(
                 --own="com.follow.clash"
@@ -25,24 +23,9 @@ function _ef_load_init ()
                 --unsetenv "GTK_IM_MODULE"
                 --unsetenv "QT_IM_MODULE"
                 --unsetenv "SDL_IM_MODULE"
-                --bind "${_gs_fork_home}" "${HOME}"
-                --tmpfs "${HOME}/.cache"
         )
 }
-#       #
 declare -fx "_ef_load_init"
-
-function _ef_load_bwrapsh () 
-{
-        ## mkdir
-        if [[ -z "${_gs_fork_home}" ]] ; then
-                exit 1 ;
-        else
-                '/usr/bin/mkdir' -pv "${_gs_fork_home}" ;
-        fi
-}
-#       #
-declare -fx "_ef_load_bwrapsh"
 
 
 ## execute
