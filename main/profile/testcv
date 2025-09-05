@@ -1,0 +1,12 @@
+#!/bin/bash
+
+
+## variable
+_gs_mode_test="true"
+
+_ga_arg1_bwrapsh=(
+        --overlay-src "$(pwd)"
+        --tmp-overlay "$(pwd)"
+        --chdir "$(pwd)"
+)
+
