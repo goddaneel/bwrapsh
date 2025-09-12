@@ -398,8 +398,8 @@ fi
 
 
 ## argument
-shift 1
-shift 1
+shift "1"
+shift "1"
 
 
 ## array
