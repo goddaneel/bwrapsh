@@ -301,7 +301,6 @@ _ga_exec_bwrapicewm=(
         --tmpfs "/home"
         --ro-bind "/etc"{,}
         --ro-bind "/srv"{,}
-        --ro-bind "/opt"{,}
         --ro-bind "/usr/bin"{,}
         --ro-bind "/usr/include"{,}
         --ro-bind "/usr/lib"{,}
