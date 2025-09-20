@@ -1,0 +1,6 @@
+[Desktop Entry]
+Type=Application
+Name={BWRAPSH} Sparkle
+Icon=sparkle
+Exec="/_and/config/bwrapsh/execute/sparkle"
+

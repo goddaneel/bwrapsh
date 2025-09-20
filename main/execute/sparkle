@@ -4,23 +4,21 @@
 ## variable
 declare -x "_gs_init_name"
 #       #
-_gs_init_name="flclash"
+_gs_init_name="sparkle"
 
 
 ## function
 function _ef_load_init () 
 {
         ## variable
-        _gs_init_exec="/usr/bin/FlClash" ;
+        _gs_init_exec="/usr/bin/sparkle" ;
         _gs_part_home="true" ;
         _gs_part_save="true" ;
         _gs_part_network="true" ;
         #       #
-        _ga_arg1_userbus=(
-                --own="com.follow.clash"
-        )
-        #       #
         _ga_arg1_bwrapsh=(
+                --ro-bind "/opt/sparkle"{,}
+                --setenv "ELECTRON_OZONE_PLATFORM_HINT" "auto"
                 --unsetenv "GTK_IM_MODULE"
                 --unsetenv "QT_IM_MODULE"
                 --unsetenv "SDL_IM_MODULE"
@@ -30,14 +28,16 @@ declare -fx "_ef_load_init"
 
 
 ## array
-declare -ga "_ga_exec_flclash"
+declare -ga "_ga_exec_sparkle"
 #       #
-_ga_exec_flclash=(
+_ga_exec_sparkle=(
         '/_and/config/bwrapsh/default/bwrapsh_dbusproxy'
         "${@}"
+        --enable-wayland-ime
+        --enable-features=WebRTCPipeWireCapturer
 )
 
 
 ## execute
-"${_ga_exec_flclash[@]}"
+"${_ga_exec_sparkle[@]}"
 

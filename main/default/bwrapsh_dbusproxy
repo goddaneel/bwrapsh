@@ -6,13 +6,13 @@
 ## name
 declare -x "XDG_RUNTIME_DIR"
 declare -i "_gi_loop"
-declare -i "_gi_stat_ss"
 declare -a "_ga_exec_userbus"
 declare -a "_ga_exec_systembus"
 declare -a "_ga_exec_bwrapsh"
 declare -a "_ga_exec_bwrapsh_userbus"
 declare -a "_ga_exec_bwrapsh_systembus"
 declare -a "_ga_exec_bwrapsh_home"
+declare -a "_ga_exec_bwrapsh_save"
 declare -a "_ga_exec_bwrapsh_network"
 
 declare -g "_gs_init_name"
@@ -21,6 +21,8 @@ declare -g "_gs_mode_profile"
 declare -g "_gs_mode_test"
 declare -g "_gs_part_userbus"
 declare -g "_gs_part_systembus"
+declare -g "_gs_part_home"
+declare -g "_gs_part_save"
 declare -g "_gs_part_network"
 declare -g "_gs_dirs_profile"
 declare -g "_gs_path_profile"
@@ -30,6 +32,10 @@ declare -g "_gs_dirs_systembus"
 declare -g "_gs_path_systembus"
 declare -g "_gs_dirs_home"
 declare -g "_gs_path_home"
+declare -g "_gs_dirs_data"
+declare -g "_gs_dirs_data"
+declare -g "_gs_path_file"
+declare -g "_gs_path_file"
 declare -ga "_ga_arg1_userbus"
 declare -ga "_ga_arg1_systembus"
 declare -ga "_ga_arg1_bwrapsh"
@@ -137,14 +143,12 @@ _gs_path_userbus="${_gs_dirs_userbus}/${_gs_init_name}"
 
 ## check
 if [[ "${_gs_part_userbus}" == "true" ]] ; then
-        '/usr/bin/ss' -a | grep "${_gs_path_userbus}"
+        '/usr/bin/ss' -a | '/usr/bin/grep' "${_gs_path_userbus}"
 else
         false
 fi
 
-_gi_stat_ss="${?}"
-
-if [[ "${_gi_stat_ss}" == "0" ]] ; then
+if [[ "${?}" == "0" ]] ; then
         '_gf_tool_echo' "33m" "WARNING" "The program is running."
         exit "1"
 fi
@@ -189,11 +193,9 @@ for _gi_loop in {1..100} ; do
                 break
         fi
         #       #
-        '/usr/bin/ss' -a | grep "${_gs_path_userbus}"
+        '/usr/bin/ss' -a | '/usr/bin/grep' "${_gs_path_userbus}"
         #       #
-        _gi_stat_ss="${?}"
-        #       #
-        if [[ "${_gi_stat_ss}" == "0" ]] ; then
+        if [[ "${?}" == "0" ]] ; then
                 break
         elif [[ "${_gi_loop}" -lt "10" ]] ; then
                 '/usr/bin/sleep' "0.5s"
@@ -222,14 +224,12 @@ _gs_path_systembus="${_gs_dirs_systembus}/${_gs_init_name}"
 
 ## check
 if [[ "${_gs_part_systembus}" == "true" ]] ; then
-        '/usr/bin/ss' -a | grep "${_gs_path_systembus}"
+        '/usr/bin/ss' -a | '/usr/bin/grep' "${_gs_path_systembus}"
 else
         false
 fi
 
-_gi_stat_ss="${?}"
-
-if [[ "${_gi_stat_ss}" == "0" ]] ; then
+if [[ "${?}" == "0" ]] ; then
         '_gf_tool_echo' "33m" "WARNING" "The program is running."
         exit "1"
 fi
@@ -271,11 +271,9 @@ for _gi_loop in {1..100} ; do
                 break
         fi
         #       #
-        '/usr/bin/ss' -a | grep "${_gs_path_systembus}"
+        '/usr/bin/ss' -a | '/usr/bin/grep' "${_gs_path_systembus}"
         #       #
-        _gi_stat_ss="${?}"
-        #       #
-        if [[ "${_gi_stat_ss}" == "0" ]] ; then
+        if [[ "${?}" == "0" ]] ; then
                 break
         elif [[ "${_gi_loop}" -lt "10" ]] ; then
                 '/usr/bin/sleep' "0.5s"
@@ -310,6 +308,34 @@ if [[ "${_gs_part_home}" == "true" ]] ; then
         )
         #       #
         '/usr/bin/mkdir' -pv "${_gs_path_home}"
+fi
+
+
+
+### save
+## load
+'_gf_tool_load' "save"
+
+
+## part
+if [[ -z "${_gs_part_save}" ]] ; then
+        _gs_part_save="false"
+fi
+
+
+## variable
+_gs_dirs_data="/_end/${USER}/_0_data/bwrapsh/dirs"
+_gs_path_data="${_gs_dirs_data}/${_gs_init_name}"
+_gs_dirs_file="/_end/${USER}/_0_file/bwrapsh/dirs"
+_gs_path_file="${_gs_dirs_file}/${_gs_init_name}"
+
+
+## execute
+if [[ "${_gs_part_save}" == "true" ]] ; then
+        _ga_exec_bwrapsh_save=(
+                --bind-try "${_gs_path_data}"{,}
+                --bind-try "${_gs_path_file}"{,}
+        )
 fi
 
 
@@ -397,6 +423,7 @@ _ga_exec_bwrapsh=(
         "${_ga_exec_bwrapsh_userbus[@]}"
         "${_ga_exec_bwrapsh_systembus[@]}"
         "${_ga_exec_bwrapsh_home[@]}"
+        "${_ga_exec_bwrapsh_save[@]}"
         "${_ga_exec_bwrapsh_network[@]}"
         "${_ga_arg1_bwrapsh[@]}"
         --remount-ro "/"

@@ -23,6 +23,7 @@ declare -g "_gs_init_geometry"
 declare -g "_gs_mode_profile"
 declare -g "_gs_mode_test"
 declare -g "_gs_mode_x11"
+declare -g "_gs_mode_killflatpak"
 declare -g "_gs_part_xauth"
 declare -g "_gs_part_xwayland"
 declare -g "_gs_part_icewm"
@@ -140,7 +141,7 @@ fi
 while true ; do
         _gs_path_x11socket="/tmp/.X11-unix/X${_gi_init_x11}"
         #       #
-        '/usr/bin/ss' -a | grep "${_gs_path_x11socket}"
+        '/usr/bin/ss' -a | '/usr/bin/grep' "${_gs_path_x11socket}"
         #       #
         _gi_stat_ss="${?}"
         #       #
@@ -262,11 +263,9 @@ fi
 
 ## wait
 for _gi_loop in {1..100} ; do
-        '/usr/bin/ss' -a | grep "${_gs_path_x11socket}"
+        '/usr/bin/ss' -a | '/usr/bin/grep' "${_gs_path_x11socket}"
         #       #
-        _gi_stat_ss="${?}"
-        #       #
-        if [[ "${_gi_stat_ss}" == "0" ]] ; then
+        if [[ "${?}" == "0" ]] ; then
                 break
         elif [[ "${_gi_loop}" -lt "10" ]] ; then
                 '/usr/bin/sleep' "0.5s"
@@ -418,6 +417,18 @@ _ga_exec_flatpak=(
 
 ## execute
 "${_ga_exec_flatpak[@]}"
+
+
+## kill
+if [[ "${_gs_mode_killflatpak}" == "true" ]] ; then
+        '/usr/bin/flatpak' ps | '/usr/bin/grep' "${_gs_init_name}"
+else
+        false
+fi
+
+if [[ "${?}" == "0" ]] ; then
+        '/usr/bin/flatpak' kill -v "${_gs_init_name}"
+fi
 
 
 

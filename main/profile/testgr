@@ -5,7 +5,7 @@
 _gs_mode_test="true"
 
 _ga_arg1_bwrapsh=(
-        --ro-bind "$(pwd)" "$(pwd)"
+        --ro-bind "$(pwd)"{,}
         --chdir "$(pwd)"
 )
 
