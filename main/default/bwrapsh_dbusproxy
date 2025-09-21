@@ -143,7 +143,7 @@ _gs_path_userbus="${_gs_dirs_userbus}/${_gs_init_name}"
 
 ## check
 if [[ "${_gs_part_userbus}" == "true" ]] ; then
-        '/usr/bin/ss' -a | '/usr/bin/grep' "${_gs_path_userbus}"
+        '/usr/bin/ss' -a | '/usr/bin/grep' --color "${_gs_path_userbus}"
 else
         false
 fi
@@ -193,7 +193,7 @@ for _gi_loop in {1..100} ; do
                 break
         fi
         #       #
-        '/usr/bin/ss' -a | '/usr/bin/grep' "${_gs_path_userbus}"
+        '/usr/bin/ss' -a | '/usr/bin/grep' --color "${_gs_path_userbus}"
         #       #
         if [[ "${?}" == "0" ]] ; then
                 break
@@ -224,7 +224,7 @@ _gs_path_systembus="${_gs_dirs_systembus}/${_gs_init_name}"
 
 ## check
 if [[ "${_gs_part_systembus}" == "true" ]] ; then
-        '/usr/bin/ss' -a | '/usr/bin/grep' "${_gs_path_systembus}"
+        '/usr/bin/ss' -a | '/usr/bin/grep' --color "${_gs_path_systembus}"
 else
         false
 fi
@@ -271,7 +271,7 @@ for _gi_loop in {1..100} ; do
                 break
         fi
         #       #
-        '/usr/bin/ss' -a | '/usr/bin/grep' "${_gs_path_systembus}"
+        '/usr/bin/ss' -a | '/usr/bin/grep' --color "${_gs_path_systembus}"
         #       #
         if [[ "${?}" == "0" ]] ; then
                 break

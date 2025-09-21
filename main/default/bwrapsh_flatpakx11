@@ -141,7 +141,7 @@ fi
 while true ; do
         _gs_path_x11socket="/tmp/.X11-unix/X${_gi_init_x11}"
         #       #
-        '/usr/bin/ss' -a | '/usr/bin/grep' "${_gs_path_x11socket}"
+        '/usr/bin/ss' -a | '/usr/bin/grep' --color "${_gs_path_x11socket}"
         #       #
         _gi_stat_ss="${?}"
         #       #
@@ -263,7 +263,7 @@ fi
 
 ## wait
 for _gi_loop in {1..100} ; do
-        '/usr/bin/ss' -a | '/usr/bin/grep' "${_gs_path_x11socket}"
+        '/usr/bin/ss' -a | '/usr/bin/grep' --color "${_gs_path_x11socket}"
         #       #
         if [[ "${?}" == "0" ]] ; then
                 break
@@ -421,7 +421,7 @@ _ga_exec_flatpak=(
 
 ## kill
 if [[ "${_gs_mode_killflatpak}" == "true" ]] ; then
-        '/usr/bin/flatpak' ps | '/usr/bin/grep' "${_gs_init_name}"
+        '/usr/bin/flatpak' ps | '/usr/bin/grep' --color "${_gs_init_name}"
 else
         false
 fi
