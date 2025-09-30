@@ -1,18 +1,19 @@
 ### argument
-_ea_arg1_rsync ?= $(args_rsync)
+## rsync
+_ga_arg1_rsync ?= $(args_rsync)
 
 
 
-### variable
-## array
-_ea_exec_rsync += '/usr/bin/rsync'
-_ea_exec_rsync += --info=progress2
-_ea_exec_rsync += -av
-_ea_exec_rsync += -m
-_ea_exec_rsync += --safe-links
-_ea_exec_rsync += --max-size="100M"
-_ea_exec_rsync += --delete
-_ea_exec_rsync += $(_ea_arg1_rsync)
+### array
+## rsync
+_ga_exec_rsync += '/usr/bin/rsync'
+_ga_exec_rsync += --info=progress2
+_ga_exec_rsync += -av
+_ga_exec_rsync += -m
+_ga_exec_rsync += --safe-links
+_ga_exec_rsync += --max-size="100M"
+_ga_exec_rsync += --delete
+_ga_exec_rsync += $(_ga_arg1_rsync)
 
 
 
@@ -20,4 +21,4 @@ _ea_exec_rsync += $(_ea_arg1_rsync)
 ## sync
 .PHONY: sync
 sync:
-	$(_ea_exec_rsync) "/_and/config/bwrapsh/" "./main"
+	$(_ga_exec_rsync) "/_and/config/bwrapsh/" "./main"
