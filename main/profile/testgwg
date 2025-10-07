@@ -1,6 +1,10 @@
 #!/bin/bash
 
 
+## name
+declare -a "_ga_arg1_test"
+
+
 ## variable
 _gs_mode_test="true"
 
@@ -8,5 +12,6 @@ _ga_arg1_bwrapsh=(
         --bind "$(pwd)"{,}
         --ro-bind-try "$(pwd)/.git"{,}
         --chdir "$(pwd)"
+        "${_ga_arg1_test[@]}"
 )
 
