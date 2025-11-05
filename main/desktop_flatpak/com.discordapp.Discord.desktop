@@ -1,0 +1,6 @@
+[Desktop Entry]
+Type=Application
+Name={BWRAPSH} Discord
+Icon=com.discordapp.Discord
+Exec="/_and/config/bwrapsh/default/bwrapsh_flatpakx11" "com.discordapp.Discord" _null
+
