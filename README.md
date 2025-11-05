@@ -75,12 +75,12 @@
 |`_gs_path_userbus`|自定义 user-bus socket 配置文件路径|
 |`_gs_dirs_systembus`|自定义 system-bus socket 父目录路径|
 |`_gs_path_systembus`|自定义 system-bus socket 配置文件路径|
-|`_gs_dirs_home`||
-|`_gs_path_home`||
-|`_gs_dirs_data`||
-|`_gs_dirs_data`||
-|`_gs_path_file`||
-|`_gs_path_file`||
+|`_gs_dirs_home`|自定义 fake home 父目录路径|
+|`_gs_path_home`|自定义 fake home 配置文件路径|
+|`_gs_dirs_data`|自定义 save data 父目录路径|
+|`_gs_file_data`|自定义 save data 配置文件路径|
+|`_gs_dirs_file`|自定义 save file 父目录路径|
+|`_gs_path_file`|自定义 save file 配置文件路径|
 |`_ga_arg1_userbus`||
 |`_ga_arg1_systembus`||
 |`_ga_arg1_bwrapsh`||
