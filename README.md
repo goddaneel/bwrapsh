@@ -13,46 +13,32 @@
 ## 结构
 ```
 ./main
-├── default
+├── default                     # bwrapsh 核心逻辑脚本
 │   ├── bwrapsh_dbusproxy
 │   └── bwrapsh_flatpakx11
-├── desktop
+├── desktop                     # Desktop Entry 文件
 │   ├── FlClash.desktop
 │   └── sparkle.desktop
-├── desktop_flatpak
+├── desktop_flatpak             # Desktop Entry 文件（Flatpak）
 │   ├── _flatpak.desktop
-│   ├── com.baidu.NetDisk.desktop
-│   ├── com.discordapp.Discord.desktop
-│   ├── com.heroicgameslauncher.hgl.desktop
-│   ├── com.jetbrains.IntelliJ-IDEA-Community.desktop
-│   ├── com.qq.QQ.desktop
-│   ├── com.tencent.WeChat.desktop
-│   ├── com.usebottles.bottles.desktop
-│   ├── com.valvesoftware.Steam.desktop
-│   ├── com.wps.Office.desktop
-│   └── org.telegram.desktop.desktop
-├── execute
+│   └── {FLATPAK_ID}.desktop
+├── execute                     # 可执行脚本
 │   ├── flclash
 │   └── sparkle
-├── patches_flatpak
+├── patches_flatpak             # bwrap 环境补丁
 │   └── icewm
 │       ├── keys
 │       ├── preferences
 │       └── toolbar
-├── profile
+├── profile                     # bwrapsh 前置环境
 │   ├── testgr
 │   ├── testgv
 │   ├── testgw
 │   └── testgwg
-└── profile_flatpak
+└── profile_flatpak             # bwrapsh 前置环境（Flatpak）
     ├── _l11
     ├── _l21
     ├── _l31
     ├── _l41
-    ├── com.baidu.NetDisk -> ./_l41
-    ├── com.jetbrains.IntelliJ-IDEA-Community
-    ├── com.qq.QQ -> ./_l41
-    ├── com.tencent.WeChat -> ./_l41
-    ├── com.usebottles.bottles
-    └── com.wps.Office -> ./_l41
+    └── {FLATPAK_ID} -> ./_l41
 ```
