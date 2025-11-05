@@ -13,32 +13,28 @@
 ## 结构
 ```
 ./main
-├── default                     # bwrapsh 核心逻辑脚本
+├── default                     # bwrapsh 核心逻辑脚本目录
 │   ├── bwrapsh_dbusproxy
 │   └── bwrapsh_flatpakx11
-├── desktop                     # Desktop Entry 文件
-│   ├── FlClash.desktop
-│   └── sparkle.desktop
-├── desktop_flatpak             # Desktop Entry 文件（Flatpak）
-│   ├── _flatpak.desktop
+├── desktop                     # Desktop Entry 文件目录
+│   └── {APPLICATION_NAME}.desktop
+├── desktop_flatpak             # Desktop Entry 文件目录（Flatpak）
+│   ├── _flatpak.desktop        # Desktop entry 模板
 │   └── {FLATPAK_ID}.desktop
-├── execute                     # 可执行脚本
-│   ├── flclash
-│   └── sparkle
+├── execute                     # 可执行脚本目录
+│   └── {EXECUTE_NAME}
 ├── patches_flatpak             # bwrap 环境补丁
-│   └── icewm
-│       ├── keys
-│       ├── preferences
-│       └── toolbar
+│   └── icewm                   # 用于 flatpakx11 的 icewm 配置
+│       ├── keys                # 快捷键配置
+│       ├── preferences         # 环境配置
+│       └── toolbar             # 工具栏配置
 ├── profile                     # bwrapsh 前置环境
-│   ├── testgr
-│   ├── testgv
-│   ├── testgw
-│   └── testgwg
+│   ├── testgr                  # 沙盒测试环境（对当前目录只读）
+│   ├── testgv                  # 沙盒测试环境（对当前目录模拟可写）
+│   ├── testgw                  # 沙盒测试环境（对当前目录可写）
+│   └── testgwg                 # 沙盒测试环境（对当前目录可写，但 .git 目录只读）
 └── profile_flatpak             # bwrapsh 前置环境（Flatpak）
-    ├── _l11
-    ├── _l21
-    ├── _l31
-    ├── _l41
-    └── {FLATPAK_ID} -> ./_l41
+    ├── _l11                    # flatpakx11 共享 x11 socket
+    └── {FLATPAK_ID} -> ./_l41  # 预设 flatpakx11 配置
 ```
+
