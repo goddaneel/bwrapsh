@@ -11,10 +11,16 @@
 采用 Xwayland-rootful 项目对 flatpak 应用的 X11 进行隔离。
 
 
+## 开始
+```shell
+ln -sv "$(realpath -e "./bwrapsh")" "$(realpath -e "/_and/config/")"
+```
+`./bwrapsh` 的绝对路径应该为 `/_and/config/bwrapsh`，项目中多处依赖该绝对路径，未修改时无法使用。  
+
 
 ## 结构
 ```
-./main
+./bwrapsh
 ├── default                     # bwrapsh 核心逻辑脚本目录
 │   ├── bwrapsh_dbusproxy
 │   └── bwrapsh_flatpakx11
