@@ -21,4 +21,4 @@ _ga_exec_rsync += $(_ga_arg1_rsync)
 ## sync
 .PHONY: sync
 sync:
-	$(_ga_exec_rsync) "/_and/config/bwrapsh/" "./main"
+	$(_ga_exec_rsync) "/_and/config/bwrapsh" "./"
