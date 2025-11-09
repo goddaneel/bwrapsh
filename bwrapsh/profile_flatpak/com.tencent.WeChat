@@ -1,1 +1,6 @@
-./_l41
+#!/bin/bash
+
+
+## variable
+_gs_mode_killflatpak="true"
+
