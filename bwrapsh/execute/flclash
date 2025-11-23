@@ -12,18 +12,12 @@ function _ef_load_init ()
 {
         ## variable
         _gs_init_exec="/usr/bin/FlClash" ;
+        _gs_mode_network="true" ;
         _gs_part_home="true" ;
         _gs_part_save="true" ;
-        _gs_part_network="true" ;
         #       #
         _ga_arg1_userbus=(
                 --own="com.follow.clash"
-        )
-        #       #
-        _ga_arg1_bwrapsh=(
-                --unsetenv "GTK_IM_MODULE"
-                --unsetenv "QT_IM_MODULE"
-                --unsetenv "SDL_IM_MODULE"
         )
 }
 declare -fx "_ef_load_init"

@@ -2,7 +2,7 @@
 
 
 
-### init
+### default
 ## name
 declare -x "XDG_RUNTIME_DIR"
 declare -x "DISPLAY"
@@ -10,23 +10,26 @@ declare -x "XAUTHORITY"
 declare -i "_gi_stat_ss"
 declare -a "_ga_exec_xauth"
 declare -a "_ga_exec_xwayland"
-declare -a "_ga_exec_bwrapicewm"
-declare -a "_ga_exec_flatpak"
 declare -a "_ga_exec_xwayland_xauth"
+declare -a "_ga_exec_bwrapicewm"
 declare -a "_ga_exec_bwrapicewm_xauth"
+declare -a "_ga_exec_flatpak"
+declare -a "_ga_exec_flatpak_killflatpak"
+declare -a "_ga_exec_flatpak_forward"
 declare -a "_ga_exec_flatpak_exec"
 
 declare -g "_gs_init_name"
 declare -g "_gs_init_exec"
 declare -g "_gs_init_dpi"
 declare -g "_gs_init_geometry"
-declare -g "_gs_mode_profile"
 declare -g "_gs_mode_test"
 declare -g "_gs_mode_x11"
 declare -g "_gs_mode_killflatpak"
+declare -g "_gs_mode_forward"
+declare -g "_gs_part_profile"
 declare -g "_gs_part_xauth"
 declare -g "_gs_part_xwayland"
-declare -g "_gs_part_icewm"
+declare -g "_gs_part_bwrapicewm"
 declare -g "_gs_dirs_profile"
 declare -g "_gs_path_profile"
 declare -g "_gs_dirs_xauth"
@@ -38,6 +41,8 @@ declare -ga "_ga_arg1_xwayland"
 declare -ga "_ga_arg1_bwrapicewm"
 declare -ga "_ga_arg2_bwrapicewm"
 declare -ga "_ga_arg1_flatpak"
+declare -ga "_ga_arg2_flatpak"
+declare -ga "_ga_arg3_flatpak"
 
 
 ## function
@@ -99,19 +104,25 @@ if [[ -z "${_gs_init_name}" ]] ; then
 fi
 
 
-## profile
+
+### profile
+## variable
 _gs_dirs_profile="/_and/config/bwrapsh/profile_flatpak"
 _gs_path_profile="${_gs_dirs_profile}/${_gs_init_name}"
 
-if [[ -z "${_gs_mode_profile}" ]] ; then
-        _gs_mode_profile="true"
+if [[ -z "${_gs_part_profile}" ]] ; then
+        _gs_part_profile="true"
 fi
 
-if [[ "${_gs_mode_profile}" == "true" && -r "${_gs_path_profile}" ]] ; then
+
+## source
+if [[ "${_gs_part_profile}" == "true" && -r "${_gs_path_profile}" ]] ; then
         source "${_gs_path_profile}"
 fi
 
 
+
+### init
 ## load
 '_gf_tool_load' "init"
 
@@ -171,7 +182,7 @@ done
 if [[ "${_gs_mode_x11}" == "minor" ]] ; then
         _gs_part_xauth="false"
         _gs_part_xwayland="false"
-        _gs_part_icewm="false"
+        _gs_part_bwrapicewm="false"
 fi
 
 
@@ -276,14 +287,14 @@ done
 
 
 
-### icewm
+### bwrapshicewm
 ## load
 '_gf_tool_load' "bwrapicewm"
 
 
 ## part
-if [[ -z "${_gs_part_icewm}" ]] ; then
-        _gs_part_icewm="true"
+if [[ -z "${_gs_part_bwrapicewm}" ]] ; then
+        _gs_part_bwrapicewm="true"
 fi
 
 
@@ -353,7 +364,7 @@ _ga_exec_bwrapicewm=(
 
 
 ## execute
-if [[ "${_gs_part_icewm}" == "true" ]] ; then
+if [[ "${_gs_part_bwrapicewm}" == "true" ]] ; then
         (
         "${_ga_exec_bwrapicewm[@]}"
         exit ) &
@@ -378,6 +389,18 @@ XAUTHORITY="${_gs_path_xauth}"
 
 
 ## mode
+if [[ "${_gs_mode_killflatpak}" == "true" ]] ; then
+        _ga_exec_flatpak_killflatpak=(
+                --die-with-parent
+        )
+fi
+
+if [[ "${_gs_mode_forward}" == "true" ]] ; then
+        _ga_exec_flatpak_forward=(
+                --file-forwarding
+        )
+fi
+
 if [[ "${_gs_mode_test}" == "true" ]] ; then
         _gs_init_exec="bash"
 elif [[ -z "${_gs_init_exec}" ]] ; then
@@ -405,13 +428,18 @@ _ga_exec_flatpak=(
         '/usr/bin/flatpak'
         run
         --socket="x11"
+        --env=XDG_SESSION_TYPE="x11"
         --env=GTK_IM_MODULE="${GTK_IM_MODULE}"
         --env=QT_IM_MODULE="${QT_IM_MODULE}"
         --env=SDL_IM_MODULE="${SDL_IM_MODULE}"
+        "${_ga_exec_flatpak_killflatpak[@]}"
+        "${_ga_exec_flatpak_forward[@]}"
         "${_ga_exec_flatpak_exec[@]}"
         "${_ga_arg1_flatpak[@]}"
         "${_gs_init_name}"
+        "${_ga_arg2_flatpak[@]}"
         "${@}"
+        "${_ga_arg3_flatpak[@]}"
 )
 
 

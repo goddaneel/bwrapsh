@@ -3,4 +3,5 @@ Type=Application
 Name={BWRAPSH} Sparkle
 Icon=sparkle
 Exec="/_and/config/bwrapsh/execute/sparkle"
+StartupWMClass=sparkle
 

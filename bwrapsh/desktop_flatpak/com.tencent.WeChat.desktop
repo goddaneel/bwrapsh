@@ -3,4 +3,6 @@ Type=Application
 Name={BWRAPSH} WeChat
 Icon=com.tencent.WeChat
 Exec="/_and/config/bwrapsh/default/bwrapsh_flatpakx11" "com.tencent.WeChat" _null
+StartupWMClass=WeChat
+X-Flatpak=com.tencent.WeChat
 

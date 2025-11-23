@@ -3,4 +3,6 @@ Type=Application
 Name={BWRAPSH} IntelliJ IDEA Community
 Icon=com.jetbrains.IntelliJ-IDEA-Community
 Exec="/_and/config/bwrapsh/default/bwrapsh_flatpakx11" "com.jetbrains.IntelliJ-IDEA-Community" _null
+StartupWMClass=jetbrains-idea-ce
+X-Flatpak=com.jetbrains.IntelliJ-IDEA-Community
 

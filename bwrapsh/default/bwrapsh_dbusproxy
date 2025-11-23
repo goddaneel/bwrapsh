@@ -2,7 +2,7 @@
 
 
 
-### init
+### default
 ## name
 declare -x "XDG_RUNTIME_DIR"
 declare -i "_gi_loop"
@@ -13,17 +13,18 @@ declare -a "_ga_exec_bwrapsh_userbus"
 declare -a "_ga_exec_bwrapsh_systembus"
 declare -a "_ga_exec_bwrapsh_home"
 declare -a "_ga_exec_bwrapsh_save"
+declare -a "_ga_exec_bwrapsh_killbwrapsh"
 declare -a "_ga_exec_bwrapsh_network"
 
 declare -g "_gs_init_name"
 declare -g "_gs_init_exec"
-declare -g "_gs_mode_profile"
 declare -g "_gs_mode_test"
+declare -g "_gs_mode_network"
+declare -g "_gs_part_profile"
 declare -g "_gs_part_userbus"
 declare -g "_gs_part_systembus"
 declare -g "_gs_part_home"
 declare -g "_gs_part_save"
-declare -g "_gs_part_network"
 declare -g "_gs_dirs_profile"
 declare -g "_gs_path_profile"
 declare -g "_gs_dirs_userbus"
@@ -40,6 +41,7 @@ declare -ga "_ga_arg1_userbus"
 declare -ga "_ga_arg1_systembus"
 declare -ga "_ga_arg1_bwrapsh"
 declare -ga "_ga_arg2_bwrapsh"
+declare -ga "_ga_arg3_bwrapsh"
 
 
 ## function
@@ -101,19 +103,25 @@ if [[ -z "${_gs_init_name}" ]] ; then
 fi
 
 
-## profile
+
+### profile
+## variable
 _gs_dirs_profile="/_and/config/bwrapsh/profile"
 _gs_path_profile="${_gs_dirs_profile}/${_gs_init_name}"
 
-if [[ -z "${_gs_mode_profile}" ]] ; then
-        _gs_mode_profile="true"
+if [[ -z "${_gs_part_profile}" ]] ; then
+        _gs_part_profile="true"
 fi
 
-if [[ "${_gs_mode_profile}" == "true" && -r "${_gs_path_profile}" ]] ; then
+
+## source
+if [[ "${_gs_part_profile}" == "true" && -r "${_gs_path_profile}" ]] ; then
         source "${_gs_path_profile}"
 fi
 
 
+
+### init
 ## load
 '_gf_tool_load' "init"
 
@@ -345,8 +353,18 @@ fi
 '_gf_tool_load' "bwrapsh"
 
 
-## part
-if [[ "${_gs_part_network}" == "true" ]] ; then
+## mode
+if [[ -z "${_gs_mode_killbwrapsh}" ]] ; then
+        _gs_mode_killbwrapsh="true"
+fi
+
+if [[ "${_gs_mode_killbwrapsh}" == "true" ]] ; then
+        _ga_exec_bwrapsh_killbwrapsh=(
+                --die-with-parent
+        )
+fi
+
+if [[ "${_gs_mode_network}" == "true" ]] ; then
         _ga_exec_bwrapsh_network=(
                 --share-net
         )
@@ -356,8 +374,6 @@ else
         )
 fi
 
-
-## mode
 if [[ "${_gs_mode_test}" == "true" ]] ; then
         _gs_init_exec="/bin/bash"
 elif [[ -z "${_gs_init_exec}" ]] ; then
@@ -378,7 +394,6 @@ shift "1"
 _ga_exec_bwrapsh=(
         '/usr/bin/bwrap'
         --unshare-all
-        --die-with-parent
         --proc "/proc"
         --dev "/dev"
         --tmpfs "/var"
@@ -406,6 +421,10 @@ _ga_exec_bwrapsh=(
         --ro-bind "/sys/devices/pci0000:00"{,}
         --ro-bind "${XDG_RUNTIME_DIR}/${WAYLAND_DISPLAY}"{,}
         --setenv "WAYLAND_DISPLAY" "${WAYLAND_DISPLAY}"
+        --setenv "XDG_SESSION_TYPE" "wayland"
+        --unsetenv "GTK_IM_MODULE"
+        --unsetenv "QT_IM_MODULE"
+        --unsetenv "SDL_IM_MODULE"
         --ro-bind-try "${HOME}/.gtkrc-2.0"{,}
         --ro-bind-try "${HOME}/.config/gtkrc"{,}
         --ro-bind-try "${HOME}/.config/gtkrc-2.0"{,}
@@ -424,6 +443,7 @@ _ga_exec_bwrapsh=(
         "${_ga_exec_bwrapsh_systembus[@]}"
         "${_ga_exec_bwrapsh_home[@]}"
         "${_ga_exec_bwrapsh_save[@]}"
+        "${_ga_exec_bwrapsh_killbwrapsh[@]}"
         "${_ga_exec_bwrapsh_network[@]}"
         "${_ga_arg1_bwrapsh[@]}"
         --remount-ro "/"
@@ -431,6 +451,7 @@ _ga_exec_bwrapsh=(
         "${_gs_init_exec}"
         "${_ga_arg2_bwrapsh[@]}"
         "${@}"
+        "${_ga_arg3_bwrapsh[@]}"
 )
 
 
