@@ -27,7 +27,8 @@ declare -fx "_ef_load_init"
 declare -ga "_ga_exec_flclash"
 #       #
 _ga_exec_flclash=(
-        '/_and/config/bwrapsh/default/bwrapsh_dbusproxy'
+        '/usr/bin/bwrapsh'
+        "dbusproxy"
         "${@}"
 )
 

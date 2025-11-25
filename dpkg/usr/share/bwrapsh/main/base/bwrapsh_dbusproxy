@@ -25,7 +25,6 @@ declare -g "_gs_part_userbus"
 declare -g "_gs_part_systembus"
 declare -g "_gs_part_home"
 declare -g "_gs_part_save"
-declare -g "_gs_dirs_profile"
 declare -g "_gs_path_profile"
 declare -g "_gs_dirs_userbus"
 declare -g "_gs_path_userbus"
@@ -37,6 +36,7 @@ declare -g "_gs_dirs_data"
 declare -g "_gs_path_data"
 declare -g "_gs_dirs_file"
 declare -g "_gs_path_file"
+declare -ga "_ga_dirs_profile"
 declare -ga "_ga_arg1_userbus"
 declare -ga "_ga_arg1_systembus"
 declare -ga "_ga_arg1_bwrapsh"
@@ -106,8 +106,16 @@ fi
 
 ### profile
 ## variable
-_gs_dirs_profile="/_and/config/bwrapsh/profile"
-_gs_path_profile="${_gs_dirs_profile}/${_gs_init_name}"
+_ga_dirs_profile=(
+        "/usr/share/bwrapsh/extra/profile"
+        "/usr/local/share/bwrapsh/extra/profile"
+)
+
+for _gs_loop in "${_ga_dirs_profile[@]}" ; do
+        if [[ -r "${_gs_loop}/${_gs_init_name}" ]] ; then
+                _gs_path_profile="${_gs_loop}/${_gs_init_name}"
+        fi
+done
 
 if [[ -z "${_gs_part_profile}" ]] ; then
         _gs_part_profile="true"
@@ -115,7 +123,7 @@ fi
 
 
 ## source
-if [[ "${_gs_part_profile}" == "true" && -r "${_gs_path_profile}" ]] ; then
+if [[ "${_gs_part_profile}" == "true" ]] ; then
         source "${_gs_path_profile}"
 fi
 

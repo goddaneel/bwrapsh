@@ -33,7 +33,8 @@ declare -fx "_ef_load_init"
 declare -ga "_ga_exec_sparkle"
 #       #
 _ga_exec_sparkle=(
-        '/_and/config/bwrapsh/default/bwrapsh_dbusproxy'
+        '/usr/bin/bwrapsh'
+        "dbusproxy"
         "${@}"
 )
 
