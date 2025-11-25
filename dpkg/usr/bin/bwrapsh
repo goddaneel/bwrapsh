@@ -1,1 +1,26 @@
 #!/bin/bash
+
+
+## veriable
+declare -g "_gs_1_opt"="${1}"
+
+shift "1"
+
+
+## option
+case "${_gs_1_opt}" in
+    "help")
+        cat "/usr/share/bwrapsh/main/doc/help"
+    ;;
+    "dbusproxy")
+        source "/usr/share/bwrapsh/main/base/bwrapsh_dbusproxy"
+    ;;
+    "flatpakx11")
+        source "/usr/share/bwrapsh/main/base/bwrapsh_flatpakx11"
+    ;;
+    *)
+        echo -e "\n\033[31mERROR: Unkown option!\033[0m"
+        exit "1"
+    ;;
+esac
+

@@ -102,19 +102,19 @@ function _gf_part_kill ()
         declare -i "_li_exit"="${1:-"${?}"}" ;
         #       #
         if [[ "${_gs_mode_killflatpak}" == "true" ]] ; then
-                '/usr/bin/flatpak' ps | '/usr/bin/grep' --color "${_gs_init_name}"
+                '/usr/bin/flatpak' ps | '/usr/bin/grep' --color "${_gs_init_name}" ;
         else
-                false
+                false ;
         fi
         #       #
         if [[ "${?}" == "0" ]] ; then
-                '/usr/bin/flatpak' kill -v "${_gs_init_name}"
+                '/usr/bin/flatpak' kill -v "${_gs_init_name}" ;
         fi
         #       #
         if [[ "${_gs_mode_x11}" == "auto" ]] ; then
-                '/usr/bin/kill' -15 "${_gi_proc_bwrapicewm}"
-                wait "${!}"
-                '/usr/bin/kill' -15 "${_gi_proc_xwayland}"
+                '/usr/bin/kill' -15 "${_gi_proc_bwrapicewm}" ;
+                wait "${!}" ;
+                '/usr/bin/kill' -15 "${_gi_proc_xwayland}" ;
         fi
         #       #
         exit "${_li_exit}" ;
@@ -383,7 +383,7 @@ _ga_exec_bwrapicewm=(
         --ro-bind "/dev/null" "/usr/share/icewm/menu"
         --ro-bind "/dev/null" "/usr/share/icewm/toolbar"
         --ro-bind "/dev/null" "/usr/share/icewm/preferences"
-        --ro-bind-try "/_and/config/bwrapsh/patches_flatpak/icewm" "${HOME}/.config/icewm"
+        --ro-bind-try "/usr/share/bwrapsh/main/patch/icewm" "${HOME}/.config/icewm"
         "${_ga_exec_bwrapicewm_xauth[@]}"
         "${_ga_arg1_bwrapicewm[@]}"
         --remount-ro "/"
@@ -479,24 +479,8 @@ _ga_exec_flatpak=(
 "${_ga_exec_flatpak[@]}"
 
 
-## kill
-if [[ "${_gs_mode_killflatpak}" == "true" ]] ; then
-        '/usr/bin/flatpak' ps | '/usr/bin/grep' --color "${_gs_init_name}"
-else
-        false
-fi
-
-if [[ "${?}" == "0" ]] ; then
-        '/usr/bin/flatpak' kill -v "${_gs_init_name}"
-fi
-
-
 
 ### over
 ## kill
-if [[ "${_gs_mode_x11}" == "auto" ]] ; then
-        '/usr/bin/kill' -15 "${_gi_proc_bwrapicewm}"
-        wait "${!}"
-        '/usr/bin/kill' -15 "${_gi_proc_xwayland}"
-fi
+'_gf_part_kill'
 

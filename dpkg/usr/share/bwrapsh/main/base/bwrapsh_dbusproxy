@@ -100,8 +100,8 @@ function _gf_part_kill ()
 {
         declare -i "_li_exit"="${1:-"${?}"}" ;
         #       #
-        '/usr/bin/kill' -15 "${_gi_proc_userbus}"
-        '/usr/bin/kill' -15 "${_gi_proc_systembus}"
+        '/usr/bin/kill' -15 "${_gi_proc_userbus}" ;
+        '/usr/bin/kill' -15 "${_gi_proc_systembus}" ;
         #       #
         exit "${_li_exit}" ;
 }
@@ -491,3 +491,4 @@ _ga_exec_bwrapsh=(
 ### over
 ## kill
 '_gf_part_kill'
+
