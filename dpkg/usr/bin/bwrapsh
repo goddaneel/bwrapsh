@@ -7,6 +7,12 @@ declare -g "_gs_1_opt"="${1}"
 shift "1"
 
 
+## init
+if [[ -r "/usr/local/share/bwrapsh/main/init/default" ]] ; then
+    source "/usr/local/share/bwrapsh/main/init/default"
+fi
+
+
 ## option
 case "${_gs_1_opt}" in
     "help")

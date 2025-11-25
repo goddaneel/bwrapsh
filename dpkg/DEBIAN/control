@@ -3,7 +3,7 @@ Section: utils
 Priority: standard
 Version: 0.0.1
 Architecture: any
-Depends: bubblewrap (>= 0.11.0), bash, xwayland (>= 23.1.0), xdg-dbus-proxy
+Depends: bubblewrap (>= 0.11.0), bash, xdg-dbus-proxy, xwayland (>= 23.1.0), icewm
 Maintainer: goddaneel <goddaneel@gmail.com>
 Description: A set simple Bubblewrap startup created using Bash.
 

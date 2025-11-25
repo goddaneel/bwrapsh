@@ -1,0 +1,14 @@
+#!/bin/bash
+
+
+## name
+declare -a "_ga_arg1_test"
+
+
+## variable
+_gs_mode_test="true"
+
+_ga_arg1_bwrapsh=(
+        "${_ga_arg1_test[@]}"
+)
+
