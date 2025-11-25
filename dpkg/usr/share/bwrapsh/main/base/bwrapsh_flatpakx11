@@ -5,6 +5,8 @@
 ### default
 ## name
 declare -x "XDG_RUNTIME_DIR"
+declare -x "XDG_CONFIG_HOME"
+declare -x "XDG_DATA_HOME"
 declare -x "DISPLAY"
 declare -x "XAUTHORITY"
 declare -i "_gi_stat_ss"
@@ -162,6 +164,14 @@ fi
 ## environment
 if [[ -e "${XDG_RUNTIME_DIR}" ]] ; then
         XDG_RUNTIME_DIR="/run/user/$('/usr/bin/id' -u)"
+fi
+
+if [[ -e "${XDG_CONFIG_HOME}" ]] ; then
+        XDG_CONFIG_HOME="${HOME}/.config"
+fi
+
+if [[ -e "${XDG_DATA_HOME}" ]] ; then
+        XDG_DATA_HOME="${HOME}/.local/share"
 fi
 
 

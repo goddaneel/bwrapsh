@@ -5,6 +5,8 @@
 ### default
 ## name
 declare -x "XDG_RUNTIME_DIR"
+declare -x "XDG_CONFIG_HOME"
+declare -x "XDG_DATA_HOME"
 declare -i "_gi_loop"
 declare -a "_ga_exec_userbus"
 declare -a "_ga_exec_systembus"
@@ -148,6 +150,14 @@ fi
 ## environment
 if [[ -e "${XDG_RUNTIME_DIR}" ]] ; then
         XDG_RUNTIME_DIR="/run/user/$('/usr/bin/id' -u)"
+fi
+
+if [[ -e "${XDG_CONFIG_HOME}" ]] ; then
+        XDG_CONFIG_HOME="${HOME}/.config"
+fi
+
+if [[ -e "${XDG_DATA_HOME}" ]] ; then
+        XDG_DATA_HOME="${HOME}/.local/share"
 fi
 
 
@@ -324,7 +334,7 @@ fi
 
 ## variable
 if [[ -z "${_gs_dirs_home}" ]] ; then
-        _gs_dirs_home="/_end/${USER}/_0_data/bwrapsh/home"
+        _gs_dirs_home="${XDG_DATA_HOME}/bwrapsh/home"
 fi
 
 _gs_path_home="${_gs_dirs_home}/${_gs_init_name}"
@@ -355,11 +365,11 @@ fi
 
 ## variable
 if [[ -z "${_gs_dirs_data}" ]] ; then
-        _gs_dirs_data="/_end/${USER}/_0_data/bwrapsh/dirs"
+        _gs_dirs_data="${XDG_DATA_HOME}/bwrapsh/dirs"
 fi
 
 if [[ -z "${_gs_dirs_file}" ]] ; then
-        _gs_dirs_file="/_end/${USER}/_0_file/bwrapsh/dirs"
+        _gs_dirs_data="${XDG_DATA_HOME}/bwrapsh/dirs_file"
 fi
 
 _gs_path_data="${_gs_dirs_data}/${_gs_init_name}"
