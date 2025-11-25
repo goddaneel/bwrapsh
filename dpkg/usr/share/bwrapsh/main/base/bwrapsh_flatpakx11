@@ -30,12 +30,12 @@ declare -g "_gs_part_profile"
 declare -g "_gs_part_xauth"
 declare -g "_gs_part_xwayland"
 declare -g "_gs_part_bwrapicewm"
-declare -g "_gs_dirs_profile"
 declare -g "_gs_path_profile"
 declare -g "_gs_dirs_xauth"
 declare -g "_gs_path_xauth"
 declare -g "_gs_path_x11socket"
 declare -gi "_gi_init_x11"
+declare -ga "_ga_dirs_profile"
 declare -ga "_ga_arg1_xauth"
 declare -ga "_ga_arg1_xwayland"
 declare -ga "_ga_arg1_bwrapicewm"
@@ -107,8 +107,16 @@ fi
 
 ### profile
 ## variable
-_gs_dirs_profile="/_and/config/bwrapsh/profile_flatpak"
-_gs_path_profile="${_gs_dirs_profile}/${_gs_init_name}"
+_ga_dirs_profile=(
+        "/usr/share/bwrapsh/extra/profile"
+        "/usr/local/share/bwrapsh/extra/profile"
+)
+
+for _gs_loop in "${_ga_dirs_profile[@]}" ; do
+        if [[ -r "${_gs_loop}/${_gs_init_name}" ]] ; then
+                _gs_path_profile="${_gs_loop}/${_gs_init_name}"
+        fi
+done
 
 if [[ -z "${_gs_part_profile}" ]] ; then
         _gs_part_profile="true"
@@ -116,7 +124,7 @@ fi
 
 
 ## source
-if [[ "${_gs_part_profile}" == "true" && -r "${_gs_path_profile}" ]] ; then
+if [[ "${_gs_part_profile}" == "true" ]] ; then
         source "${_gs_path_profile}"
 fi
 

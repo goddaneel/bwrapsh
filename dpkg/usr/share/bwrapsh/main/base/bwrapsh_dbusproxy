@@ -96,6 +96,13 @@ function _gf_tool_load ()
 }
 declare -F "_gf_tool_load"
 
+function _gf_part_kill () 
+{
+        declare -i "_li_exit" ;
+        exit "${1}"
+}
+declare -F "_gf_part_kill"
+
 
 ## initialation
 if [[ -z "${_gs_init_name}" ]] ; then
