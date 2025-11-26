@@ -15,8 +15,11 @@ fi
 
 ## option
 case "${_gs_1_opt}" in
+    "version")
+        '/usr/bin/cat' "/usr/share/bwrapsh/main/info/version"
+    ;;
     "help")
-        cat "/usr/share/bwrapsh/main/doc/help"
+        '/usr/bin/cat' "/usr/share/bwrapsh/main/info/help"
     ;;
     "dbusproxy" | "dbus")
         source "/usr/share/bwrapsh/main/base/bwrapsh_dbusproxy"
@@ -26,6 +29,7 @@ case "${_gs_1_opt}" in
     ;;
     *)
         echo -e "\n\033[31mERROR: Unkown option!\033[0m\n"
+        '/usr/bin/cat' "/usr/share/bwrapsh/main/doc/help"
         exit "1"
     ;;
 esac

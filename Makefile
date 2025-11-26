@@ -8,6 +8,11 @@ _gs_build_package := bwrapsh_$(_gs_build_version)_all.deb
 
 ### array
 ## build
+_ga_exec_version += echo
+_ga_exec_version += "$(_gs_build_version)"
+_ga_exec_version += >
+_ga_exec_version += "./dpkg/usr/share/bwrapsh/main/info/version"
+
 _ga_exec_fdfind += cd "./dpkg"
 _ga_exec_fdfind += ;
 _ga_exec_fdfind += '/usr/bin/fdfind'
@@ -57,6 +62,7 @@ _ga_exec_rsync += "./example/"
 ## build
 .PHONY: build-deb
 build-deb:
+	$(_ga_exec_version)
 	$(_ga_exec_fdfind)
 	$(_ga_exec_dpkg)
 	$(_ga_exec_shasum)

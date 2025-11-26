@@ -12,40 +12,8 @@
 
 
 ## 开始
-```shell
-ln -sv "$(realpath -e "./bwrapsh")" "$(realpath -e "/_and/config/")"
-```
-`./bwrapsh` 的绝对路径应该为 `/_and/config/bwrapsh`，项目中多处依赖该绝对路径，未修改时无法使用。  
-
 
 ## 结构
-```
-./bwrapsh
-├── default                     # bwrapsh 核心逻辑脚本目录
-│   ├── bwrapsh_dbusproxy
-│   └── bwrapsh_flatpakx11
-├── desktop                     # Desktop Entry 文件目录
-│   └── {APPLICATION_NAME}.desktop
-├── desktop_flatpak             # Desktop Entry 文件目录（Flatpak）
-│   ├── _flatpak.desktop        # Desktop entry 模板
-│   └── {FLATPAK_ID}.desktop
-├── execute                     # 可执行脚本目录
-│   └── {EXECUTE_NAME}
-├── patches_flatpak             # bwrap 环境补丁
-│   └── icewm                   # 用于 flatpakx11 的 icewm 配置
-│       ├── keys                # 快捷键配置
-│       ├── preferences         # 环境配置
-│       └── toolbar             # 工具栏配置
-├── profile                     # bwrapsh 前置环境
-│   ├── testgr                  # 沙盒测试环境（对当前目录只读）
-│   ├── testgv                  # 沙盒测试环境（对当前目录模拟可写）
-│   ├── testgw                  # 沙盒测试环境（对当前目录可写）
-│   └── testgwg                 # 沙盒测试环境（对当前目录可写，但 .git 目录只读）
-└── profile_flatpak             # bwrapsh 前置环境（Flatpak）
-    ├── _l11                    # flatpakx11 共享 x11 socket
-    └── {FLATPAK_ID} -> ./_l41  # 预设 flatpakx11 配置
-```
-
 
 ## 接口
 以“启动组”即一次程序启动为单位，核心逻辑脚本启动前进行配置，形式为 bash 变量、数组和函数。  
@@ -59,9 +27,9 @@ ln -sv "$(realpath -e "./bwrapsh")" "$(realpath -e "/_and/config/")"
 ### 通用
 |名称|功能|性质|值类型|
 |-|-|-|-|
-|`_gs_mode_profile`|是否导入 profile 目录内配置（如果存在），在 `_ef_load_init` 之前生效|可选|true 或 false|
+|`_gs_part_profile`|是否导入 profile 目录内配置（如果存在），在 `_ef_load_init` 之前生效|可选|true 或 false|
 |`_gs_mode_test`|是否以 shell 形式启动（默认 bash）|可选|true 或 false|
-|`_gs_dirs_profile`|自定义 profile 父目录路径|可选|字符串|
+|`_ga_dirs_profile`|自定义 profile 父目录路径，可指定多个|可选|字符串|
 |`_gs_path_profile`|自定义 profile 配置文件路径|可选|字符串|
 |`_ef_load_init`|配置导入函数，位于命名与工具函数定义与所有命令之间|可选|shell 函数|
 
@@ -77,7 +45,7 @@ ln -sv "$(realpath -e "./bwrapsh")" "$(realpath -e "/_and/config/")"
 |`_gs_part_systembus`|是否启用 system-bus proxy|可选|true 或 false|
 |`_gs_part_home`|是否使用非临时 home 保存持久数据|可选|true 或 false|
 |`_gs_part_save`|是否使用非临时外接保存目录|可选|true 或 false|
-|`_gs_part_network`|是否启用网络连接|可选|true 或 false|
+|`_gs_mode_network`|是否启用网络连接|可选|true 或 false|
 |`_gs_dirs_userbus`|自定义 user-bus socket 父目录路径|可选|字符串|
 |`_gs_path_userbus`|自定义 user-bus socket 配置文件路径|可选|字符串|
 |`_gs_dirs_systembus`|自定义 system-bus socket 父目录路径|可选|字符串|
@@ -91,7 +59,8 @@ ln -sv "$(realpath -e "./bwrapsh")" "$(realpath -e "/_and/config/")"
 |`_ga_arg1_userbus`|user-bus 部分中，xdg-dbus-proxy 命令的额外参数|可选|shell 数组|
 |`_ga_arg1_systembus`|system-bus 部分中，xdg-dbus-proxy 命令的额外参数|可选|shell 数组|
 |`_ga_arg1_bwrapsh`|bwrapsh 部分中，bwrap 命令的额外参数，位于 `_gs_init_exec` 之前|可选|shell 数组|
-|`_ga_arg2_bwrapsh`|bwrapsh 部分中，bwrap 命令的额外参数，位于 `_gs_init_exec` 之前|可选|shell 数组|
+|`_ga_arg2_bwrapsh`|bwrapsh 部分中，bwrap 命令的额外参数，位于 `_gs_init_exec` 之后|可选|shell 数组|
+|`_ga_arg3_bwrapsh`|bwrapsh 部分中，bwrap 命令的额外参数，位于 `"${@}"` 之后|可选|shell 数组|
 |`_ef_load_userbus`|配置导入函数，位于 userbus 部分开始|可选|shell 函数|
 |`_ef_load_systembus`|配置导入函数，位于 systembus 部分开始|可选|shell 函数|
 |`_ef_load_home`|配置导入函数，位于 home 部分开始|可选|shell 函数|
@@ -121,6 +90,8 @@ ln -sv "$(realpath -e "./bwrapsh")" "$(realpath -e "/_and/config/")"
 |`_ga_arg1_bwrapicewm`|bwrap-icewm 部分中，bwrap 命令的额外参数，位于 icewm 命令之前|可选|shell 数组|
 |`_ga_arg2_bwrapicewm`|bwrap-icewm 部分中，bwrap 命令的额外参数，位于 icewm 命令之后|可选|shell 数组|
 |`_ga_arg1_flatpak`|flatpak 部分中，flatpak 命令的额外参数|可选|shell 数组|
+|`_ga_arg2_flatpak`|flatpak 部分中，flatpak 软件的额外参数，位于 `"${@}"` 之前|可选|shell 数组|
+|`_ga_arg3_flatpak`|flatpak 部分中，flatpak 软件的额外参数，位于 `"${@}"` 之后|可选|shell 数组|
 |`_ef_load_xauth`|配置导入函数，位于 xauth 部分开始|可选|shell 函数|
 |`_ef_load_xwayland`|配置导入函数，位于 xwayland 部分开始|可选|shell 函数|
 |`_ef_load_bwrapicewm`|配置导入函数，位于 bwrapicewm 部分开始|可选|shell 函数|

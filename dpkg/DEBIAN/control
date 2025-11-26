@@ -8,7 +8,7 @@ Depends: bubblewrap (>= 0.11.0),
 Recommends: libnotify-bin,
     iproute2,
     xdg-dbus-proxy, 
-    flatpak (>= 1.16.0)
+    flatpak (>= 1.16.0),
     xwayland (>= 23.1.0), 
     icewm
 Maintainer: goddaneel <goddaneel@gmail.com>
