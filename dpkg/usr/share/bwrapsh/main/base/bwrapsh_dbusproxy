@@ -438,7 +438,7 @@ elif [[ -z "${_gs_init_exec}" ]] ; then
 fi
 
 if [[ -z "${_gs_init_exec}" ]] ; then
-        '_gf_part_kill'
+        '_gf_part_kill' "1"
 fi
 
 if [[ "${_gs_init_exec}" == "_null" ]] ; then
