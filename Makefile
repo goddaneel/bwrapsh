@@ -29,6 +29,11 @@ _ga_exec_fdfind += '/usr/bin/shasum'
 _ga_exec_fdfind += -a 256
 _ga_exec_fdfind += >
 _ga_exec_fdfind += "./DEBIAN/shasums"
+_ga_exec_fdfind += ;
+_ga_exec_fdfind += '/usr/bin/chmod'
+_ga_exec_fdfind += -v
+_ga_exec_fdfind += 0644
+_ga_exec_fdfind += "./DEBIAN/shasums"
 
 _ga_exec_dpkg += '/usr/bin/mkdir'
 _ga_exec_dpkg += -v
