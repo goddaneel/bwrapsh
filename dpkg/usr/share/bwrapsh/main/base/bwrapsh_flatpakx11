@@ -29,6 +29,7 @@ declare -g "_gs_mode_x11"
 declare -g "_gs_mode_killflatpak"
 declare -g "_gs_mode_forward"
 declare -g "_gs_part_profile"
+declare -g "_gs_part_profile_user"
 declare -g "_gs_part_xauth"
 declare -g "_gs_part_xwayland"
 declare -g "_gs_part_bwrapicewm"
@@ -38,6 +39,7 @@ declare -g "_gs_path_xauth"
 declare -g "_gs_path_x11socket"
 declare -gi "_gi_init_x11"
 declare -ga "_ga_dirs_profile"
+declare -ga "_ga_dirs_profile_user"
 declare -ga "_ga_arg1_xauth"
 declare -ga "_ga_arg1_xwayland"
 declare -ga "_ga_arg1_bwrapicewm"
@@ -130,37 +132,6 @@ if [[ -z "${_gs_init_name}" ]] ; then
 fi
 
 
-
-### profile
-## variable
-_ga_dirs_profile=(
-        "/usr/share/bwrapsh/extra/profile"
-        "/usr/local/share/bwrapsh/extra/profile"
-)
-
-for _gs_loop in "${_ga_dirs_profile[@]}" ; do
-        if [[ -r "${_gs_loop}/${_gs_init_name}" ]] ; then
-                _gs_path_profile="${_gs_loop}/${_gs_init_name}"
-        fi
-done
-
-if [[ -z "${_gs_part_profile}" ]] ; then
-        _gs_part_profile="true"
-fi
-
-
-## source
-if [[ "${_gs_part_profile}" == "true" ]] ; then
-        source "${_gs_path_profile}"
-fi
-
-
-
-### init
-## load
-'_gf_tool_load' "init"
-
-
 ## environment
 if [[ -e "${XDG_RUNTIME_DIR}" ]] ; then
         XDG_RUNTIME_DIR="/run/user/$('/usr/bin/id' -u)"
@@ -173,6 +144,50 @@ fi
 if [[ -e "${XDG_DATA_HOME}" ]] ; then
         XDG_DATA_HOME="${HOME}/.local/share"
 fi
+
+
+
+### profile
+## variable
+if [[ -z "${_gs_part_profile_user}" ]] ; then
+        _gs_part_profile_user="false"
+fi
+
+if [[ "${_gs_part_profile_user}" == "true" ]] ; then
+        _ga_dirs_profile_user=(
+                "${XDG_CONFIG_HOME}/bwrapsh/extra/flatpak/profile"
+                "${XDG_DATA_HOME}/bwrapsh/extra/flatpak/profile"
+        )
+fi
+
+_ga_dirs_profile=(
+        "${_ga_dirs_profile_user[@]}"
+        "/usr/local/share/bwrapsh/extra/flatpak/profile"
+        "/usr/share/bwrapsh/extra/flatpak/profile"
+)
+
+for _gs_loop in "${_ga_dirs_profile[@]}" ; do
+        if [[ -r "${_gs_loop}/${_gs_init_name}" ]] ; then
+                _gs_path_profile="${_gs_loop}/${_gs_init_name}"
+        fi
+done
+
+
+## source
+if [[ -z "${_gs_part_profile}" ]] ; then
+        _gs_part_profile="true"
+fi
+
+if [[ "${_gs_part_profile}" == "true" ]] ; then
+        source "${_gs_path_profile}"
+fi
+
+
+
+### init
+## load
+'_gf_tool_load' "init"
+
 
 
 ## check

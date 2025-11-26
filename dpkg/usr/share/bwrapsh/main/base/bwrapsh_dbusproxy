@@ -23,6 +23,7 @@ declare -g "_gs_init_exec"
 declare -g "_gs_mode_test"
 declare -g "_gs_mode_network"
 declare -g "_gs_part_profile"
+declare -g "_gs_part_profile_user"
 declare -g "_gs_part_userbus"
 declare -g "_gs_part_systembus"
 declare -g "_gs_part_home"
@@ -39,6 +40,7 @@ declare -g "_gs_path_data"
 declare -g "_gs_dirs_file"
 declare -g "_gs_path_file"
 declare -ga "_ga_dirs_profile"
+declare -ga "_ga_dirs_profile_user"
 declare -ga "_ga_arg1_userbus"
 declare -ga "_ga_arg1_systembus"
 declare -ga "_ga_arg1_bwrapsh"
@@ -116,37 +118,6 @@ if [[ -z "${_gs_init_name}" ]] ; then
 fi
 
 
-
-### profile
-## variable
-_ga_dirs_profile=(
-        "/usr/share/bwrapsh/extra/profile"
-        "/usr/local/share/bwrapsh/extra/profile"
-)
-
-for _gs_loop in "${_ga_dirs_profile[@]}" ; do
-        if [[ -r "${_gs_loop}/${_gs_init_name}" ]] ; then
-                _gs_path_profile="${_gs_loop}/${_gs_init_name}"
-        fi
-done
-
-if [[ -z "${_gs_part_profile}" ]] ; then
-        _gs_part_profile="true"
-fi
-
-
-## source
-if [[ "${_gs_part_profile}" == "true" ]] ; then
-        source "${_gs_path_profile}"
-fi
-
-
-
-### init
-## load
-'_gf_tool_load' "init"
-
-
 ## environment
 if [[ -e "${XDG_RUNTIME_DIR}" ]] ; then
         XDG_RUNTIME_DIR="/run/user/$('/usr/bin/id' -u)"
@@ -159,6 +130,49 @@ fi
 if [[ -e "${XDG_DATA_HOME}" ]] ; then
         XDG_DATA_HOME="${HOME}/.local/share"
 fi
+
+
+
+### profile
+## variable
+if [[ -z "${_gs_part_profile_user}" ]] ; then
+        _gs_part_profile_user="false"
+fi
+
+if [[ "${_gs_part_profile_user}" == "true" ]] ; then
+        _ga_dirs_profile_user=(
+                "${XDG_CONFIG_HOME}/bwrapsh/extra/profile"
+                "${XDG_DATA_HOME}/bwrapsh/extra/profile"
+        )
+fi
+
+_ga_dirs_profile=(
+        "${_ga_dirs_profile_user[@]}"
+        "/usr/local/share/bwrapsh/extra/profile"
+        "/usr/share/bwrapsh/extra/profile"
+)
+
+for _gs_loop in "${_ga_dirs_profile[@]}" ; do
+        if [[ -r "${_gs_loop}/${_gs_init_name}" ]] ; then
+                _gs_path_profile="${_gs_loop}/${_gs_init_name}"
+        fi
+done
+
+
+## source
+if [[ -z "${_gs_part_profile}" ]] ; then
+        _gs_part_profile="true"
+fi
+
+if [[ "${_gs_part_profile}" == "true" ]] ; then
+        source "${_gs_path_profile}"
+fi
+
+
+
+### init
+## load
+'_gf_tool_load' "init"
 
 
 
@@ -334,7 +348,7 @@ fi
 
 ## variable
 if [[ -z "${_gs_dirs_home}" ]] ; then
-        _gs_dirs_home="${XDG_DATA_HOME}/bwrapsh/home"
+        _gs_dirs_home="${XDG_DATA_HOME}/bwrapsh/export/home"
 fi
 
 _gs_path_home="${_gs_dirs_home}/${_gs_init_name}"
@@ -365,11 +379,11 @@ fi
 
 ## variable
 if [[ -z "${_gs_dirs_data}" ]] ; then
-        _gs_dirs_data="${XDG_DATA_HOME}/bwrapsh/dirs"
+        _gs_dirs_data="${XDG_DATA_HOME}/bwrapsh/export/save/data"
 fi
 
 if [[ -z "${_gs_dirs_file}" ]] ; then
-        _gs_dirs_data="${XDG_DATA_HOME}/bwrapsh/dirs_file"
+        _gs_dirs_data="${XDG_DATA_HOME}/bwrapsh/export/save/file"
 fi
 
 _gs_path_data="${_gs_dirs_data}/${_gs_init_name}"

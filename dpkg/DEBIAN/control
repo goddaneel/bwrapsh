@@ -1,9 +1,16 @@
 Package: bwrapsh
-Section: utils
-Priority: standard
-Version: 0.0.1
-Architecture: amd64
-Depends: bubblewrap (>= 0.11.0), bash, xdg-dbus-proxy, xwayland (>= 23.1.0), icewm
+Version: 0.0.2
+Architecture: all
+Depends: bubblewrap (>= 0.11.0), 
+    bash, 
+    coreutils,
+    procps
+Recommends: libnotify-bin,
+    iproute2,
+    xdg-dbus-proxy, 
+    flatpak (>= 1.16.0)
+    xwayland (>= 23.1.0), 
+    icewm
 Maintainer: goddaneel <goddaneel@gmail.com>
 Description: A set simple Bubblewrap startup created using Bash.
 
