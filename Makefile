@@ -12,6 +12,11 @@ _ga_exec_version += echo
 _ga_exec_version += "$(_gs_build_version)"
 _ga_exec_version += >
 _ga_exec_version += "./dpkg/usr/share/bwrapsh/main/info/version"
+_ga_exec_version += ;
+_ga_exec_version += '/usr/bin/chmod'
+_ga_exec_version += -v
+_ga_exec_version += 0644
+_ga_exec_version += "./dpkg/usr/share/bwrapsh/main/info/version"
 
 _ga_exec_fdfind += cd "./dpkg"
 _ga_exec_fdfind += ;
