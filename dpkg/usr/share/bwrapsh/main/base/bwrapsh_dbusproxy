@@ -115,7 +115,11 @@ declare -F "_gf_part_kill"
 
 ## initialation
 if [[ -z "${_gs_init_name}" ]] ; then
-        _gs_init_name="${1:?}" || '_gf_part_kill'
+        _gs_init_name="${1}"
+fi
+
+if [[ -z "${_gs_init_name}" ]] ; then
+        '_gf_part_kill' "1"
 fi
 
 
@@ -430,7 +434,11 @@ fi
 if [[ "${_gs_mode_test}" == "true" ]] ; then
         _gs_init_exec="/bin/bash"
 elif [[ -z "${_gs_init_exec}" ]] ; then
-        _gs_init_exec="${2:?}" || '_gf_part_kill'
+        _gs_init_exec="${2}"
+fi
+
+if [[ -z "${_gs_init_exec}" ]] ; then
+        '_gf_part_kill'
 fi
 
 if [[ "${_gs_init_exec}" == "_null" ]] ; then
