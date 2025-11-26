@@ -58,6 +58,7 @@ function _gf_tool_echo ()
         #       #
         _la_exec_notifysend=(
                 '/usr/bin/notify-send'
+                --app-name="bwrapsh"
                 "${2}"
                 "${3}"
         )

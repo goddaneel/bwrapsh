@@ -29,7 +29,7 @@ case "${_gs_1_opt}" in
     ;;
     *)
         echo -e "\n\033[31mERROR: Unkown option!\033[0m\n"
-        '/usr/bin/cat' "/usr/share/bwrapsh/main/doc/help"
+        '/usr/bin/cat' "/usr/share/bwrapsh/main/info/help"
         exit "1"
     ;;
 esac

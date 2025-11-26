@@ -54,7 +54,7 @@
 环境变量：
     格式
         所有变量均采用 shell 变量，存在数组类型。
-        数组类型需通过 _ef_ 前缀的函数导入，相应函数需配置导出属性（declare -fx）。
+        数组类型需通过 "_ef_" 前缀的函数导入，相应函数需配置导出属性（declare -fx）。
 
     常用
         "_gs_init_name"     启动组名（或 flatpak 的软件名称）
@@ -64,7 +64,7 @@
 
 
 项目源码：
-        <https://github.com:goddaneel/bwrapsh>
+        <https://github.com/goddaneel/bwrapsh>
         <https://codeberg.org/goddaneel/bwrapsh>
 
 
