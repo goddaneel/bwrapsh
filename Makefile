@@ -2,7 +2,7 @@
 ## pack
 _gs_control_version := $(shell '/usr/bin/grep' "Version:" "./dpkg/DEBIAN/control")
 _gs_build_version := $(subst Version: ,,$(_gs_control_version))
-_gs_build_package := bwrapsh-$(_gs_build_version).deb
+_gs_build_package := bwrapsh_$(_gs_build_version)_all.deb
 
 
 
@@ -11,6 +11,7 @@ _gs_build_package := bwrapsh-$(_gs_build_version).deb
 _ga_exec_fdfind += cd "./dpkg"
 _ga_exec_fdfind += ;
 _ga_exec_fdfind += '/usr/bin/fdfind'
+_ga_exec_fdfind += --strip-cwd-prefix
 _ga_exec_fdfind += --type file
 _ga_exec_fdfind += --exclude "DEBIAN"
 _ga_exec_fdfind += --exec
@@ -47,6 +48,8 @@ _ga_exec_rsync += --safe-links
 _ga_exec_rsync += --max-size="100M"
 _ga_exec_rsync += --delete
 _ga_exec_rsync += $(_ga_arg1_rsync)
+_ga_exec_rsync += "/usr/local/share/bwrapsh"
+_ga_exec_rsync += "./example/"
 
 
 
@@ -62,5 +65,5 @@ build-deb:
 ## sync
 .PHONY: sync-local
 sync-local:
-	$(_ga_exec_rsync) "/usr/local/share/bwrapsh" "./example/"
+	$(_ga_exec_rsync)
 

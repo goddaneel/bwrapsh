@@ -18,14 +18,14 @@ case "${_gs_1_opt}" in
     "help")
         cat "/usr/share/bwrapsh/main/doc/help"
     ;;
-    "dbusproxy")
+    "dbusproxy" | "dbus")
         source "/usr/share/bwrapsh/main/base/bwrapsh_dbusproxy"
     ;;
-    "flatpakx11")
+    "flatpakx11" | "x11")
         source "/usr/share/bwrapsh/main/base/bwrapsh_flatpakx11"
     ;;
     *)
-        echo -e "\n\033[31mERROR: Unkown option!\033[0m"
+        echo -e "\n\033[31mERROR: Unkown option!\033[0m\n"
         exit "1"
     ;;
 esac
