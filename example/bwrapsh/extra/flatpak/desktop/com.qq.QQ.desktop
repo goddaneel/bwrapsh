@@ -1,0 +1,8 @@
+[Desktop Entry]
+Type=Application
+Name={BWRAPSH} QQ
+Icon=com.qq.QQ
+Exec='/usr/bin/bwrapsh' flatpakx11 "com.qq.QQ" _null
+StartupWMClass=QQ
+X-Flatpak=com.qq.QQ
+

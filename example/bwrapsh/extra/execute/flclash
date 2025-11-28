@@ -1,0 +1,19 @@
+#!/bin/bash
+
+
+## name
+declare -ga "_ga_exec_flclash"
+
+
+## array
+_ga_exec_flclash=(
+        '/usr/bin/bwrapsh'
+        dbusproxy
+        "flclash"
+        "${@}"
+)
+
+
+## execute
+"${_ga_exec_flclash[@]}"
+

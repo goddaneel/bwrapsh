@@ -1,0 +1,9 @@
+[Desktop Entry]
+Type=Application
+Name={BWRAPSH}
+Icon=
+Exec=/usr/bin/bwrapsh flatpakx11  _null
+StartupWMClass=
+X-Flatpak=
+MimeType=
+

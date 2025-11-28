@@ -1,0 +1,9 @@
+[Desktop Entry]
+Type=Application
+Name={BWRAPSH} WPS 365
+Icon=cn.wps.wps_365
+Exec='/usr/bin/bwrapsh' flatpakx11 "cn.wps.wps_365" _null
+StartupNotify=false
+StartupWMClass=wpsoffice
+X-Flatpak=cn.wps.wps_365
+

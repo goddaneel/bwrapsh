@@ -1,0 +1,19 @@
+#!/bin/bash
+
+
+## name
+declare -ga "_ga_exec_sparkle"
+
+
+## array
+_ga_exec_sparkle=(
+        '/usr/bin/bwrapsh'
+        dbusproxy
+        "sparkle"
+        "${@}"
+)
+
+
+## execute
+"${_ga_exec_sparkle[@]}"
+
