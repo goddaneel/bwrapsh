@@ -108,7 +108,7 @@ done
 
 
 ## source
-if [[ -z "${_gs_part_profile}" ]] ; then
+if [[ -n "${_gs_part_profile}" ]] ; then
         _gs_part_profile="true"
 fi
 
