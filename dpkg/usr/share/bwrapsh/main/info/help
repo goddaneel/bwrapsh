@@ -3,52 +3,55 @@
 
 
 子命令：
-    获取帮助
-        help                显示本帮助文档。
-                            （"/usr/share/bwrapsh/main/info/help"）
+    help
+        显示本帮助文档。
+                （"/usr/share/bwrapsh/main/info/help"）
 
-    获取版本信息
-        version             显示版本信息。
-                            （"/usr/share/bwrapsh/main/info/version"）
+    version
+        显示版本信息。
+                （"/usr/share/bwrapsh/main/info/version"）
 
-    bwrapsh_dbusproxy 命令组
-        dbusproxy, dbus     为 bwrap 基础沙盒添加基于 xdg-dbus-proxy 的 dbus 隔离支持。
-                            若 _gs_init_exec 变量未设置，则下一个参数不能为空。
-                            命令行选项优先级高于变量，使用 "_null" 占位时采用 "/bin/sh"。
-                            （"/usr/share/bwrapsh/main/base/bwrapsh_dbusproxy"）
+    dbusproxy, dbus
+        bwrapsh_dbusproxy 命令组。
+            为 bwrap 基础沙盒添加基于 xdg-dbus-proxy 的 dbus 隔离支持。
+            若 _gs_init_exec 变量未设置，则下一个参数不能为空。
+            命令行选项优先级高于变量，使用 "_null" 占位时采用 "/bin/sh"。
+            （"/usr/share/bwrapsh/main/base/bwrapsh_dbusproxy"）
 
-    bwrapsh_flatpak 命令组
-        flatpakx11, x11     为仅支持 x11 的 flatpak 软件添加基于 Xwayland-rooful 的嵌套窗口隔离。
-                            若 _gs_init_exec 变量未设置，则下一个参数不能为空。
-                            命令行选项优先级高于变量，使用 "_null" 占位时采用 flatpak 默认。
-                            （"/usr/share/bwrapsh/main/base/bwrapsh_flatpakx11"）
+    flatpakx11, x11
+        bwrapsh_flatpak 命令组。
+            为仅支持 x11 的 flatpak 软件添加基于 Xwayland-rooful 的嵌套窗口隔离。
+            若 _gs_init_exec 变量未设置，则下一个参数不能为空。
+            命令行选项优先级高于变量，使用 "_null" 占位时采用 flatpak 默认。
+            （"/usr/share/bwrapsh/main/base/bwrapsh_flatpakx11"）
 
 
 配置文件:
     格式
         本项目所有配置文件均采用 bash 脚本，存在大量不符合 POSIX 规范的拓展语法。
-        配置文件名与命令行执行组名称相同，当存在多个同名配置文件时，只有路径优先级最高的配置会生效。
+        配置文件名与命令行执行组名称相同，存在同名配置文件时只有路径优先级最高的配置会生效。
         所有 bash 脚本均采用 Shebang 而非文件扩展名进行区分，所有开关变量值均为 "true/false"。
 
-    路径（优先级有低到高排列）
+    路径（优先级由低到高排列）
         "/usr/share/bwrapsh/extra/profile"
-                            系统级配置。
-                            预装在软件包中，由系统包管理进行管理。
+            系统级配置。
+                预装在软件包中，由系统包管理进行管理。
         "/usr/local/share/bwrapsh/extra/profile"
-                            系统级配置。
-                            多用户自定义配置，由系统管理员进行管理。
+            系统级配置。
+                多用户自定义配置，由系统管理员进行管理。
         "${XDG_DATA_HOME}/bwrapsh/extra/profile"
-                            用户级配置。
-                            XDG_CONFIG_HOME 变量若未设置则预设为 "${HOME}/.config"。
-                            默认不启用，如需启用应配置变量 "_gs_part_profile" 值为 "true"。
+            用户级配置。
+                XDG_CONFIG_HOME 变量若未设置则预设为 "${HOME}/.config"。
+                默认不启用，如需启用应配置变量 "_gs_part_profile" 值为 "true"。
         "${XDG_CONFIG_HOME}/bwrapsh/extra/profile"
-                            用户级配置。
-                            XDG_DATA_HOME 变量若未设置则预设为 "${HOME}/.local/share"。
-                            默认不启用，如需启用应配置变量 "_gs_part_profile" 值为 "true"。
+            用户级配置。
+                XDG_DATA_HOME 变量若未设置则预设为 "${HOME}/.local/share"。
+                默认不启用，如需启用应配置变量 "_gs_part_profile" 值为 "true"。
 
-    自定义初始化
+    特殊配置
         "/usr/local/share/bwrapsh/main/init/default"
-                            软件启动时首先先检测该配置文件是否存在，若存在则首先读取载入该配置文件。
+            自定义初始化
+                软件启动时首先先检测该配置文件是否存在，若存在则首先读取载入该配置文件。
 
 
 环境变量：
@@ -57,14 +60,18 @@
         数组类型需通过 "_ef_" 前缀的函数导入，相应函数需配置导出属性（declare -fx）。
 
     常用
-        "_gs_init_name"     启动组名（或 flatpak 的软件名称）
-        "_gs_init_exec"     实际执行的命令，"_null" 为特殊占位项，具体用法见前文。
-        "_gs_part_profile"  选择是否启用配置文件载入。
-        "_gs_mode_test"     测试模式，所有 bwrapsh 命令实际执行命令项均预设为 "/bin/bash"。
+        "_gs_init_name"
+            启动组名（或 flatpak 的软件名称）
+        "_gs_init_exec"
+            实际执行的命令，"_null" 为特殊占位项，具体用法见前文。
+        "_gs_part_profile"
+            选择是否启用配置文件载入。
+        "_gs_mode_test"
+            测试模式，所有 bwrapsh 命令实际执行命令项均预设为 "/bin/bash"。
 
 
-项目源码：
-        <https://github.com/goddaneel/bwrapsh>
+项目信息：
+    源码
         <https://codeberg.org/goddaneel/bwrapsh>
-
+        <https://github.com/goddaneel/bwrapsh>
 
