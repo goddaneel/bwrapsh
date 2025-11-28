@@ -10,7 +10,11 @@ Recommends: libnotify-bin,
     xdg-dbus-proxy, 
     flatpak (>= 1.16.0),
     xwayland (>= 23.1.0), 
-    icewm
+    icewm,
+    wl-clipboard,
+    xsel,
+    konsole,
+    dolphin
 Maintainer: goddaneel <goddaneel@gmail.com>
 Description: A set simple Bubblewrap startup created using Bash.
 
