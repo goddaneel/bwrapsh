@@ -2,56 +2,135 @@
 
 
 ## name
+declare -x "XDG_RUNTIME_DIR"
+declare -x "XDG_CONFIG_HOME"
+declare -x "XDG_DATA_HOME"
+
+declare -g "_gs_part_profile"
+declare -g "_gs_part_profile_user"
+declare -ga "_ga_dirs_profile"
+declare -ga "_ga_dirs_profile_user"
+
 declare -g "_gs_1_opt"
+
 
 ## veriable
 _gs_1_opt="${1}"
 
 shift "1"
 
+
 ## function
-function _gf_tool_echo () 
+function _gF_tool_echo () 
 {
         declare -a "_la_exec_notifysend" ;
-        #       #
-        echo -e "\n${4}\033[${1:?}${2:?}: ${3:?}\033[0m" ;
         #       #
         _la_exec_notifysend=(
                 '/usr/bin/notify-send'
                 --app-name="bwrapsh"
+                --urgency="normal"
                 "${2}"
                 "${3}"
         )
         #       #
+        echo -e "\n${4}\033[${1:?}${2:?}: ${3:?}\033[0m" ;
+        #       #
         "${_la_exec_notifysend[@]}" ;
 }
-declare -F "_gf_tool_echo"
+declare -Fr "_gF_tool_echo"
+
+function _gF_tool_stps () 
+{
+        declare "_ls_stps"="${?}:${!}" ;
+        declare -i "_li_stat"="${_ls_stps%%:*}" ;
+        declare -i "_li_ppid"="${_ls_stps##*:}" ;
+        #       #
+        declare -i "_li_proc" ;
+        declare -a "_la_exec_pgrep" ;
+        #       #
+        if [[ "${_li_stat}" != "0" ]] ; then
+                exit "${_li_stat}" ;
+        fi
+        #       #
+        _la_exec_pgrep=(
+                '/usr/bin/pgrep'
+                -P "${_li_ppid}"
+                -x "${2:?}"
+        )
+        #       #
+        _li_proc="$("${_la_exec_pgrep[@]}")" ;
+        #       #
+        declare -gi "_gi_proc_${1:?}"="${_li_proc}" ;
+}
+declare -Fr "_gF_tool_stps"
+
+function _gF_tool_load () 
+{
+        declare -Fr "_ef_load_${1:?}" ;
+        #       #
+        if [[ "${?}" == "0" ]] ; then
+                "_ef_load_${1}" ;
+        fi
+}
+declare -Fr "_gF_tool_load"
+
+function _gF_tool_exit () 
+{
+        declare -li "_li_stat"="${?}" ;
+        declare -li "_li_mode"="${1:-"1"}" ;
+        declare -li "_li_exit"="${2:-"${_li_stat}"}" ;
+        #       #
+        if [[ "${_li_stat}" == "0" && "${_li_mode}" =="0" ]] ; then
+                return "${_li_stat}" ;
+        elif [[ "${_li_stat}" != "0" && "${_li_mode}" == "1" ]] ; then
+                return "${_li_stat}" ;
+        fi
+        #       #
+        declare -F "_gF_part_over" ;
+        #       #
+        if [[ "${?}" == "0" ]] ; then
+                '_gF_part_over' ;
+        fi
+        #       #
+        exit "${_li_exit}" ;
+}
+declare -Fr "_gF_tool_exit"
+
+
+## environment
+if [[ -e "${XDG_CONFIG_HOME}" ]] ; then
+        XDG_CONFIG_HOME="${HOME}/.config"
+fi
+
+if [[ -e "${XDG_DATA_HOME}" ]] ; then
+        XDG_DATA_HOME="${HOME}/.local/share"
+fi
 
 
 ## initialation
 if [[ -r "/usr/local/share/bwrapsh/main/init/default" ]] ; then
-    source "/usr/local/share/bwrapsh/main/init/default"
+        source "/usr/local/share/bwrapsh/main/init/default"
 fi
 
 
 ## option
 case "${_gs_1_opt}" in
-    "version")
-        '/usr/bin/cat' "/usr/share/bwrapsh/main/info/version"
-    ;;
-    "help")
-        '/usr/bin/cat' "/usr/share/bwrapsh/main/info/help"
-    ;;
-    "dbusproxy" | "dbus")
-        source "/usr/share/bwrapsh/main/base/bwrapsh_dbusproxy"
-    ;;
-    "flatpakx11" | "x11")
-        source "/usr/share/bwrapsh/main/base/bwrapsh_flatpakx11"
-    ;;
-    *)
-        echo -e "\n\033[31mERROR: Unkown option!\033[0m\n"
-        '/usr/bin/cat' "/usr/share/bwrapsh/main/info/help"
-        exit "1"
-    ;;
+        "version")
+                '/usr/bin/cat' "/usr/share/bwrapsh/main/info/version"
+                ;;
+        "help")
+                '/usr/bin/cat' "/usr/share/bwrapsh/main/info/help"
+                ;;
+        "dbusproxy" | "dbus")
+                source "/usr/share/bwrapsh/main/base/bwrapsh_dbusproxy"
+                ;;
+        "flatpakx11" | "x11")
+                source "/usr/share/bwrapsh/main/base/bwrapsh_flatpakx11"
+                ;;
+        *)
+                '_gF_tool_echo' "31m" "ERROR" "Unkown option!"
+                '/usr/bin/cat' "/usr/share/bwrapsh/main/info/help"
+                exit "1"
+                ;;
 esac
 

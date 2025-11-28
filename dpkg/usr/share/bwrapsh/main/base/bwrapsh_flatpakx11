@@ -4,9 +4,6 @@
 
 ### default
 ## name
-declare -x "XDG_RUNTIME_DIR"
-declare -x "XDG_CONFIG_HOME"
-declare -x "XDG_DATA_HOME"
 declare -x "DISPLAY"
 declare -x "XAUTHORITY"
 declare -i "_gi_stat_ss"
@@ -28,8 +25,6 @@ declare -g "_gs_mode_test"
 declare -g "_gs_mode_x11"
 declare -g "_gs_mode_killflatpak"
 declare -g "_gs_mode_forward"
-declare -g "_gs_part_profile"
-declare -g "_gs_part_profile_user"
 declare -g "_gs_part_xauth"
 declare -g "_gs_part_xwayland"
 declare -g "_gs_part_bwrapicewm"
@@ -38,8 +33,6 @@ declare -g "_gs_dirs_xauth"
 declare -g "_gs_path_xauth"
 declare -g "_gs_path_x11socket"
 declare -gi "_gi_init_x11"
-declare -ga "_ga_dirs_profile"
-declare -ga "_ga_dirs_profile_user"
 declare -ga "_ga_arg1_xauth"
 declare -ga "_ga_arg1_xwayland"
 declare -ga "_ga_arg1_bwrapicewm"
@@ -50,62 +43,8 @@ declare -ga "_ga_arg3_flatpak"
 
 
 ## function
-function _gf_tool_echo () 
+function _gF_part_over () 
 {
-        declare -a "_la_exec_notifysend" ;
-        #       #
-        echo -e "\n${4}\033[${1:?}${2:?}: ${3:?}\033[0m" ;
-        #       #
-        _la_exec_notifysend=(
-                '/usr/bin/notify-send'
-                --app-name="bwrapsh"
-                "${2}"
-                "${3}"
-        )
-        #       #
-        "${_la_exec_notifysend[@]}" ;
-}
-declare -F "_gf_tool_echo"
-
-function _gf_tool_stps () 
-{
-        declare "_ls_stps"="${?}:${!}" ;
-        declare -i "_li_stat"="${_ls_stps%%:*}" ;
-        declare -i "_li_ppid"="${_ls_stps##*:}" ;
-        #       #
-        declare -i "_li_proc" ;
-        declare -a "_la_exec_pgrep" ;
-        #       #
-        if [[ "${_li_stat}" != "0" ]] ; then
-                exit "${_li_stat}" ;
-        fi
-        #       #
-        _la_exec_pgrep=(
-                '/usr/bin/pgrep'
-                -P "${_li_ppid}"
-                -x "${2:?}"
-        )
-        #       #
-        _li_proc="$("${_la_exec_pgrep[@]}")" ;
-        #       #
-        declare -gi "_gi_proc_${1:?}"="${_li_proc}" ;
-}
-declare -F "_gf_tool_stps"
-
-function _gf_tool_load () 
-{
-        declare -F "_ef_load_${1:?}" ;
-        #       #
-        if [[ "${?}" == "0" ]] ; then
-                "_ef_load_${1}" ;
-        fi
-}
-declare -F "_gf_tool_load"
-
-function _gf_part_kill () 
-{
-        declare -i "_li_exit"="${1:-"${?}"}" ;
-        #       #
         if [[ "${_gs_mode_killflatpak}" == "true" ]] ; then
                 '/usr/bin/flatpak' ps | '/usr/bin/grep' --color "${_gs_init_name}" ;
         else
@@ -121,10 +60,8 @@ function _gf_part_kill ()
                 wait "${!}" ;
                 '/usr/bin/kill' -15 "${_gi_proc_xwayland}" ;
         fi
-        #       #
-        exit "${_li_exit}" ;
 }
-declare -F "_gf_part_kill"
+declare -F "_gF_part_over"
 
 
 ## initialation
@@ -133,21 +70,13 @@ if [[ -z "${_gs_init_name}" ]] ; then
 fi
 
 if [[ -z "${_gs_init_name}" ]] ; then
-        '_gf_part_kill' "1"
+        '_gF_tool_exit' "0" "1"
 fi
 
 
 ## environment
 if [[ -e "${XDG_RUNTIME_DIR}" ]] ; then
         XDG_RUNTIME_DIR="/run/user/$('/usr/bin/id' -u)"
-fi
-
-if [[ -e "${XDG_CONFIG_HOME}" ]] ; then
-        XDG_CONFIG_HOME="${HOME}/.config"
-fi
-
-if [[ -e "${XDG_DATA_HOME}" ]] ; then
-        XDG_DATA_HOME="${HOME}/.local/share"
 fi
 
 
@@ -191,12 +120,13 @@ fi
 
 ### init
 ## load
-'_gf_tool_load' "init"
+'_gF_tool_load' "init"
 
 
 
 ## check
-'/usr/bin/flatpak' info -M "${_gs_init_name}" 1>"/dev/null" || '_gf_part_kill'
+'/usr/bin/flatpak' info -M "${_gs_init_name}" 1>"/dev/null"
+'_gF_tool_exit' "1"
 
 
 
@@ -219,10 +149,10 @@ while true ; do
         _gi_stat_ss="${?}"
         #       #
         if [[ "${_gi_init_x11}" -lt "1" || "${_gi_init_x11}" -gt "60000" ]] ; then
-                '_gf_tool_echo' "31m" "ERROR" "Display is unavailable."
+                '_gF_tool_echo' "31m" "ERROR" "Display is unavailable."
                 exit "1"
         elif [[ "${_gs_mode_x11}" == "major" && "${_gi_stat_ss}" == "0" ]] ; then
-                '_gf_tool_echo' "31m" "ERROR" "Display is unavailable."
+                '_gF_tool_echo' "31m" "ERROR" "Display is unavailable."
                 exit "1"
         elif [[ "${_gs_mode_x11}" == "minor" && "${_gi_stat_ss}" != "0" ]] ; then
                 _gs_mode_x11="major"
@@ -251,7 +181,7 @@ fi
 
 ### xauth
 ## load
-'_gf_tool_load' "xauth"
+'_gF_tool_load' "xauth"
 
 
 ## part
@@ -288,16 +218,18 @@ if [[ "${_gs_part_xauth}" == "true" ]] ; then
                 --setenv "XAUTHORITY" "${XDG_RUNTIME_DIR}/xauth"
         )
         #       #
-        '/usr/bin/mkdir' -pv "${_gs_dirs_xauth}" || '_gf_part_kill'
+        '/usr/bin/mkdir' -pv "${_gs_dirs_xauth}"
+        '_gF_tool_exit' "1"
         #       #
-        "${_ga_exec_xauth[@]}" || '_gf_part_kill'
+        "${_ga_exec_xauth[@]}"
+        '_gF_tool_exit' "1"
 fi
 
 
 
 ### xwayland
 ## load
-'_gf_tool_load' "xwayland"
+'_gF_tool_load' "xwayland"
 
 
 ## part
@@ -331,7 +263,7 @@ fi
 
 
 ## watch
-'_gf_tool_stps' "xwayland" "Xwayland"
+'_gF_tool_stps' "xwayland" "Xwayland"
 
 
 ## wait
@@ -343,7 +275,7 @@ for _gi_loop in {1..100} ; do
         elif [[ "${_gi_loop}" -lt "10" ]] ; then
                 '/usr/bin/sleep' "0.5s"
         else
-                exit "1"
+                '_gF_tool_exit' "0" "1"
         fi
 done
 
@@ -351,7 +283,7 @@ done
 
 ### bwrapshicewm
 ## load
-'_gf_tool_load' "bwrapicewm"
+'_gF_tool_load' "bwrapicewm"
 
 
 ## part
@@ -436,13 +368,13 @@ fi
 
 
 ## watch
-'_gf_tool_stps' "bwrapicewm" "bwrap"
+'_gF_tool_stps' "bwrapicewm" "bwrap"
 
 
 
 ### flatpak
 ## load
-'_gf_tool_load' "flatpak"
+'_gF_tool_load' "flatpak"
 
 
 ## variable
@@ -470,7 +402,7 @@ elif [[ -z "${_gs_init_exec}" ]] ; then
 fi
 
 if [[ -z "${_gs_init_exec}" ]] ; then
-        '_gf_part_kill' "1"
+        '_gF_tool_exit' "0" "1"
 fi
 
 if [[ "${_gs_init_exec}" == "_null" ]] ; then
@@ -516,5 +448,5 @@ _ga_exec_flatpak=(
 
 ### over
 ## kill
-'_gf_part_kill'
+'_gF_part_over'
 

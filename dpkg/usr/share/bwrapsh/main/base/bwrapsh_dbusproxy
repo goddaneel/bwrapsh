@@ -4,9 +4,6 @@
 
 ### default
 ## name
-declare -x "XDG_RUNTIME_DIR"
-declare -x "XDG_CONFIG_HOME"
-declare -x "XDG_DATA_HOME"
 declare -i "_gi_loop"
 declare -a "_ga_exec_userbus"
 declare -a "_ga_exec_systembus"
@@ -22,8 +19,6 @@ declare -g "_gs_init_name"
 declare -g "_gs_init_exec"
 declare -g "_gs_mode_test"
 declare -g "_gs_mode_network"
-declare -g "_gs_part_profile"
-declare -g "_gs_part_profile_user"
 declare -g "_gs_part_userbus"
 declare -g "_gs_part_systembus"
 declare -g "_gs_part_home"
@@ -39,8 +34,6 @@ declare -g "_gs_dirs_data"
 declare -g "_gs_path_data"
 declare -g "_gs_dirs_file"
 declare -g "_gs_path_file"
-declare -ga "_ga_dirs_profile"
-declare -ga "_ga_dirs_profile_user"
 declare -ga "_ga_arg1_userbus"
 declare -ga "_ga_arg1_systembus"
 declare -ga "_ga_arg1_bwrapsh"
@@ -49,68 +42,12 @@ declare -ga "_ga_arg3_bwrapsh"
 
 
 ## function
-function _gf_tool_echo () 
+function _gF_part_over () 
 {
-        declare -a "_la_exec_notifysend" ;
-        #       #
-        echo -e "\n${4}\033[${1:?}${2:?}: ${3:?}\033[0m" ;
-        #       #
-        _la_exec_notifysend=(
-                '/usr/bin/notify-send'
-                --app-name="bwrapsh"
-                "${2}"
-                "${3}"
-        )
-        #       #
-        "${_la_exec_notifysend[@]}" ;
-}
-declare -F "_gf_tool_echo"
-
-function _gf_tool_stps () 
-{
-        declare "_ls_stps"="${?}:${!}" ;
-        declare -i "_li_stat"="${_ls_stps%%:*}" ;
-        declare -i "_li_ppid"="${_ls_stps##*:}" ;
-        #       #
-        declare -i "_li_proc" ;
-        declare -a "_la_exec_pgrep" ;
-        #       #
-        if [[ "${_li_stat}" != "0" ]] ; then
-                exit "${_li_stat}" ;
-        fi
-        #       #
-        _la_exec_pgrep=(
-                '/usr/bin/pgrep'
-                -P "${_li_ppid}"
-                -x "${2:?}"
-        )
-        #       #
-        _li_proc="$("${_la_exec_pgrep[@]}")" ;
-        #       #
-        declare -gi "_gi_proc_${1:?}"="${_li_proc}" ;
-}
-declare -F "_gf_tool_stps"
-
-function _gf_tool_load () 
-{
-        declare -F "_ef_load_${1:?}" ;
-        #       #
-        if [[ "${?}" == "0" ]] ; then
-                "_ef_load_${1}" ;
-        fi
-}
-declare -F "_gf_tool_load"
-
-function _gf_part_kill () 
-{
-        declare -i "_li_exit"="${1:-"${?}"}" ;
-        #       #
         '/usr/bin/kill' -15 "${_gi_proc_userbus}" ;
         '/usr/bin/kill' -15 "${_gi_proc_systembus}" ;
-        #       #
-        exit "${_li_exit}" ;
 }
-declare -F "_gf_part_kill"
+declare -F "_gF_part_over"
 
 
 ## initialation
@@ -119,21 +56,13 @@ if [[ -z "${_gs_init_name}" ]] ; then
 fi
 
 if [[ -z "${_gs_init_name}" ]] ; then
-        '_gf_part_kill' "1"
+        '_gF_tool_exit' "0" "1"
 fi
 
 
 ## environment
 if [[ -e "${XDG_RUNTIME_DIR}" ]] ; then
         XDG_RUNTIME_DIR="/run/user/$('/usr/bin/id' -u)"
-fi
-
-if [[ -e "${XDG_CONFIG_HOME}" ]] ; then
-        XDG_CONFIG_HOME="${HOME}/.config"
-fi
-
-if [[ -e "${XDG_DATA_HOME}" ]] ; then
-        XDG_DATA_HOME="${HOME}/.local/share"
 fi
 
 
@@ -177,13 +106,13 @@ fi
 
 ### init
 ## load
-'_gf_tool_load' "init"
+'_gF_tool_load' "init"
 
 
 
 ### userbus
 ## load
-'_gf_tool_load' "userbus"
+'_gF_tool_load' "userbus"
 
 
 ## part
@@ -205,8 +134,8 @@ else
 fi
 
 if [[ "${?}" == "0" ]] ; then
-        '_gf_tool_echo' "33m" "WARNING" "The program is running."
-        exit "1"
+        '_gF_tool_echo' "33m" "WARNING" "The program is running."
+        '_gF_tool_exit' "0" "1"
 fi
 
 
@@ -229,7 +158,8 @@ if [[ "${_gs_part_userbus}" == "true" ]] ; then
                 --setenv "DBUS_SESSION_BUS_ADDRESS" "unix:path=${XDG_RUNTIME_DIR}/bus"
         )
         #       #
-        '/usr/bin/mkdir' -pv "${_gs_dirs_userbus}" || '_gf_part_kill'
+        '/usr/bin/mkdir' -pv "${_gs_dirs_userbus}"
+        '_gF_tool_exit' "1"
         #       #
         (
         "${_ga_exec_userbus[@]}"
@@ -240,7 +170,7 @@ fi
 
 
 ## watch
-'_gf_tool_stps' "userbus" "xdg-dbus-proxy"
+'_gF_tool_stps' "userbus" "xdg-dbus-proxy"
 
 
 ## wait
@@ -256,7 +186,7 @@ for _gi_loop in {1..100} ; do
         elif [[ "${_gi_loop}" -lt "10" ]] ; then
                 '/usr/bin/sleep' "0.5s"
         else
-                exit "1"
+                '_gF_tool_exit' "0" "1"
         fi
 done
 
@@ -264,7 +194,7 @@ done
 
 ### systembus
 ## load
-'_gf_tool_load' "systembus"
+'_gF_tool_load' "systembus"
 
 
 ## part
@@ -286,8 +216,8 @@ else
 fi
 
 if [[ "${?}" == "0" ]] ; then
-        '_gf_tool_echo' "33m" "WARNING" "The program is running."
-        exit "1"
+        '_gF_tool_echo' "33m" "WARNING" "The program is running."
+        '_gF_tool_exit' "0" "1"
 fi
 
 
@@ -307,7 +237,8 @@ if [[ "${_gs_part_systembus}" == "true" ]] ; then
                 --ro-bind "${_gs_path_systembus}" "/run/dbus/system_bus_socket"
         )
         #       #
-        '/usr/bin/mkdir' -pv "${_gs_dirs_systembus}" || '_gf_part_kill'
+        '/usr/bin/mkdir' -pv "${_gs_dirs_systembus}"
+        '_gF_tool_exit' "1"
         #       #
         (
         "${_ga_exec_systembus[@]}"
@@ -318,7 +249,7 @@ fi
 
 
 ## watch
-'_gf_tool_stps' "systembus" "xdg-dbus-proxy"
+'_gF_tool_stps' "systembus" "xdg-dbus-proxy"
 
 
 ## wait
@@ -334,7 +265,7 @@ for _gi_loop in {1..100} ; do
         elif [[ "${_gi_loop}" -lt "10" ]] ; then
                 '/usr/bin/sleep' "0.5s"
         else
-                exit "1"
+                '_gF_tool_exit' "0" "1"
         fi
 done
 
@@ -342,7 +273,7 @@ done
 
 ### home
 ## load
-'_gf_tool_load' "home"
+'_gF_tool_load' "home"
 
 
 ## part
@@ -373,7 +304,7 @@ fi
 
 ### save
 ## load
-'_gf_tool_load' "save"
+'_gF_tool_load' "save"
 
 
 ## part
@@ -407,7 +338,7 @@ fi
 
 ### bwrap
 ## load
-'_gf_tool_load' "bwrapsh"
+'_gF_tool_load' "bwrapsh"
 
 
 ## mode
@@ -438,7 +369,7 @@ elif [[ -z "${_gs_init_exec}" ]] ; then
 fi
 
 if [[ -z "${_gs_init_exec}" ]] ; then
-        '_gf_part_kill' "1"
+        '_gF_tool_exit' "0" "1"
 fi
 
 if [[ "${_gs_init_exec}" == "_null" ]] ; then
@@ -523,5 +454,5 @@ _ga_exec_bwrapsh=(
 
 ### over
 ## kill
-'_gf_part_kill'
+'_gF_part_over'
 
