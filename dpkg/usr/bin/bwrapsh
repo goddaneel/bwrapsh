@@ -1,13 +1,34 @@
 #!/bin/bash
 
 
+## name
+declare -g "_gs_1_opt"
+
 ## veriable
-declare -g "_gs_1_opt"="${1}"
+_gs_1_opt="${1}"
 
 shift "1"
 
+## function
+function _gf_tool_echo () 
+{
+        declare -a "_la_exec_notifysend" ;
+        #       #
+        echo -e "\n${4}\033[${1:?}${2:?}: ${3:?}\033[0m" ;
+        #       #
+        _la_exec_notifysend=(
+                '/usr/bin/notify-send'
+                --app-name="bwrapsh"
+                "${2}"
+                "${3}"
+        )
+        #       #
+        "${_la_exec_notifysend[@]}" ;
+}
+declare -F "_gf_tool_echo"
 
-## init
+
+## initialation
 if [[ -r "/usr/local/share/bwrapsh/main/init/default" ]] ; then
     source "/usr/local/share/bwrapsh/main/init/default"
 fi
