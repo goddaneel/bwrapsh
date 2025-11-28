@@ -81,7 +81,9 @@ function _gF_tool_exit ()
         declare -li "_li_exit"="${2:-"${_li_stat}"}" ;
         #       #
         if [[ "${_li_stat}" == "0" && "${_li_mode}" == "0" ]] ; then
+                true ;
         elif [[ "${_li_stat}" != "0" && "${_li_mode}" == "1" ]] ; then
+                false ;
         else
                 return "${_li_stat}" ;
         fi
