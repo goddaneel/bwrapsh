@@ -103,15 +103,12 @@ _ga_dirs_profile=(
 for _gs_loop in "${_ga_dirs_profile[@]}" ; do
         if [[ -r "${_gs_loop}/${_gs_init_name}" ]] ; then
                 _gs_path_profile="${_gs_loop}/${_gs_init_name}"
+                _gs_part_profile="${_gs_part_profile:-"true"}"
         fi
 done
 
 
 ## source
-if [[ -n "${_gs_part_profile}" ]] ; then
-        _gs_part_profile="true"
-fi
-
 if [[ "${_gs_part_profile}" == "true" ]] ; then
         source "${_gs_path_profile}"
 fi
