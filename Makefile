@@ -75,6 +75,12 @@ _ga_exec_rsync += "./example/"
 
 
 ### target
+## clean
+.PHONY: clean-all
+clean-all:
+	$(_ga_exec_clean)
+
+
 ## build
 .PHONY: build-deb
 build-deb:
