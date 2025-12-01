@@ -63,6 +63,7 @@ _ga_exec_shasum += "$(_gs_build_package).shasum"
 ## sync
 _ga_exec_rsync += '/usr/bin/rsync'
 _ga_exec_rsync += --info=progress2
+_ga_exec_rsync += -R
 _ga_exec_rsync += -av
 _ga_exec_rsync += -m
 _ga_exec_rsync += --safe-links
