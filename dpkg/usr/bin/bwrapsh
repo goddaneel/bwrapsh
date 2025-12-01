@@ -29,6 +29,7 @@ function _gF_tool_echo ()
                 '/usr/bin/notify-send'
                 --app-name="bwrapsh"
                 --urgency="normal"
+                --
                 "${2}"
                 "${3}"
         )
