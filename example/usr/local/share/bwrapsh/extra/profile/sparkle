@@ -6,12 +6,12 @@ _gs_init_exec="/usr/bin/sparkle"
 _gs_mode_network="true"
 _gs_part_home="true"
 _gs_part_save="true"
-#       #
+
 _ga_arg1_bwrapsh=(
         --ro-bind "/opt/sparkle"{,}
         --setenv "ELECTRON_OZONE_PLATFORM_HINT" "auto"
 )
-#       #
+
 _ga_arg3_bwrapsh=(
         --enable-wayland-ime
         --enable-features=WebRTCPipeWireCapturer

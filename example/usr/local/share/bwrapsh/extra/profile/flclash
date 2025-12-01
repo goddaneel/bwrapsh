@@ -6,7 +6,7 @@ _gs_init_exec="/usr/bin/FlClash"
 _gs_mode_network="true"
 _gs_part_home="true"
 _gs_part_save="true"
-#       #
+
 _ga_arg1_userbus=(
         --own="com.follow.clash"
 )
