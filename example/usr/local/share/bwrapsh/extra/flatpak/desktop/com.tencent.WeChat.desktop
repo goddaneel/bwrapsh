@@ -2,7 +2,7 @@
 Type=Application
 Name={BWRAPSH} WeChat
 Icon=com.tencent.WeChat
-Exec='/usr/bin/bwrapsk' flatpakx11 "com.tencent.WeChat" _null
+Exec='/usr/bin/bwrapsh' flatpakx11 "com.tencent.WeChat" _null
 StartupWMClass=WeChat
 X-Flatpak=com.tencent.WeChat
 
