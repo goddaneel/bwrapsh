@@ -1,8 +1,0 @@
-[Desktop Entry]
-Type=Application
-Name={BWRAPSH} Discord
-Icon=com.discordapp.Discord
-Exec='/usr/bin/bwrapsh' flatpakx11 "com.discordapp.Discord" _null
-StartupWMClass=discord
-X-Flatpak=com.discordapp.Discord
-

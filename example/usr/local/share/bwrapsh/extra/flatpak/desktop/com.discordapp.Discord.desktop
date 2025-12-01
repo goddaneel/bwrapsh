@@ -2,7 +2,7 @@
 Type=Application
 Name={BWRAPSH} Discord
 Icon=com.discordapp.Discord
-Exec="/_and/config/bwrapsh/default/bwrapsh_flatpakx11" "com.discordapp.Discord" _null
+Exec='/usr/bin/bwrapsh' flatpakx11 "com.discordapp.Discord" _null
 StartupWMClass=discord
 X-Flatpak=com.discordapp.Discord
 

@@ -2,7 +2,7 @@
 Type=Application
 Name={BWRAPSH} WPS 365
 Icon=cn.wps.wps_365
-Exec="/_and/config/bwrapsh/default/bwrapsh_flatpakx11" "cn.wps.wps_365" _null
+Exec='/usr/bin/bwrapsh' flatpakx11 "cn.wps.wps_365" _null
 StartupNotify=false
 StartupWMClass=wpsoffice
 X-Flatpak=cn.wps.wps_365

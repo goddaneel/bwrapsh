@@ -2,5 +2,5 @@
 Type=Application
 Name={BWRAPSH} FlClash
 Icon=FlClash
-Exec="/_and/config/bwrapsh/execute/flclash"
+Exec="/usr/local/share/bwrapsh/extra/execute/flclash"
 

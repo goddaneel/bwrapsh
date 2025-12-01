@@ -2,7 +2,7 @@
 Type=Application
 Name={BWRAPSH} Bottles
 Icon=com.usebottles.bottles
-Exec="/_and/config/bwrapsh/default/bwrapsh_flatpakx11" "com.usebottles.bottles" _null
+Exec='/usr/bin/bwrapsh' flatpakx11 "com.usebottles.bottles" _null
 StartupWMClass=bottles
 X-Flatpak=com.usebottles.bottles
 

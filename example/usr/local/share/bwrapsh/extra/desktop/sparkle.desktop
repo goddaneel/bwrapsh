@@ -2,6 +2,6 @@
 Type=Application
 Name={BWRAPSH} Sparkle
 Icon=sparkle
-Exec="/_and/config/bwrapsh/execute/sparkle"
+Exec="/usr/local/share/bwrapsh/extra/execute/sparkle"
 StartupWMClass=sparkle
 

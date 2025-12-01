@@ -1,8 +1,0 @@
-[Desktop Entry]
-Type=Application
-Name={BWRAPSH} Heroic Games Launcher
-Icon=com.heroicgameslauncher.hgl
-Exec='/usr/bin/bwrapsh' flatpakx11 "com.heroicgameslauncher.hgl" _null
-StartupWMClass=heroic
-X-Flatpak=com.heroicgameslauncher.hgl
-

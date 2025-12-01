@@ -1,34 +1,15 @@
 #!/bin/bash
 
 
-## variable
-declare -x "_gs_init_name"
-#       #
-_gs_init_name="flclash"
-
-
-## function
-function _ef_load_init () 
-{
-        ## variable
-        _gs_init_exec="/usr/bin/FlClash" ;
-        _gs_mode_network="true" ;
-        _gs_part_home="true" ;
-        _gs_part_save="true" ;
-        #       #
-        _ga_arg1_userbus=(
-                --own="com.follow.clash"
-        )
-}
-declare -fx "_ef_load_init"
+## name
+declare -ga "_ga_exec_flclash"
 
 
 ## array
-declare -ga "_ga_exec_flclash"
-#       #
 _ga_exec_flclash=(
         '/usr/bin/bwrapsh'
-        "dbusproxy"
+        dbusproxy
+        "flclash"
         "${@}"
 )
 

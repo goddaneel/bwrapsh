@@ -1,40 +1,15 @@
 #!/bin/bash
 
 
-## variable
-declare -x "_gs_init_name"
-#       #
-_gs_init_name="sparkle"
-
-
-## function
-function _ef_load_init () 
-{
-        ## variable
-        _gs_init_exec="/usr/bin/sparkle" ;
-        _gs_mode_network="true" ;
-        _gs_part_home="true" ;
-        _gs_part_save="true" ;
-        #       #
-        _ga_arg1_bwrapsh=(
-                --ro-bind "/opt/sparkle"{,}
-                --setenv "ELECTRON_OZONE_PLATFORM_HINT" "auto"
-        )
-        #       #
-        _ga_arg3_bwrapsh=(
-                --enable-wayland-ime
-                --enable-features=WebRTCPipeWireCapturer
-        )
-}
-declare -fx "_ef_load_init"
+## name
+declare -ga "_ga_exec_sparkle"
 
 
 ## array
-declare -ga "_ga_exec_sparkle"
-#       #
 _ga_exec_sparkle=(
         '/usr/bin/bwrapsh'
-        "dbusproxy"
+        dbusproxy
+        "sparkle"
         "${@}"
 )
 

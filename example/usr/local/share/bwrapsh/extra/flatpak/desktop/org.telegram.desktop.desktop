@@ -2,7 +2,7 @@
 Type=Application
 Name={BWRAPSH} Telegram
 Icon=org.telegram.desktop
-Exec="/_and/config/bwrapsh/default/bwrapsh_flatpakx11" "org.telegram.desktop" _null
+Exec='/usr/bin/bwrapsh' flatpakx11 "org.telegram.desktop" _null
 StartupWMClass=TelegramDesktop
 X-Flatpak=org.telegram.desktop
 

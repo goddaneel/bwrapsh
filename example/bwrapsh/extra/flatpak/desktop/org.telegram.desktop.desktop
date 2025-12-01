@@ -1,8 +1,0 @@
-[Desktop Entry]
-Type=Application
-Name={BWRAPSH} Telegram
-Icon=org.telegram.desktop
-Exec='/usr/bin/bwrapsh' flatpakx11 "org.telegram.desktop" _null
-StartupWMClass=TelegramDesktop
-X-Flatpak=org.telegram.desktop
-

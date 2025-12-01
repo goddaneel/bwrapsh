@@ -1,8 +1,0 @@
-[Desktop Entry]
-Type=Application
-Name={BWRAPSH} WeChat
-Icon=com.tencent.WeChat
-Exec='/usr/bin/bwrapsk' flatpakx11 "com.tencent.WeChat" _null
-StartupWMClass=WeChat
-X-Flatpak=com.tencent.WeChat
-

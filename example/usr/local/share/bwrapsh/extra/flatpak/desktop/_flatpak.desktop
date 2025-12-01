@@ -2,7 +2,7 @@
 Type=Application
 Name={BWRAPSH}
 Icon=
-Exec="/_and/config/bwrapsh/default/bwrapsh_flatpakx11"  _null
+Exec=/usr/bin/bwrapsh flatpakx11  _null
 StartupWMClass=
 X-Flatpak=
 MimeType=

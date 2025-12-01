@@ -1,0 +1,8 @@
+#!/bin/bash
+
+
+## variable
+_gs_dirs_home="/_end/${USER}/_0_data/bwrapsh/home"
+_gs_dirs_data="/_end/${USER}/_0_data/bwrapsh/dirs"
+_gs_dirs_file="/_end/${USER}/_0_data/bwrapsh/dirs"
+
