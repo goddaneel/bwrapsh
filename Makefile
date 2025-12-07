@@ -1,6 +1,6 @@
 ### argument
 ## pack
-_gs_control_version := $(shell '/usr/bin/grep' "Version:" "dpkg/DEBIAN/control")
+_gs_control_version := $(shell '/usr/bin/grep' "Version:" "./dpkg/DEBIAN/control")
 _gs_build_version := $(subst Version: ,,$(_gs_control_version))
 _gs_build_package := bwrapsh_$(_gs_build_version)_all.deb
 
@@ -17,19 +17,19 @@ _ga_exec_clean += -fxd
 _ga_exec_version += echo
 _ga_exec_version += "$(_gs_build_version)"
 _ga_exec_version += >
-_ga_exec_version += "dpkg/usr/share/bwrapsh/main/info/version"
+_ga_exec_version += "./dpkg/usr/share/bwrapsh/main/info/version"
 
-_ga_exec_fdfind += cd "dpkg"
+_ga_exec_fdfind += cd "./dpkg"
 _ga_exec_fdfind += &&
 _ga_exec_fdfind += '/usr/bin/fdfind'
 _ga_exec_fdfind += --strip-cwd-prefix
 _ga_exec_fdfind += --type file
-_ga_exec_fdfind += --exclude "DEBIAN"
+_ga_exec_fdfind += --exclude "./DEBIAN"
 _ga_exec_fdfind += --exec
 _ga_exec_fdfind += '/usr/bin/shasum'
 _ga_exec_fdfind += -a 256
 _ga_exec_fdfind += >
-_ga_exec_fdfind += "DEBIAN/shasums"
+_ga_exec_fdfind += "./DEBIAN/shasums"
 
 
 ## build
@@ -37,80 +37,79 @@ _ga_exec_mkdir += '/usr/bin/install'
 _ga_exec_mkdir += -v
 _ga_exec_mkdir += -d
 _ga_exec_mkdir += -m 0755
-_ga_exec_mkdir += "build/DEBIAN"
-_ga_exec_mkdir += "build/usr/bin"
-_ga_exec_mkdir += "build/usr/share/bwrapsh/main/base"
-_ga_exec_mkdir += "build/usr/share/bwrapsh/main/info"
-_ga_exec_mkdir += "build/usr/share/bwrapsh/main/patch/icewm"
-_ga_exec_mkdir += "build/usr/share/bwrapsh/extra/profile"
-_ga_exec_mkdir += "export"
+_ga_exec_mkdir += "./build/DEBIAN"
+_ga_exec_mkdir += "./build/usr/bin"
+_ga_exec_mkdir += "./build/usr/share/bwrapsh/main/base"
+_ga_exec_mkdir += "./build/usr/share/bwrapsh/main/info"
+_ga_exec_mkdir += "./build/usr/share/bwrapsh/main/patch/icewm"
+_ga_exec_mkdir += "./build/usr/share/bwrapsh/extra/profile"
+_ga_exec_mkdir += "./export"
 
 _ga_exec_copy += '/usr/bin/install'
 _ga_exec_copy += -v
 _ga_exec_copy += -p
 _ga_exec_copy += -m 0644
-_ga_exec_copy += "dpkg/DEBIAN/control"
-_ga_exec_copy += "dpkg/DEBIAN/shasums"
+_ga_exec_copy += "./dpkg/DEBIAN/control"
+_ga_exec_copy += "./dpkg/DEBIAN/shasums"
 _ga_exec_copy += -t
-_ga_exec_copy += "build/DEBIAN/"
+_ga_exec_copy += "./build/DEBIAN/"
 _ga_exec_copy += &&
 
 _ga_exec_copy += '/usr/bin/install'
 _ga_exec_copy += -v
 _ga_exec_copy += -p
 _ga_exec_copy += -m 0755
-_ga_exec_copy += "dpkg/usr/bin/bwrapsh"
+_ga_exec_copy += "./dpkg/usr/bin/bwrapsh"
 _ga_exec_copy += -t
-_ga_exec_copy += "build/usr/bin/"
+_ga_exec_copy += "./build/usr/bin/"
 _ga_exec_copy += &&
 
 _ga_exec_copy += '/usr/bin/install'
 _ga_exec_copy += -v
 _ga_exec_copy += -p
 _ga_exec_copy += -m 0644
-_ga_exec_copy += "dpkg/usr/share/bwrapsh/main/info/"*
-_ga_exec_copy += "LICENSE"
+_ga_exec_copy += "./dpkg/usr/share/bwrapsh/main/base/bwrapsh_dbusproxy"
+_ga_exec_copy += "./dpkg/usr/share/bwrapsh/main/base/bwrapsh_flatpakx11"
 _ga_exec_copy += -t
-_ga_exec_copy += "build/usr/share/bwrapsh/main/info/"
+_ga_exec_copy += "./build/usr/share/bwrapsh/main/base/"
 _ga_exec_copy += &&
 
 _ga_exec_copy += '/usr/bin/install'
 _ga_exec_copy += -v
 _ga_exec_copy += -p
 _ga_exec_copy += -m 0644
-_ga_exec_copy += "dpkg/usr/share/bwrapsh/main/base/"*
+_ga_exec_copy += "./dpkg/usr/share/bwrapsh/main/info/"*
+_ga_exec_copy += "./LICENSE"
 _ga_exec_copy += -t
-_ga_exec_copy += "build/usr/share/bwrapsh/main/base/"
+_ga_exec_copy += "./build/usr/share/bwrapsh/main/info/"
 _ga_exec_copy += &&
 
 _ga_exec_copy += '/usr/bin/install'
 _ga_exec_copy += -v
 _ga_exec_copy += -p
-_ga_exec_copy += -m 0755
 _ga_exec_copy += -m 0644
-_ga_exec_copy += "dpkg/usr/share/bwrapsh/main/patch/icewm/"*
+_ga_exec_copy += "./dpkg/usr/share/bwrapsh/main/patch/icewm/"*
 _ga_exec_copy += -t
-_ga_exec_copy += "build/usr/share/bwrapsh/main/patch/icewm/"
+_ga_exec_copy += "./build/usr/share/bwrapsh/main/patch/icewm/"
 _ga_exec_copy += &&
 
 _ga_exec_copy += '/usr/bin/install'
 _ga_exec_copy += -v
 _ga_exec_copy += -p
-_ga_exec_copy += -m 0755
 _ga_exec_copy += -m 0644
-_ga_exec_copy += "dpkg/usr/share/bwrapsh/extra/profile/"*
+_ga_exec_copy += "./dpkg/usr/share/bwrapsh/extra/profile/"*
 _ga_exec_copy += -t
-_ga_exec_copy += "build/usr/share/bwrapsh/extra/profile/"
+_ga_exec_copy += "./build/usr/share/bwrapsh/extra/profile/"
 
 
 ## archive
 _ga_exec_dpkg += '/usr/bin/dpkg-deb'
 _ga_exec_dpkg += --root-owner-group
 _ga_exec_dpkg += --build
-_ga_exec_dpkg += "build"
-_ga_exec_dpkg += "export/$(_gs_build_package)"
+_ga_exec_dpkg += "./build"
+_ga_exec_dpkg += "./export/$(_gs_build_package)"
 
-_ga_exec_shasum += cd "export"
+_ga_exec_shasum += cd "./export"
 _ga_exec_shasum += &&
 _ga_exec_shasum += '/usr/bin/shasum'
 _ga_exec_shasum += --algorithm 512
@@ -130,7 +129,7 @@ _ga_exec_rsync += --max-size="100M"
 _ga_exec_rsync += --delete
 _ga_exec_rsync += $(_ga_arg1_rsync)
 _ga_exec_rsync += "/usr/local/share/bwrapsh"
-_ga_exec_rsync += "example/"
+_ga_exec_rsync += "./example/"
 
 
 

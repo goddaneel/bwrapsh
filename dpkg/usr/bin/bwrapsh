@@ -130,7 +130,6 @@ case "${_gs_1_opt}" in
                 ;;
         *)
                 '_gF_tool_echo' "31m" "ERROR" "Unkown option!"
-                '/usr/bin/cat' "/usr/share/bwrapsh/main/info/help"
                 exit "1"
                 ;;
 esac
