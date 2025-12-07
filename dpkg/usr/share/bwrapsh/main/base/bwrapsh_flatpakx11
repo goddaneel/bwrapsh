@@ -45,38 +45,38 @@ declare -ga "_ga_arg3_flatpak"
 ## function
 function _gF_part_over () 
 {
-        if [[ "${_gs_mode_killflatpak}" == "true" ]] ; then
-                '/usr/bin/flatpak' ps | '/usr/bin/grep' --color "${_gs_init_name}" ;
-        else
-                false ;
-        fi
-        #       #
-        if [[ "${?}" == "0" ]] ; then
-                '/usr/bin/flatpak' kill -v "${_gs_init_name}" ;
-        fi
-        #       #
-        if [[ "${_gs_mode_x11}" == "auto" ]] ; then
-                '/usr/bin/kill' -15 "${_gi_proc_bwrapicewm}" ;
-                wait "${!}" ;
-                '/usr/bin/kill' -15 "${_gi_proc_xwayland}" ;
-        fi
+    if [[ "${_gs_mode_killflatpak}" == "true" ]] ; then
+        '/usr/bin/flatpak' ps | '/usr/bin/grep' --color "${_gs_init_name}" ;
+    else
+        false ;
+    fi
+    #       #
+    if [[ "${?}" == "0" ]] ; then
+        '/usr/bin/flatpak' kill -v "${_gs_init_name}" ;
+    fi
+    #       #
+    if [[ "${_gs_mode_x11}" == "auto" ]] ; then
+        '/usr/bin/kill' -15 "${_gi_proc_bwrapicewm}" ;
+        wait "${!}" ;
+        '/usr/bin/kill' -15 "${_gi_proc_xwayland}" ;
+    fi
 }
 declare -F "_gF_part_over"
 
 
 ## initialation
 if [[ -z "${_gs_init_name}" ]] ; then
-        _gs_init_name="${1}"
+    _gs_init_name="${1}"
 fi
 
 if [[ -z "${_gs_init_name}" ]] ; then
-        '_gF_tool_exit' "0" "1"
+    '_gF_tool_exit' "0" "1"
 fi
 
 
 ## environment
 if [[ -e "${XDG_RUNTIME_DIR}" ]] ; then
-        XDG_RUNTIME_DIR="/run/user/$('/usr/bin/id' -u)"
+    XDG_RUNTIME_DIR="/run/user/$('/usr/bin/id' -u)"
 fi
 
 
@@ -84,33 +84,33 @@ fi
 ### profile
 ## variable
 if [[ -z "${_gs_part_profile_user}" ]] ; then
-        _gs_part_profile_user="false"
+    _gs_part_profile_user="false"
 fi
 
 if [[ "${_gs_part_profile_user}" == "true" ]] ; then
-        _ga_dirs_profile_user=(
-                "${XDG_CONFIG_HOME}/bwrapsh/extra/flatpak/profile"
-                "${XDG_DATA_HOME}/bwrapsh/extra/flatpak/profile"
-        )
+    _ga_dirs_profile_user=(
+        "${XDG_CONFIG_HOME}/bwrapsh/extra/flatpak/profile"
+        "${XDG_DATA_HOME}/bwrapsh/extra/flatpak/profile"
+    )
 fi
 
 _ga_dirs_profile=(
-        "${_ga_dirs_profile_user[@]}"
-        "/usr/local/share/bwrapsh/extra/flatpak/profile"
-        "/usr/share/bwrapsh/extra/flatpak/profile"
+    "${_ga_dirs_profile_user[@]}"
+    "/usr/local/share/bwrapsh/extra/flatpak/profile"
+    "/usr/share/bwrapsh/extra/flatpak/profile"
 )
 
 for _gs_loop in "${_ga_dirs_profile[@]}" ; do
-        if [[ -r "${_gs_loop}/${_gs_init_name}" ]] ; then
-                _gs_path_profile="${_gs_loop}/${_gs_init_name}"
-                _gs_part_profile="${_gs_part_profile:-"true"}"
-        fi
+    if [[ -r "${_gs_loop}/${_gs_init_name}" ]] ; then
+        _gs_path_profile="${_gs_loop}/${_gs_init_name}"
+        _gs_part_profile="${_gs_part_profile:-"true"}"
+    fi
 done
 
 
 ## source
 if [[ "${_gs_part_profile}" == "true" ]] ; then
-        source "${_gs_path_profile}"
+    source "${_gs_path_profile}"
 fi
 
 
@@ -130,48 +130,48 @@ fi
 ### x11
 ## variable
 if [[ -z "${_gi_init_x11}" ]] ; then
-        _gi_init_x11="$(( "$('/usr/bin/id' -u)" + "11" ))"
-        _gs_mode_x11="auto"
+    _gi_init_x11="$(( "$('/usr/bin/id' -u)" + "11" ))"
+    _gs_mode_x11="auto"
 elif [[ "${_gs_mode_x11}" != "major" ]] ; then
-        _gs_mode_x11="minor"
+    _gs_mode_x11="minor"
 fi
 
 
 ## check
 while true ; do
-        _gs_path_x11socket="/tmp/.X11-unix/X${_gi_init_x11}"
-        #       #
-        '/usr/bin/ss' -a | '/usr/bin/grep' --color "${_gs_path_x11socket}"
-        #       #
-        _gi_stat_ss="${?}"
-        #       #
-        if [[ "${_gi_init_x11}" -lt "1" || "${_gi_init_x11}" -gt "60000" ]] ; then
-                '_gF_tool_echo' "31m" "ERROR" "Display is unavailable."
-                exit "1"
-        elif [[ "${_gs_mode_x11}" == "major" && "${_gi_stat_ss}" == "0" ]] ; then
-                '_gF_tool_echo' "31m" "ERROR" "Display is unavailable."
-                exit "1"
-        elif [[ "${_gs_mode_x11}" == "minor" && "${_gi_stat_ss}" != "0" ]] ; then
-                _gs_mode_x11="major"
-        elif [[ "${_gs_mode_x11}" == "minor" && "${_gi_stat_ss}" == "0" ]] ; then
-                break
-        elif [[ "${_gi_init_x11}" == "${DISPLAY}" ]] ; then
-                _gi_init_x11="$(( "${_gi_init_x11}" + "1" ))"
-        elif [[ -e "/tmp/.X${_gi_init_x11}-lock" ]] ; then
-                _gi_init_x11="$(( "${_gi_init_x11}" + "1" ))"
-        elif [[ "${_gi_stat_ss}" == "0" ]] ; then
-                _gi_init_x11="$(( "${_gi_init_x11}" + "1" ))"
-        else
-                break
-        fi
+    _gs_path_x11socket="/tmp/.X11-unix/X${_gi_init_x11}"
+    #       #
+    '/usr/bin/ss' -a | '/usr/bin/grep' --color "${_gs_path_x11socket}"
+    #       #
+    _gi_stat_ss="${?}"
+    #       #
+    if [[ "${_gi_init_x11}" -lt "1" || "${_gi_init_x11}" -gt "60000" ]] ; then
+        '_gF_tool_echo' "31m" "ERROR" "Display is unavailable."
+        exit "1"
+    elif [[ "${_gs_mode_x11}" == "major" && "${_gi_stat_ss}" == "0" ]] ; then
+        '_gF_tool_echo' "31m" "ERROR" "Display is unavailable."
+        exit "1"
+    elif [[ "${_gs_mode_x11}" == "minor" && "${_gi_stat_ss}" != "0" ]] ; then
+        _gs_mode_x11="major"
+    elif [[ "${_gs_mode_x11}" == "minor" && "${_gi_stat_ss}" == "0" ]] ; then
+        break
+    elif [[ "${_gi_init_x11}" == "${DISPLAY}" ]] ; then
+        _gi_init_x11="$(( "${_gi_init_x11}" + "1" ))"
+    elif [[ -e "/tmp/.X${_gi_init_x11}-lock" ]] ; then
+        _gi_init_x11="$(( "${_gi_init_x11}" + "1" ))"
+    elif [[ "${_gi_stat_ss}" == "0" ]] ; then
+        _gi_init_x11="$(( "${_gi_init_x11}" + "1" ))"
+    else
+        break
+    fi
 done
 
 
 ## part
 if [[ "${_gs_mode_x11}" == "minor" ]] ; then
-        _gs_part_xauth="false"
-        _gs_part_xwayland="false"
-        _gs_part_bwrapicewm="false"
+    _gs_part_xauth="false"
+    _gs_part_xwayland="false"
+    _gs_part_bwrapicewm="false"
 fi
 
 
@@ -183,7 +183,7 @@ fi
 
 ## part
 if [[ -z "${_gs_part_xauth}" ]] ; then
-        _gs_part_xauth="true"
+    _gs_part_xauth="true"
 fi
 
 
@@ -194,32 +194,32 @@ _gs_path_xauth="${_gs_dirs_xauth}/${_gi_init_x11}"
 
 ## array
 _ga_exec_xauth=(
-        '/usr/bin/xauth'
-        -f "${_gs_path_xauth}"
-        add
-        "${HOST}:${_gi_init_x11}"
-        "."
-        "$(mcookie)"
-        "${_ga_arg1_xauth[@]}"
+    '/usr/bin/xauth'
+    -f "${_gs_path_xauth}"
+    add
+    "${HOST}:${_gi_init_x11}"
+    "."
+    "$(mcookie)"
+    "${_ga_arg1_xauth[@]}"
 )
 
 
 ## execute
 if [[ "${_gs_part_xauth}" == "true" ]] ; then
-        _ga_exec_xwayland_xauth=(
-                -auth "${_gs_path_xauth}"
-        )
-        #       #
-        _ga_exec_bwrapicewm_xauth=(
-                --ro-bind "${_gs_path_xauth}" "${XDG_RUNTIME_DIR}/xauth"
-                --setenv "XAUTHORITY" "${XDG_RUNTIME_DIR}/xauth"
-        )
-        #       #
-        '/usr/bin/mkdir' -pv "${_gs_dirs_xauth}"
-        '_gF_tool_exit' "1"
-        #       #
-        "${_ga_exec_xauth[@]}"
-        '_gF_tool_exit' "1"
+    _ga_exec_xwayland_xauth=(
+        -auth "${_gs_path_xauth}"
+    )
+    #       #
+    _ga_exec_bwrapicewm_xauth=(
+        --ro-bind "${_gs_path_xauth}" "${XDG_RUNTIME_DIR}/xauth"
+        --setenv "XAUTHORITY" "${XDG_RUNTIME_DIR}/xauth"
+    )
+    #       #
+    '/usr/bin/mkdir' -pv "${_gs_dirs_xauth}"
+    '_gF_tool_exit' "1"
+    #       #
+    "${_ga_exec_xauth[@]}"
+    '_gF_tool_exit' "1"
 fi
 
 
@@ -231,31 +231,31 @@ fi
 
 ## part
 if [[ -z "${_gs_part_xwayland}" ]] ; then
-        _gs_part_xwayland="true"
+    _gs_part_xwayland="true"
 fi
 
 
 ## array
 _ga_exec_xwayland=(
-        '/usr/bin/Xwayland'
-        ":${_gi_init_x11}"
-        -nolisten tcp
-        -decorate
-        -hidpi
-        -dpi "${_gs_init_dpi:-"125"}"
-        -geometry "${_gs_init_geometry:-"1227x632"}"
-        "${_ga_exec_xwayland_xauth[@]}"
-        "${_ga_arg1_xwayland[@]}"
+    '/usr/bin/Xwayland'
+    ":${_gi_init_x11}"
+    -nolisten tcp
+    -decorate
+    -hidpi
+    -dpi "${_gs_init_dpi:-"125"}"
+    -geometry "${_gs_init_geometry:-"1227x632"}"
+    "${_ga_exec_xwayland_xauth[@]}"
+    "${_ga_arg1_xwayland[@]}"
 )
 
 
 ## execute
 if [[ "${_gs_part_xwayland}" == "true" ]] ; then
-        (
-        "${_ga_exec_xwayland[@]}"
-        exit ) &
+    (
+    "${_ga_exec_xwayland[@]}"
+    exit ) &
 else
-        true
+    true
 fi
 
 
@@ -265,15 +265,15 @@ fi
 
 ## wait
 for _gi_loop in {1..100} ; do
-        '/usr/bin/ss' -a | '/usr/bin/grep' --color "${_gs_path_x11socket}"
-        #       #
-        if [[ "${?}" == "0" ]] ; then
-                break
-        elif [[ "${_gi_loop}" -lt "10" ]] ; then
-                '/usr/bin/sleep' "0.5s"
-        else
-                '_gF_tool_exit' "0" "1"
-        fi
+    '/usr/bin/ss' -a | '/usr/bin/grep' --color "${_gs_path_x11socket}"
+    #       #
+    if [[ "${?}" == "0" ]] ; then
+        break
+    elif [[ "${_gi_loop}" -lt "10" ]] ; then
+        '/usr/bin/sleep' "0.5s"
+    else
+        '_gF_tool_exit' "0" "1"
+    fi
 done
 
 
@@ -285,82 +285,82 @@ done
 
 ## part
 if [[ -z "${_gs_part_bwrapicewm}" ]] ; then
-        _gs_part_bwrapicewm="true"
+    _gs_part_bwrapicewm="true"
 fi
 
 
 ## array
 _ga_exec_bwrapicewm=(
-        '/usr/bin/bwrap'
-        --unshare-all
-        --die-with-parent
-        --proc "/proc"
-        --dev "/dev"
-        --tmpfs "/var"
-        --tmpfs "/run"
-        --tmpfs "/tmp"
-        --tmpfs "/home"
-        --ro-bind "/etc"{,}
-        --ro-bind "/srv"{,}
-        --ro-bind "/usr/bin"{,}
-        --ro-bind "/usr/include"{,}
-        --ro-bind "/usr/lib"{,}
-        --ro-bind "/usr/lib64"{,}
-        --ro-bind "/usr/libexec"{,}
-        --ro-bind "/usr/share"{,}
-        --ro-bind "/usr/src"{,}
-        --symlink "/usr/bin" "/bin"
-        --symlink "/usr/lib" "/lib"
-        --symlink "/usr/lib64" "/lib64"
-        --symlink "/run" "/var/run"
-        --tmpfs "${XDG_RUNTIME_DIR}"
-        --tmpfs "${HOME}"
-        --unsetenv "PS1"
-        --dev-bind "/dev/dri"{,}
-        --ro-bind "/sys/dev/char"{,}
-        --ro-bind "/sys/devices/pci0000:00"{,}
-        --ro-bind "${XDG_RUNTIME_DIR}/${WAYLAND_DISPLAY}"{,}
-        --setenv "WAYLAND_DISPLAY" "${WAYLAND_DISPLAY}"
-        --ro-bind "${_gs_path_x11socket}"{,}
-        --setenv "DISPLAY" ":${_gi_init_x11}"
-        --setenv "XDG_SESSION_TYPE" "x11"
-        --ro-bind-try "${HOME}/.gtkrc-2.0"{,}
-        --ro-bind-try "${HOME}/.config/gtkrc"{,}
-        --ro-bind-try "${HOME}/.config/gtkrc-2.0"{,}
-        --ro-bind-try "${HOME}/.config/gtk-3.0/assets"{,}
-        --ro-bind-try "${HOME}/.config/gtk-3.0/color.css"{,}
-        --ro-bind-try "${HOME}/.config/gtk-3.0/gtk.css"{,}
-        --ro-bind-try "${HOME}/.config/gtk-3.0/settings.ini"{,}
-        --ro-bind-try "${HOME}/.config/gtk-3.0/window_decorations.css"{,}
-        --ro-bind-try "${HOME}/.config/gtk-4.0/assets"{,}
-        --ro-bind-try "${HOME}/.config/gtk-4.0/color.css"{,}
-        --ro-bind-try "${HOME}/.config/gtk-4.0/gtk.css"{,}
-        --ro-bind-try "${HOME}/.config/gtk-4.0/settings.ini"{,}
-        --ro-bind-try "${HOME}/.config/gtk-4.0/window_decorations.css"{,}
-        --ro-bind-try "${HOME}/.config/user-dirs.locale"{,}
-        --ro-bind "/dev/null" "/usr/share/icewm/keys"
-        --ro-bind "/dev/null" "/usr/share/icewm/menu"
-        --ro-bind "/dev/null" "/usr/share/icewm/toolbar"
-        --ro-bind "/dev/null" "/usr/share/icewm/preferences"
-        --ro-bind-try "/usr/share/bwrapsh/main/patch/icewm" "${HOME}/.config/icewm"
-        "${_ga_exec_bwrapicewm_xauth[@]}"
-        "${_ga_arg1_bwrapicewm[@]}"
-        --remount-ro "/"
-        --
-        '/usr/bin/icewm'
-        --theme="Infadel2"
-        -o "${HOME}/.icewm.log"
-        "${_ga_arg2_bwrapicewm[@]}"
+    '/usr/bin/bwrap'
+    --unshare-all
+    --die-with-parent
+    --proc "/proc"
+    --dev "/dev"
+    --tmpfs "/var"
+    --tmpfs "/run"
+    --tmpfs "/tmp"
+    --tmpfs "/home"
+    --ro-bind "/etc"{,}
+    --ro-bind "/srv"{,}
+    --ro-bind "/usr/bin"{,}
+    --ro-bind "/usr/include"{,}
+    --ro-bind "/usr/lib"{,}
+    --ro-bind "/usr/lib64"{,}
+    --ro-bind "/usr/libexec"{,}
+    --ro-bind "/usr/share"{,}
+    --ro-bind "/usr/src"{,}
+    --symlink "/usr/bin" "/bin"
+    --symlink "/usr/lib" "/lib"
+    --symlink "/usr/lib64" "/lib64"
+    --symlink "/run" "/var/run"
+    --tmpfs "${XDG_RUNTIME_DIR}"
+    --tmpfs "${HOME}"
+    --unsetenv "PS1"
+    --dev-bind "/dev/dri"{,}
+    --ro-bind "/sys/dev/char"{,}
+    --ro-bind "/sys/devices/pci0000:00"{,}
+    --ro-bind "${XDG_RUNTIME_DIR}/${WAYLAND_DISPLAY}"{,}
+    --setenv "WAYLAND_DISPLAY" "${WAYLAND_DISPLAY}"
+    --ro-bind "${_gs_path_x11socket}"{,}
+    --setenv "DISPLAY" ":${_gi_init_x11}"
+    --setenv "XDG_SESSION_TYPE" "x11"
+    --ro-bind-try "${HOME}/.gtkrc-2.0"{,}
+    --ro-bind-try "${HOME}/.config/gtkrc"{,}
+    --ro-bind-try "${HOME}/.config/gtkrc-2.0"{,}
+    --ro-bind-try "${HOME}/.config/gtk-3.0/assets"{,}
+    --ro-bind-try "${HOME}/.config/gtk-3.0/color.css"{,}
+    --ro-bind-try "${HOME}/.config/gtk-3.0/gtk.css"{,}
+    --ro-bind-try "${HOME}/.config/gtk-3.0/settings.ini"{,}
+    --ro-bind-try "${HOME}/.config/gtk-3.0/window_decorations.css"{,}
+    --ro-bind-try "${HOME}/.config/gtk-4.0/assets"{,}
+    --ro-bind-try "${HOME}/.config/gtk-4.0/color.css"{,}
+    --ro-bind-try "${HOME}/.config/gtk-4.0/gtk.css"{,}
+    --ro-bind-try "${HOME}/.config/gtk-4.0/settings.ini"{,}
+    --ro-bind-try "${HOME}/.config/gtk-4.0/window_decorations.css"{,}
+    --ro-bind-try "${HOME}/.config/user-dirs.locale"{,}
+    --ro-bind "/dev/null" "/usr/share/icewm/keys"
+    --ro-bind "/dev/null" "/usr/share/icewm/menu"
+    --ro-bind "/dev/null" "/usr/share/icewm/toolbar"
+    --ro-bind "/dev/null" "/usr/share/icewm/preferences"
+    --ro-bind-try "/usr/share/bwrapsh/main/patch/icewm" "${HOME}/.config/icewm"
+    "${_ga_exec_bwrapicewm_xauth[@]}"
+    "${_ga_arg1_bwrapicewm[@]}"
+    --remount-ro "/"
+    --
+    '/usr/bin/icewm'
+    --theme="Infadel2"
+    -o "${HOME}/.icewm.log"
+    "${_ga_arg2_bwrapicewm[@]}"
 )
 
 
 ## execute
 if [[ "${_gs_part_bwrapicewm}" == "true" ]] ; then
-        (
-        "${_ga_exec_bwrapicewm[@]}"
-        exit ) &
+    (
+    "${_ga_exec_bwrapicewm[@]}"
+    exit ) &
 else
-        true
+    true
 fi
 
 
@@ -381,35 +381,38 @@ XAUTHORITY="${_gs_path_xauth}"
 
 ## mode
 if [[ "${_gs_mode_killflatpak}" == "true" ]] ; then
-        _ga_exec_flatpak_killflatpak=(
-                --die-with-parent
-        )
+    _ga_exec_flatpak_killflatpak=(
+        --die-with-parent
+    )
 fi
 
 if [[ "${_gs_mode_forward}" == "true" ]] ; then
-        _ga_exec_flatpak_forward=(
-                --file-forwarding
-        )
+    _ga_exec_flatpak_forward=(
+        --file-forwarding
+    )
 fi
 
 if [[ "${_gs_mode_test}" == "true" ]] ; then
-        _gs_init_exec="bash"
+    unset -v "_ga_arg2_flatpak"
+    unset -v "_ga_arg3_flatpak"
+    #   #
+    _gs_init_exec="bash"
 elif [[ -z "${_gs_init_exec}" ]] ; then
-        _gs_init_exec="${2}"
+    _gs_init_exec="${2}"
 fi
 
 if [[ -z "${_gs_init_exec}" ]] ; then
-        '_gF_tool_exit' "0" "1"
+    '_gF_tool_exit' "0" "1"
 fi
 
 if [[ "${_gs_init_exec}" == "_null" ]] ; then
-        unset -v "_gs_init_exec"
+    unset -v "_gs_init_exec"
 fi
 
 if [[ -n "${_gs_init_exec}" ]] ; then
-        _ga_exec_flatpak_exec=(
-                --command="${_gs_init_exec}"
-        )
+    _ga_exec_flatpak_exec=(
+        --command="${_gs_init_exec}"
+    )
 fi
 
 
@@ -420,21 +423,21 @@ shift "1"
 
 ## array
 _ga_exec_flatpak=(
-        '/usr/bin/flatpak'
-        run
-        --socket="x11"
-        --env=XDG_SESSION_TYPE="x11"
-        --env=GTK_IM_MODULE="${GTK_IM_MODULE}"
-        --env=QT_IM_MODULE="${QT_IM_MODULE}"
-        --env=SDL_IM_MODULE="${SDL_IM_MODULE}"
-        "${_ga_exec_flatpak_killflatpak[@]}"
-        "${_ga_exec_flatpak_forward[@]}"
-        "${_ga_exec_flatpak_exec[@]}"
-        "${_ga_arg1_flatpak[@]}"
-        "${_gs_init_name}"
-        "${_ga_arg2_flatpak[@]}"
-        "${@}"
-        "${_ga_arg3_flatpak[@]}"
+    '/usr/bin/flatpak'
+    run
+    --socket="x11"
+    --env=XDG_SESSION_TYPE="x11"
+    --env=GTK_IM_MODULE="${GTK_IM_MODULE}"
+    --env=QT_IM_MODULE="${QT_IM_MODULE}"
+    --env=SDL_IM_MODULE="${SDL_IM_MODULE}"
+    "${_ga_exec_flatpak_killflatpak[@]}"
+    "${_ga_exec_flatpak_forward[@]}"
+    "${_ga_exec_flatpak_exec[@]}"
+    "${_ga_arg1_flatpak[@]}"
+    "${_gs_init_name}"
+    "${_ga_arg2_flatpak[@]}"
+    "${@}"
+    "${_ga_arg3_flatpak[@]}"
 )
 
 

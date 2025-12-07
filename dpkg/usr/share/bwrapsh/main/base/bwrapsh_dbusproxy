@@ -360,6 +360,9 @@ else
 fi
 
 if [[ "${_gs_mode_test}" == "true" ]] ; then
+        unset -v "_ga_arg2_bwrapsh"
+        unset -v "_ga_arg3_bwrapsh"
+        #       #
         _gs_init_exec="/bin/bash"
 elif [[ -z "${_gs_init_exec}" ]] ; then
         _gs_init_exec="${2}"

@@ -2,7 +2,11 @@
 
 
 ## name
-declare -a "_ga_arg1_test"
+declare -a "_ga_arg1_bwrapsh_test"
+
+
+## load
+'_gF_tool_load' "profile"
 
 
 ## variable
@@ -11,6 +15,6 @@ _gs_mode_test="true"
 _ga_arg1_bwrapsh=(
         --bind "$(pwd)" "$(pwd)"
         --chdir "$(pwd)"
-        "${_ga_arg1_test[@]}"
+        "${_ga_arg1_bwrapsh_test[@]}"
 )
 

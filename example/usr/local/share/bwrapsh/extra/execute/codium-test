@@ -1,0 +1,30 @@
+#!/bin/bash
+
+
+## name
+declare -ga "_ga_exec_sparkle"
+
+
+## load
+function _ef_load_profile () {
+        _ga_arg1_bwrapsh_codium=(
+                --overlay-src "$(pwd)"
+                --tmp-overlay "$(pwd)"
+                --chdir "$(pwd)"
+        )
+}
+declare -fx "_ef_load_profile"
+
+
+## array
+_ga_exec_codium=(
+        '/usr/bin/bwrapsh'
+        dbusproxy
+        "codium"
+        "$(pwd)"
+)
+
+
+## execute
+"${_ga_exec_codium[@]}"
+

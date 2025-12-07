@@ -1,0 +1,33 @@
+#!/bin/bash
+
+
+## name
+declare -ga "_ga_arg1_bwrapsh_codium"
+
+
+## load
+'_gF_tool_load' "profile"
+
+
+## variable
+_gs_init_exec="/usr/bin/codium"
+_gs_mode_network="true"
+
+_ga_arg1_bwrapsh=(
+        --ro-bind-try "/_and/config/nvim"{,}
+        --ro-bind-try "/_and/config/vscodium"{,}
+        --overlay-src "${HOME}"
+        --tmp-overlay "${HOME}"
+        --overlay-src "${HOME}/.config/VSCodium/User"
+        --overlay-src "/_and/config/vscodium/User"
+        --tmp-overlay "${HOME}/.config/VSCodium/User"
+        --setenv "ELECTRON_OZONE_PLATFORM_HINT" "auto"
+        "${_ga_arg1_bwrapsh_codium[@]}"
+)
+
+_ga_arg3_bwrapsh=(
+        --verbose
+        --enable-wayland-ime
+        --enable-features=WebRTCPipeWireCapturer
+)
+

@@ -2,7 +2,11 @@
 
 
 ## name
-declare -a "_ga_arg1_test"
+declare -a "_ga_arg1_bwrapsh_test"
+
+
+## load
+'_gF_tool_load' "profile"
 
 
 ## variable
@@ -12,6 +16,6 @@ _ga_arg1_bwrapsh=(
         --overlay-src "$(pwd)"
         --tmp-overlay "$(pwd)"
         --chdir "$(pwd)"
-        "${_ga_arg1_test[@]}"
+        "${_ga_arg1_bwrapsh_test[@]}"
 )
 
