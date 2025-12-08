@@ -7,6 +7,8 @@ declare -ga "_ga_exec_sparkle"
 
 ## load
 function _ef_load_profile () {
+        _gs_mode_test="true" ;
+        #       #
         _ga_arg1_bwrapsh_codium=(
                 --overlay-src "$(pwd)"
                 --tmp-overlay "$(pwd)"

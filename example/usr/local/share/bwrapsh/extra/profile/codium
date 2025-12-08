@@ -5,10 +5,6 @@
 declare -ga "_ga_arg1_bwrapsh_codium"
 
 
-## load
-'_gF_tool_load' "profile"
-
-
 ## variable
 _gs_init_exec="/usr/bin/codium"
 _gs_mode_network="true"
