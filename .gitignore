@@ -1,4 +1,2 @@
 build/
 export/
-dpkg/DEBIAN/shasums
-dpkg/usr/share/bwrapsh/main/info/version
