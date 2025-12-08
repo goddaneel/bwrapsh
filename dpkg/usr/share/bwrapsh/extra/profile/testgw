@@ -5,10 +5,6 @@
 declare -a "_ga_arg1_bwrapsh_test"
 
 
-## load
-'_gF_tool_load' "profile"
-
-
 ## variable
 _gs_mode_test="true"
 

@@ -68,6 +68,10 @@ fi
 
 
 ### profile
+## load
+'_gF_tool_load' "profile"
+
+
 ## variable
 if [[ -z "${_gs_part_profile_user}" ]] ; then
         _gs_part_profile_user="false"

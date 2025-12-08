@@ -1,5 +1,5 @@
 Package: bwrapsh
-Version: 0.1.3
+Version: 0.1.4
 Architecture: all
 Depends: bubblewrap (>= 0.11.0), 
     bash, 

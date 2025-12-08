@@ -116,11 +116,11 @@ fi
 
 ## option
 case "${_gs_1_opt}" in
-        "version")
-                '/usr/bin/cat' "/usr/share/bwrapsh/main/info/version"
-                ;;
         "help")
                 '/usr/bin/cat' "/usr/share/bwrapsh/main/info/help"
+                ;;
+        "version")
+                '/usr/bin/cat' "/usr/share/bwrapsh/main/info/version"
                 ;;
         "dbusproxy" | "dbus")
                 source "/usr/share/bwrapsh/main/base/bwrapsh_dbusproxy"
