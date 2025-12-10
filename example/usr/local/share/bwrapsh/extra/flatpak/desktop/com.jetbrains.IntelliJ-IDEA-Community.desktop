@@ -1,8 +1,0 @@
-[Desktop Entry]
-Type=Application
-Name={BWRAPSH} IntelliJ IDEA Community
-Icon=com.jetbrains.IntelliJ-IDEA-Community
-Exec='/usr/bin/bwrapsh' flatpakx11 "com.jetbrains.IntelliJ-IDEA-Community" _null
-StartupWMClass=jetbrains-idea-ce
-X-Flatpak=com.jetbrains.IntelliJ-IDEA-Community
-
