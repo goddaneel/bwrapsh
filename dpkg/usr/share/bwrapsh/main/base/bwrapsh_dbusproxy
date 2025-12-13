@@ -411,7 +411,6 @@ _ga_exec_bwrapsh=(
         --symlink "/run" "/var/run"
         --tmpfs "${XDG_RUNTIME_DIR}"
         --tmpfs "${HOME}"
-        --unsetenv "PS1"
         --dev-bind "/dev/dri"{,}
         --ro-bind "/sys/dev/char"{,}
         --ro-bind "/sys/devices/pci0000:00"{,}
@@ -435,6 +434,8 @@ _ga_exec_bwrapsh=(
         --ro-bind-try "${HOME}/.config/gtk-4.0/settings.ini"{,}
         --ro-bind-try "${HOME}/.config/gtk-4.0/window_decorations.css"{,}
         --ro-bind-try "${HOME}/.config/user-dirs.locale"{,}
+        --setenv "_ES_BWRAPSH_NAME" "${_gs_init_name}"
+        --ro-bind-try "/usr/share/bwrapsh/main/patch/bash/bashrc" "${HOME}/.bashrc"
         "${_ga_exec_bwrapsh_userbus[@]}"
         "${_ga_exec_bwrapsh_systembus[@]}"
         "${_ga_exec_bwrapsh_home[@]}"

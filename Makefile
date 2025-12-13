@@ -24,6 +24,7 @@ _ga_exec_mkdir += "./build/dpkg/DEBIAN"
 _ga_exec_mkdir += "./build/dpkg/usr/bin"
 _ga_exec_mkdir += "./build/dpkg/usr/share/bwrapsh/main/base"
 _ga_exec_mkdir += "./build/dpkg/usr/share/bwrapsh/main/info"
+_ga_exec_mkdir += "./build/dpkg/usr/share/bwrapsh/main/patch/bash"
 _ga_exec_mkdir += "./build/dpkg/usr/share/bwrapsh/main/patch/icewm"
 _ga_exec_mkdir += "./build/dpkg/usr/share/bwrapsh/extra/profile"
 _ga_exec_mkdir += "./export"
@@ -77,6 +78,15 @@ _ga_exec_precopy += "./LICENSE"
 _ga_exec_precopy += "./build/create/info/version"
 _ga_exec_precopy += -t
 _ga_exec_precopy += "./build/dpkg/usr/share/bwrapsh/main/info/"
+_ga_exec_precopy += &&
+
+_ga_exec_precopy += '/usr/bin/install'
+_ga_exec_precopy += -v
+_ga_exec_precopy += -p
+_ga_exec_precopy += -m 0644
+_ga_exec_precopy += "./dpkg/usr/share/bwrapsh/main/patch/bash/"*
+_ga_exec_precopy += -t
+_ga_exec_precopy += "./build/dpkg/usr/share/bwrapsh/main/patch/bash/"
 _ga_exec_precopy += &&
 
 _ga_exec_precopy += '/usr/bin/install'
