@@ -12,7 +12,6 @@ _ga_arg1_bwrapsh=(
         --bind "$(pwd)"{,}
         --ro-bind-try "$(pwd)/.git"{,}
         --ro-bind-try "/usr/share/bwrapsh/main/patch/bash/bashrc" "${HOME}/.bashrc"
-        --ro-bind-try "/_and/config/nvim" "${HOME}/.config/nvim"
         --chdir "$(pwd)"
         "${_ga_arg1_bwrapsh_test[@]}"
 )

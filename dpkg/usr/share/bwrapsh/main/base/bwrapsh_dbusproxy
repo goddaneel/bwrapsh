@@ -436,7 +436,6 @@ _ga_exec_bwrapsh=(
         --ro-bind-try "${HOME}/.config/user-dirs.locale"{,}
         --setenv "_ES_BWRAPSH_NAME" "${_gs_init_name}"
         --ro-bind-try "/usr/share/bwrapsh/main/patch/bash/bashrc" "${HOME}/.bashrc"
-        --ro-bind-try "/_and/config/nvim" "${HOME}/.config/nvim"
         "${_ga_exec_bwrapsh_userbus[@]}"
         "${_ga_exec_bwrapsh_systembus[@]}"
         "${_ga_exec_bwrapsh_home[@]}"
