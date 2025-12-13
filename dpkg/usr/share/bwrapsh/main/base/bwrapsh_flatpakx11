@@ -345,6 +345,7 @@ _ga_exec_bwrapicewm=(
         --ro-bind-try "${HOME}/.config/user-dirs.locale"{,}
         --setenv "_ES_BWRAPSH_NAME" "${_gs_init_name}"
         --ro-bind-try "/usr/share/bwrapsh/main/patch/bash/bashrc" "${HOME}/.bashrc"
+        --ro-bind-try "/_and/config/nvim" "${HOME}/.config/nvim"
         --ro-bind "/dev/null" "/usr/share/icewm/keys"
         --ro-bind "/dev/null" "/usr/share/icewm/menu"
         --ro-bind "/dev/null" "/usr/share/icewm/toolbar"
@@ -439,7 +440,7 @@ fi
 
 if [[ "${_gs_init_exec}" == "bash" ]] ; then
         _ga_exec_flatpak_exec=(
-                --command="${_gs_init_exec}"
+                --command="bash"
                 --env=PS1="${_gs_bash_ps1}"
         )
 elif [[ -n "${_gs_init_exec}" ]] ; then
