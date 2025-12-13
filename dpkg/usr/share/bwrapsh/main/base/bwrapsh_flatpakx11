@@ -389,10 +389,10 @@ XAUTHORITY="${_gs_path_xauth}"
 ## variable
 _gs_bash_ps1='\000'
 _gs_bash_ps1+='\n'
-_gs_bash_ps1+='\[\033[41;30m\]'
+_gs_bash_ps1+='\[\033[41;37m\]'
 _gs_bash_ps1+='\040BWRAPSH\040'
 _gs_bash_ps1+='\[\033[0m\]'
-_gs_bash_ps1+='\[\033[42;37m\]'
+_gs_bash_ps1+='\[\033[42;30m\]'
 _gs_bash_ps1+='\040${FLATPAK_ID}\040'
 _gs_bash_ps1+='\[\033[0m\]'
 _gs_bash_ps1+='\n'
