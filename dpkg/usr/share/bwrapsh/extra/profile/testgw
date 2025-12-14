@@ -10,7 +10,8 @@ _gs_mode_test="true"
 
 _ga_arg1_bwrapsh=(
         --bind "$(pwd)" "$(pwd)"
-        --ro-bind-try "/usr/share/bwrapsh/main/patch/bash/bashrc" "${HOME}/.bashrc"
+        --overlay-src "/usr/share/bwrapsh/main/patch/bash"
+        --tmp-overlay "${HOME}"
         --chdir "$(pwd)"
         "${_ga_arg1_bwrapsh_test[@]}"
 )

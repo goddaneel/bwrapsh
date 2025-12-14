@@ -420,6 +420,9 @@ _ga_exec_bwrapsh=(
         --unsetenv "GTK_IM_MODULE"
         --unsetenv "QT_IM_MODULE"
         --unsetenv "SDL_IM_MODULE"
+        --setenv "_ES_BWRAPSH_NAME" "${_gs_init_name}"
+        --overlay-src "/usr/share/bwrapsh/main/patch/bash"
+        --tmp-overlay "${HOME}"
         --ro-bind-try "${HOME}/.gtkrc-2.0"{,}
         --ro-bind-try "${HOME}/.config/gtkrc"{,}
         --ro-bind-try "${HOME}/.config/gtkrc-2.0"{,}
@@ -434,8 +437,6 @@ _ga_exec_bwrapsh=(
         --ro-bind-try "${HOME}/.config/gtk-4.0/settings.ini"{,}
         --ro-bind-try "${HOME}/.config/gtk-4.0/window_decorations.css"{,}
         --ro-bind-try "${HOME}/.config/user-dirs.locale"{,}
-        --setenv "_ES_BWRAPSH_NAME" "${_gs_init_name}"
-        --ro-bind-try "/usr/share/bwrapsh/main/patch/bash/bashrc" "${HOME}/.bashrc"
         "${_ga_exec_bwrapsh_userbus[@]}"
         "${_ga_exec_bwrapsh_systembus[@]}"
         "${_ga_exec_bwrapsh_home[@]}"

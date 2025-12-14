@@ -8,6 +8,7 @@ declare -x "DISPLAY"
 declare -x "XAUTHORITY"
 declare -i "_gi_stat_ss"
 declare -g "_gs_bash_ps1"
+declare -g "_gs_bash_ps0"
 declare -a "_ga_exec_xauth"
 declare -a "_ga_exec_xwayland"
 declare -a "_ga_exec_xwayland_xauth"
@@ -151,10 +152,10 @@ while true ; do
         _gi_stat_ss="${?}"
         #       #
         if [[ "${_gi_init_x11}" -lt "1" || "${_gi_init_x11}" -gt "60000" ]] ; then
-                '_gF_tool_echo' "31m" "ERROR" "Display is unavailable."
+                '_gF_tool_echo' "31m" "ERROR" "Display is unavailable." "1"
                 exit "1"
         elif [[ "${_gs_mode_x11}" == "major" && "${_gi_stat_ss}" == "0" ]] ; then
-                '_gF_tool_echo' "31m" "ERROR" "Display is unavailable."
+                '_gF_tool_echo' "31m" "ERROR" "Display is unavailable." "1"
                 exit "1"
         elif [[ "${_gs_mode_x11}" == "minor" && "${_gi_stat_ss}" != "0" ]] ; then
                 _gs_mode_x11="major"
@@ -329,6 +330,9 @@ _ga_exec_bwrapicewm=(
         --ro-bind "${_gs_path_x11socket}"{,}
         --setenv "DISPLAY" ":${_gi_init_x11}"
         --setenv "XDG_SESSION_TYPE" "x11"
+        --setenv "_ES_BWRAPSH_NAME" "${_gs_init_name}"
+        --overlay-src "/usr/share/bwrapsh/main/patch/bash"
+        --tmp-overlay "${HOME}"
         --ro-bind-try "${HOME}/.gtkrc-2.0"{,}
         --ro-bind-try "${HOME}/.config/gtkrc"{,}
         --ro-bind-try "${HOME}/.config/gtkrc-2.0"{,}
@@ -343,12 +347,10 @@ _ga_exec_bwrapicewm=(
         --ro-bind-try "${HOME}/.config/gtk-4.0/settings.ini"{,}
         --ro-bind-try "${HOME}/.config/gtk-4.0/window_decorations.css"{,}
         --ro-bind-try "${HOME}/.config/user-dirs.locale"{,}
-        --setenv "_ES_BWRAPSH_NAME" "${_gs_init_name}"
-        --ro-bind-try "/usr/share/bwrapsh/main/patch/bash/bashrc" "${HOME}/.bashrc"
-        --ro-bind "/dev/null" "/usr/share/icewm/keys"
-        --ro-bind "/dev/null" "/usr/share/icewm/menu"
-        --ro-bind "/dev/null" "/usr/share/icewm/toolbar"
-        --ro-bind "/dev/null" "/usr/share/icewm/preferences"
+        --ro-bind-try "/dev/null" "/usr/share/icewm/keys"
+        --ro-bind-try "/dev/null" "/usr/share/icewm/menu"
+        --ro-bind-try "/dev/null" "/usr/share/icewm/toolbar"
+        --ro-bind-try "/dev/null" "/usr/share/icewm/preferences"
         --ro-bind-try "/usr/share/bwrapsh/main/patch/icewm" "${HOME}/.config/icewm"
         "${_ga_exec_bwrapicewm_xauth[@]}"
         "${_ga_arg1_bwrapicewm[@]}"
@@ -389,10 +391,10 @@ XAUTHORITY="${_gs_path_xauth}"
 ## variable
 _gs_bash_ps1='\000'
 _gs_bash_ps1+='\n'
-_gs_bash_ps1+='\[\033[41;30m\]'
+_gs_bash_ps1+='\[\033[41;37;01m\]'
 _gs_bash_ps1+='\040BWRAPSH\040'
 _gs_bash_ps1+='\[\033[0m\]'
-_gs_bash_ps1+='\[\033[41;37m\]'
+_gs_bash_ps1+='\[\033[41;37;03m\]'
 _gs_bash_ps1+='\040${FLATPAK_ID}\040'
 _gs_bash_ps1+='\[\033[0m\]'
 _gs_bash_ps1+='\n'
@@ -408,6 +410,11 @@ _gs_bash_ps1+='\040${SHLVL}\040'
 _gs_bash_ps1+='\[\033[0m\]'
 _gs_bash_ps1+='\040'
 
+_gs_bash_ps0='\000'
+_gs_bash_ps0+='\[\033[42;30;05m\]'
+_gs_bash_ps0+='\040\$\040'
+_gs_bash_ps0+='\[\033[0m\]'
+_gs_bash_ps0+='\n'
 
 ## mode
 if [[ "${_gs_mode_killflatpak}" == "true" ]] ; then
@@ -441,6 +448,7 @@ if [[ "${_gs_init_exec}" == "bash" ]] ; then
         _ga_exec_flatpak_exec=(
                 --command="bash"
                 --env=PS1="${_gs_bash_ps1}"
+                --env=PS0="${_gs_bash_ps0}"
         )
 elif [[ -n "${_gs_init_exec}" ]] ; then
         _ga_exec_flatpak_exec=(

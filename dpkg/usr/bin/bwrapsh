@@ -34,7 +34,12 @@ function _gF_tool_echo ()
                 "${3}"
         )
         #       #
-        echo -e "\n${4}\033[${1:?}${2:?}: ${3:?}\033[0m\n" ;
+        if [[ "${4}" == "1" ]] ; then
+                echo -e "\n${4}\033[${1:?}${2:?}: ${3:?}\033[0m\n" 1>&2 ;
+        else
+                echo -e "\n${4}\033[${1:?}${2:?}: ${3:?}\033[0m\n" ;
+        fi
+        #       #
         #       #
         "${_la_exec_notifysend[@]}" ;
 }
@@ -129,7 +134,7 @@ case "${_gs_1_opt}" in
                 source "/usr/share/bwrapsh/main/base/bwrapsh_flatpakx11"
                 ;;
         *)
-                '_gF_tool_echo' "31m" "ERROR" "Unkown option!"
+                '_gF_tool_echo' "31m" "ERROR" "Unkown option!" "1"
                 exit "1"
                 ;;
 esac

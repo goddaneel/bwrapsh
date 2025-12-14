@@ -8,10 +8,10 @@
 # environment
 export PS1='\000'
 export PS1+='\n'
-export PS1+='\[\033[41;30m\]'
+export PS1+='\[\033[41;37;01m\]'
 export PS1+='\040BWRAPSH\040'
 export PS1+='\[\033[0m\]'
-export PS1+='\[\033[41;37m\]'
+export PS1+='\[\033[41;37;03m\]'
 export PS1+='\040${_ES_BWRAPSH_NAME}\040'
 export PS1+='\[\033[0m\]'
 export PS1+='\n'
@@ -26,6 +26,12 @@ export PS1+='\[\033[43;30m\]'
 export PS1+='\040${SHLVL}\040'
 export PS1+='\[\033[0m\]'
 export PS1+='\040'
+#       #
+export PS0='\000'
+export PS0+='\[\033[42;30m\]'
+export PS0+='\040\$\040'
+export PS0+='\[\033[0m\]'
+export PS0+='\n'
 
 
 
@@ -80,6 +86,7 @@ declare -fr "ezl"
 alias ezla='ezl -a'
 alias ezlt='ezl -T'
 alias ezlta='ezl -Ta'
+alias ezlg='ezl --git --git-repos'
 alias ezlag='ezl -a --git --git-repos'
 alias ezltg='ezl -T --git --git-repos'
 alias ezltag='ezl -Ta --git --git-repos'
