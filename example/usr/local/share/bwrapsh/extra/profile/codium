@@ -10,14 +10,20 @@ _gs_init_exec="/usr/bin/codium"
 _gs_mode_network="true"
 
 _ga_arg1_bwrapsh=(
-        --ro-bind-try "/_and/config/vscodium"{,}
-        --ro-bind-try "/_and/config/nvim"{,}
-        --ro-bind-try "/usr/share/bwrapsh/main/patch/bash" "/_and/config/bash"
-        --overlay-src "${HOME}"
+        --overlay-src "/usr/share/bwrapsh/main/patch/bash"
         --tmp-overlay "${HOME}"
+        --overlay-src "${HOME}/.pki"
+        --tmp-overlay "${HOME}/.pki"
+        --overlay-src "${HOME}/.vscode-oss"
+        --tmp-overlay "${HOME}/.vscode-oss"
+        --overlay-src "${HOME}/.config/VSCodium"
+        --tmp-overlay "${HOME}/.config/VSCodium"
         --overlay-src "${HOME}/.config/VSCodium/User"
         --overlay-src "/_and/config/vscodium/User"
         --tmp-overlay "${HOME}/.config/VSCodium/User"
+        --overlay-src "/_and/config/nvim"
+        --tmp-overlay "/_and/config/nvim"
+        --symlink "/_and/config/nvim" "${HOME}/.config/nvim"
         --setenv "ELECTRON_OZONE_PLATFORM_HINT" "auto"
         "${_ga_arg1_bwrapsh_codium[@]}"
 )
