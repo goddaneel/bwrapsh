@@ -415,7 +415,7 @@ _gs_bash_ps1+='\[\033[0m\]'
 _gs_bash_ps1+='\040'
 
 _gs_bash_ps0='\000'
-_gs_bash_ps0+='\[\033[42;30;05m\]'
+_gs_bash_ps0+='\[\033[42;30m\]'
 _gs_bash_ps0+='\040\t\040'
 _gs_bash_ps0+='\[\033[0m\]'
 _gs_bash_ps0+='\n'

@@ -29,7 +29,7 @@ export PS1+='\[\033[0m\]'
 export PS1+='\040'
 #       #
 export PS0='\000'
-export PS0+='\[\033[42;30;05m\]'
+export PS0+='\[\033[42;30m\]'
 export PS0+='\040\t\040'
 export PS0+='\[\033[0m\]'
 export PS0+='\n'
