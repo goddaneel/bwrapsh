@@ -396,7 +396,7 @@ XAUTHORITY="${_gs_path_xauth}"
 _gs_bash_ps1='\000'
 _gs_bash_ps1+='\n'
 _gs_bash_ps1+='\[\033[41;37;01m\]'
-_gs_bash_ps1+='\040BWRAPSH/${_gs_init_type}\040'
+_gs_bash_ps1+='\040BWRAPSH/${_ES_BWRAPSH_TYPE}\040'
 _gs_bash_ps1+='\[\033[0m\]'
 _gs_bash_ps1+='\[\033[41;37;03m\]'
 _gs_bash_ps1+='\040${FLATPAK_ID}\040'
@@ -471,6 +471,8 @@ _ga_exec_flatpak=(
         '/usr/bin/flatpak'
         run
         --socket="x11"
+        --env=_ES_BWRAPSH_TYPE="${_gs_init_type}"
+        --env=_ES_BWRAPSH_NAME="${_gs_init_name}"
         --env=XDG_SESSION_TYPE="x11"
         --env=GTK_IM_MODULE="${GTK_IM_MODULE}"
         --env=QT_IM_MODULE="${QT_IM_MODULE}"
