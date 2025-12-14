@@ -11,8 +11,6 @@ _gs_mode_test="true"
 _ga_arg1_bwrapsh=(
         --overlay-src "$(pwd)"
         --tmp-overlay "$(pwd)"
-        --overlay-src "/usr/share/bwrapsh/main/patch/bash"
-        --tmp-overlay "${HOME}"
         --chdir "$(pwd)"
         "${_ga_arg1_bwrapsh_test[@]}"
 )

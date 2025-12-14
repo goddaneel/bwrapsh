@@ -412,6 +412,8 @@ _ga_exec_bwrapsh=(
         --symlink "/usr/lib" "/lib"
         --symlink "/usr/lib64" "/lib64"
         --symlink "/run" "/var/run"
+        --tmpfs "${XDG_CONFIG_HOME}"
+        --tmpfs "${XDG_DATA_HOME}"
         --tmpfs "${XDG_RUNTIME_DIR}"
         --tmpfs "${HOME}"
         --dev-bind "/dev/dri"{,}
@@ -427,7 +429,6 @@ _ga_exec_bwrapsh=(
         --setenv "_ES_BWRAPSH_NAME" "${_gs_init_name}"
         --overlay-src "/usr/share/bwrapsh/main/patch/bash"
         --tmp-overlay "${HOME}"
-        --ro-bind-try "${HOME}/.gtkrc-2.0"{,}
         --ro-bind-try "${HOME}/.config/gtkrc"{,}
         --ro-bind-try "${HOME}/.config/gtkrc-2.0"{,}
         --ro-bind-try "${HOME}/.config/gtk-3.0/assets"{,}
