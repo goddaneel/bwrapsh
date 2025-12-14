@@ -15,6 +15,7 @@ declare -a "_ga_exec_bwrapsh_save"
 declare -a "_ga_exec_bwrapsh_killbwrapsh"
 declare -a "_ga_exec_bwrapsh_network"
 
+declare -g "_gs_init_type"
 declare -g "_gs_init_name"
 declare -g "_gs_init_exec"
 declare -g "_gs_mode_test"
@@ -51,6 +52,8 @@ declare -F "_gF_part_over"
 
 
 ## initialation
+_gs_init_type="dbusproxy"
+
 if [[ -z "${_gs_init_name}" ]] ; then
         _gs_init_name="${1}"
 fi
@@ -135,7 +138,7 @@ else
 fi
 
 if [[ "${?}" == "0" ]] ; then
-        '_gF_tool_echo' "33m" "WARNING" "The program is running."
+        '_gF_tool_echo' "0" "33m" "WARNING" "The program is running."
         '_gF_tool_exit' "0" "1"
 fi
 
@@ -217,7 +220,7 @@ else
 fi
 
 if [[ "${?}" == "0" ]] ; then
-        '_gF_tool_echo' "33m" "WARNING" "The program is running."
+        '_gF_tool_echo' "0" "33m" "WARNING" "The program is running."
         '_gF_tool_exit' "0" "1"
 fi
 
@@ -420,6 +423,7 @@ _ga_exec_bwrapsh=(
         --unsetenv "GTK_IM_MODULE"
         --unsetenv "QT_IM_MODULE"
         --unsetenv "SDL_IM_MODULE"
+        --setenv "_ES_BWRAPSH_TYPE" "${_gs_init_type}"
         --setenv "_ES_BWRAPSH_NAME" "${_gs_init_name}"
         --overlay-src "/usr/share/bwrapsh/main/patch/bash"
         --tmp-overlay "${HOME}"

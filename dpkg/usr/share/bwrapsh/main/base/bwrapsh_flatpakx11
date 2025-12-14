@@ -19,6 +19,7 @@ declare -a "_ga_exec_flatpak_killflatpak"
 declare -a "_ga_exec_flatpak_forward"
 declare -a "_ga_exec_flatpak_exec"
 
+declare -g "_gs_init_type"
 declare -g "_gs_init_name"
 declare -g "_gs_init_exec"
 declare -g "_gs_init_dpi"
@@ -67,6 +68,8 @@ declare -F "_gF_part_over"
 
 
 ## initialation
+_gs_init_type="flatpakx11"
+
 if [[ -z "${_gs_init_name}" ]] ; then
         _gs_init_name="${1}"
 fi
@@ -152,10 +155,10 @@ while true ; do
         _gi_stat_ss="${?}"
         #       #
         if [[ "${_gi_init_x11}" -lt "1" || "${_gi_init_x11}" -gt "60000" ]] ; then
-                '_gF_tool_echo' "31m" "ERROR" "Display is unavailable." "1"
+                '_gF_tool_echo' "2" "31m" "ERROR" "Display is unavailable."
                 exit "1"
         elif [[ "${_gs_mode_x11}" == "major" && "${_gi_stat_ss}" == "0" ]] ; then
-                '_gF_tool_echo' "31m" "ERROR" "Display is unavailable." "1"
+                '_gF_tool_echo' "2" "31m" "ERROR" "Display is unavailable."
                 exit "1"
         elif [[ "${_gs_mode_x11}" == "minor" && "${_gi_stat_ss}" != "0" ]] ; then
                 _gs_mode_x11="major"
@@ -330,6 +333,7 @@ _ga_exec_bwrapicewm=(
         --ro-bind "${_gs_path_x11socket}"{,}
         --setenv "DISPLAY" ":${_gi_init_x11}"
         --setenv "XDG_SESSION_TYPE" "x11"
+        --setenv "_ES_BWRAPSH_TYPE" "${_gs_init_type}"
         --setenv "_ES_BWRAPSH_NAME" "${_gs_init_name}"
         --overlay-src "/usr/share/bwrapsh/main/patch/bash"
         --tmp-overlay "${HOME}"
@@ -392,7 +396,7 @@ XAUTHORITY="${_gs_path_xauth}"
 _gs_bash_ps1='\000'
 _gs_bash_ps1+='\n'
 _gs_bash_ps1+='\[\033[41;37;01m\]'
-_gs_bash_ps1+='\040BWRAPSH\040'
+_gs_bash_ps1+='\040BWRAPSH/${_gs_init_type}\040'
 _gs_bash_ps1+='\[\033[0m\]'
 _gs_bash_ps1+='\[\033[41;37;03m\]'
 _gs_bash_ps1+='\040${FLATPAK_ID}\040'
@@ -412,7 +416,7 @@ _gs_bash_ps1+='\040'
 
 _gs_bash_ps0='\000'
 _gs_bash_ps0+='\[\033[42;30;05m\]'
-_gs_bash_ps0+='\040\$\040'
+_gs_bash_ps0+='\040\t\040'
 _gs_bash_ps0+='\[\033[0m\]'
 _gs_bash_ps0+='\n'
 

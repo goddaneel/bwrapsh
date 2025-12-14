@@ -2,6 +2,7 @@
 
 
 
+
 #### 1_style
 ### bash
 ## variable
@@ -9,7 +10,7 @@
 export PS1='\000'
 export PS1+='\n'
 export PS1+='\[\033[41;37;01m\]'
-export PS1+='\040BWRAPSH\040'
+export PS1+='\040BWRAPSH/${_ES_BWRAPSH_TYPE}\040'
 export PS1+='\[\033[0m\]'
 export PS1+='\[\033[41;37;03m\]'
 export PS1+='\040${_ES_BWRAPSH_NAME}\040'
@@ -28,8 +29,8 @@ export PS1+='\[\033[0m\]'
 export PS1+='\040'
 #       #
 export PS0='\000'
-export PS0+='\[\033[42;30m\]'
-export PS0+='\040\$\040'
+export PS0+='\[\033[42;30;05m\]'
+export PS0+='\040\t\040'
 export PS0+='\[\033[0m\]'
 export PS0+='\n'
 
