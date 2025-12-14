@@ -111,12 +111,16 @@ declare -Fr "_gF_tool_exit"
 
 
 ## environment
-if [[ -e "${XDG_CONFIG_HOME}" ]] ; then
+if [[ ! -d "${XDG_CONFIG_HOME}" ]] ; then
         XDG_CONFIG_HOME="${HOME}/.config"
 fi
 
-if [[ -e "${XDG_DATA_HOME}" ]] ; then
+if [[ ! -d "${XDG_DATA_HOME}" ]] ; then
         XDG_DATA_HOME="${HOME}/.local/share"
+fi
+
+if [[ ! -d "${XDG_RUNTIME_DIR}" ]] ; then
+        XDG_RUNTIME_DIR="/run/user/$('/usr/bin/id' -u)"
 fi
 
 

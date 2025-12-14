@@ -63,12 +63,6 @@ if [[ -z "${_gs_init_name}" ]] ; then
 fi
 
 
-## environment
-if [[ -e "${XDG_RUNTIME_DIR}" ]] ; then
-        XDG_RUNTIME_DIR="/run/user/$('/usr/bin/id' -u)"
-fi
-
-
 
 ### profile
 ## load
