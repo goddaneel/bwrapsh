@@ -14,12 +14,6 @@ declare -ga "_ga_dirs_profile_user"
 declare -g "_gs_1_opt"
 
 
-## veriable
-_gs_1_opt="${1}"
-
-shift "1"
-
-
 ## function
 function _gF_tool_echo () 
 {
@@ -128,6 +122,12 @@ fi
 if [[ -r "/usr/local/share/bwrapsh/main/init/default" ]] ; then
         source "/usr/local/share/bwrapsh/main/init/default"
 fi
+
+
+## argument
+_gs_1_opt="${1}"
+
+shift "1"
 
 
 ## option
