@@ -92,6 +92,23 @@ alias ezlag='ezl -a --git --git-repos'
 alias ezltg='ezl -T --git --git-repos'
 alias ezltag='ezl -Ta --git --git-repos'
 
+# print
+function _GF_p_list ()
+{
+        declare -a "_la_exec_eza" ;
+        #       #
+        _la_exec_eza=(
+                eza
+                --time-style=long-iso
+                -Tlgha
+                -L 1
+                "${@}"
+        )
+        #       #
+        "${_la_exec_eza[@]}" ;
+}
+declare -fr "_GF_p_list"
+
 
 
 ### less
@@ -221,6 +238,7 @@ alias bashno='bash --noprofile --norc'
 ## variable
 # environment
 export EDITOR="nvim"
+export VISUAL="nvim"
 
 
 ## command
@@ -443,17 +461,19 @@ export GIT_EDITOR="nvim"
 
 
 ## command
-# alias
+# short
 alias gitc='git -P'
 alias gitl='git -p'
-
-# short
+alias ,gitsub='git submodule'
+#       #
 function _GF__gitcdst () 
 {
         cd "${1:-"."}" ;
         pwd ;
         #       #
-        if [[ -d "./.git" ]] ; then
+        git status 2>"/dev/null" ;
+        #       #
+        if [[ "${?}" == "0" ]] ; then
                 '_GF_p_title' "# git count-objects #" ;
                 git count-objects -Hv ;
                 #       #
@@ -461,7 +481,10 @@ function _GF__gitcdst ()
                 git -P remote -v ;
                 #       #
                 '_GF_p_title' "# git branch #" ;
-                git -P branch -avv ;
+                git -P branch -vv ;
+                #       #
+                '_GF_p_title' "# git submodule #" ;
+                git -P submodule status ;
                 #       #
                 '_GF_p_title' "# git status #" ;
                 git -P status ;
