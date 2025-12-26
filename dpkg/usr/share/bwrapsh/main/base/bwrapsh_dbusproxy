@@ -45,8 +45,8 @@ declare -ga "_ga_arg3_bwrapsh"
 ## function
 function _gF_part_over () 
 {
-        '/usr/bin/kill' -15 "${_gi_proc_userbus}" ;
-        '/usr/bin/kill' -15 "${_gi_proc_systembus}" ;
+        '/usr/bin/kill' -15 "${_gi_proc_userbus:?}" ;
+        '/usr/bin/kill' -15 "${_gi_proc_systembus:?}" ;
 }
 declare -F "_gF_part_over"
 
@@ -96,7 +96,8 @@ done
 
 
 ## source
-if [[ "${_gs_part_profile}" == "true" ]] ; then
+if [[ "${_gs_part_profile}" == "true" && -f "${_gs_path_profile}" ]] ; then
+        # shellcheck source="/dev/null" #
         source "${_gs_path_profile}"
 fi
 
@@ -126,21 +127,17 @@ _gs_path_userbus="${_gs_dirs_userbus}/${_gs_init_name}"
 
 ## check
 if [[ "${_gs_part_userbus}" == "true" ]] ; then
-        '/usr/bin/ss' -a | '/usr/bin/grep' --color "${_gs_path_userbus}"
-else
-        false
-fi
-
-if [[ "${?}" == "0" ]] ; then
-        '_gF_tool_echo' "0" "33m" "WARNING" "The program is running."
-        '_gF_tool_exit' "0" "1"
+        if ('/usr/bin/ss' -a | '/usr/bin/grep' --color "${_gs_path_userbus}") ; then
+                '_gF_tool_echo' "0" "33m" "WARNING" "The program is running."
+                '_gF_tool_exit' "0" "1"
+        fi
 fi
 
 
 ## array
 _ga_exec_userbus=(
         '/usr/bin/xdg-dbus-proxy'
-        ${DBUS_SESSION_BUS_ADDRESS}
+        "${DBUS_SESSION_BUS_ADDRESS}"
         "${_gs_path_userbus}"
         --filter
         --talk="org.freedesktop.Notifications"
@@ -177,9 +174,7 @@ for _gi_loop in {1..100} ; do
                 break
         fi
         #       #
-        '/usr/bin/ss' -a | '/usr/bin/grep' --color "${_gs_path_userbus}"
-        #       #
-        if [[ "${?}" == "0" ]] ; then
+        if ('/usr/bin/ss' -a | '/usr/bin/grep' --color "${_gs_path_userbus}") ; then
                 break
         elif [[ "${_gi_loop}" -lt "10" ]] ; then
                 '/usr/bin/sleep' "0.5s"
@@ -208,14 +203,12 @@ _gs_path_systembus="${_gs_dirs_systembus}/${_gs_init_name}"
 
 ## check
 if [[ "${_gs_part_systembus}" == "true" ]] ; then
-        '/usr/bin/ss' -a | '/usr/bin/grep' --color "${_gs_path_systembus}"
+        if ('/usr/bin/ss' -a | '/usr/bin/grep' --color "${_gs_path_systembus}") ; then
+                '_gF_tool_echo' "0" "33m" "WARNING" "The program is running."
+                '_gF_tool_exit' "0" "1"
+        fi
 else
         false
-fi
-
-if [[ "${?}" == "0" ]] ; then
-        '_gF_tool_echo' "0" "33m" "WARNING" "The program is running."
-        '_gF_tool_exit' "0" "1"
 fi
 
 
@@ -256,9 +249,7 @@ for _gi_loop in {1..100} ; do
                 break
         fi
         #       #
-        '/usr/bin/ss' -a | '/usr/bin/grep' --color "${_gs_path_systembus}"
-        #       #
-        if [[ "${?}" == "0" ]] ; then
+        if ('/usr/bin/ss' -a | '/usr/bin/grep' --color "${_gs_path_systembus}") ; then
                 break
         elif [[ "${_gi_loop}" -lt "10" ]] ; then
                 '/usr/bin/sleep' "0.5s"

@@ -49,19 +49,17 @@ declare -ga "_ga_arg3_flatpak"
 function _gF_part_over () 
 {
         if [[ "${_gs_mode_killflatpak}" == "true" ]] ; then
-                '/usr/bin/flatpak' ps | '/usr/bin/grep' --color "${_gs_init_name}" ;
+                if ('/usr/bin/flatpak' ps | '/usr/bin/grep' --color "${_gs_init_name}") ; then
+                        '/usr/bin/flatpak' kill -v "${_gs_init_name}" ;
+                fi
         else
                 false ;
         fi
         #       #
-        if [[ "${?}" == "0" ]] ; then
-                '/usr/bin/flatpak' kill -v "${_gs_init_name}" ;
-        fi
-        #       #
         if [[ "${_gs_mode_x11}" == "auto" ]] ; then
-                '/usr/bin/kill' -15 "${_gi_proc_bwrapicewm}" ;
+                '/usr/bin/kill' -15 "${_gi_proc_bwrapicewm:?}" ;
                 wait "${!}" ;
-                '/usr/bin/kill' -15 "${_gi_proc_xwayland}" ;
+                '/usr/bin/kill' -15 "${_gi_proc_xwayland:?}" ;
         fi
 }
 declare -F "_gF_part_over"
@@ -112,7 +110,8 @@ done
 
 
 ## source
-if [[ "${_gs_part_profile}" == "true" ]] ; then
+if [[ "${_gs_part_profile}" == "true" && -f "${_gs_path_profile}" ]] ; then
+        # shellcheck source="/dev/null" #
         source "${_gs_path_profile}"
 fi
 
@@ -268,9 +267,7 @@ fi
 
 ## wait
 for _gi_loop in {1..100} ; do
-        '/usr/bin/ss' -a | '/usr/bin/grep' --color "${_gs_path_x11socket}"
-        #       #
-        if [[ "${?}" == "0" ]] ; then
+        if ('/usr/bin/ss' -a | '/usr/bin/grep' --color "${_gs_path_x11socket}") ; then
                 break
         elif [[ "${_gi_loop}" -lt "10" ]] ; then
                 '/usr/bin/sleep' "0.5s"
@@ -391,13 +388,16 @@ XAUTHORITY="${_gs_path_xauth}"
 _gs_bash_ps1='\000'
 _gs_bash_ps1+='\n'
 _gs_bash_ps1+='\[\033[41;37;01m\]'
+# shellcheck disable=SC2016 #
 _gs_bash_ps1+='\040BWRAPSH/${_ES_BWRAPSH_TYPE}\040'
 _gs_bash_ps1+='\[\033[0m\]'
 _gs_bash_ps1+='\[\033[41;37;03m\]'
+# shellcheck disable=SC2016 #
 _gs_bash_ps1+='\040${_ES_BWRAPSH_NAME}\040'
 _gs_bash_ps1+='\[\033[0m\]'
 _gs_bash_ps1+='\n'
 _gs_bash_ps1+='\[\033[46;30m\]'
+# shellcheck disable=SC2016 #
 _gs_bash_ps1+='\040${?}\040'
 _gs_bash_ps1+='\[\033[0m\]'
 _gs_bash_ps1+='\[\033[44;30m\]'
@@ -405,6 +405,7 @@ _gs_bash_ps1+='\040\w\040'
 _gs_bash_ps1+='\[\033[0m\]'
 _gs_bash_ps1+='\n'
 _gs_bash_ps1+='\[\033[43;30m\]'
+# shellcheck disable=SC2016 #
 _gs_bash_ps1+='\040${SHLVL}\040'
 _gs_bash_ps1+='\[\033[0m\]'
 _gs_bash_ps1+='\040'
