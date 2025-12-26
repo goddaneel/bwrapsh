@@ -15,6 +15,7 @@ _ga_exec_clean += -fxd
 
 ## check
 _ga_exec_checks += '/usr/bin/fdfind'
+_ga_exec_checks += --hidden
 _ga_exec_checks += --type file
 _ga_exec_checks += .
 _ga_exec_checks += "./dpkg/usr/bin"
@@ -34,6 +35,7 @@ _ga_exec_checks += -x
 _ga_exec_checks += --
 
 _ga_exec_checkb += '/usr/bin/fdfind'
+_ga_exec_checkb += --hidden
 _ga_exec_checkb += --type file
 _ga_exec_checkb += .
 _ga_exec_checkb += "./build/dpkg/usr/share/bwrapsh/main/base"

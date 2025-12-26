@@ -114,6 +114,7 @@ declare -fr "_GF_p_list"
 ### less
 ## variable
 # environment
+# shellcheck disable=SC2016 #
 export LESS='-R --use-color -Dd+r$Du+b$'
 
 
@@ -303,20 +304,41 @@ alias p,shasumc='_GF_p_shasumc'
 
 
 
+### shellcheck
+## command
+# alias
+alias shcheck='shellcheck'
+
+# short
+function _GF__shcheckc () 
+{
+        declare -a "_la_exec_shellcheck" ;
+        #       #
+        _la_exec_shellcheck=(
+                shellcheck
+                --norc
+                "${@}"
+        )
+        #       #
+        "${_la_exec_shellcheck[@]}" ;
+}
+declare -fr "_GF__shcheckc"
+alias ,shcheckc='_GF__shcheckc'
+
+
+
 ### fzf
 ## command
 # environment
 function _GF_e_fzfk () 
 {
-        declare -gx "FZF_ALT_C_OPTS" ;
-        #       #
-        FZF_ALT_C_OPTS="--preview 'eza -la --no-user --no-time --no-filesize {}'" ;
-        #       #
+        # shellcheck source="/dev/null" #
         source "/usr/share/doc/fzf/examples/key-bindings.bash" ;
 }
 #       #
 function _GF_e_fzfc () 
 {
+        # shellcheck source="/dev/null" #
         source "/usr/share/doc/fzf/examples/completion.bash" ;
 }
 #       #
@@ -326,7 +348,6 @@ alias e,fzfk='_GF_e_fzfk'
 alias e,fzfc='_GF_e_fzfc'
 alias e,fzfa='_GF_e_fzfk ; _GF_e_fzfc'
 alias e,fzf='_GF_e_fzfk'
-
 
 
 
@@ -380,14 +401,6 @@ export PATH="${PATH}:${HOME}/.local/bin/"
 # environment
 function _GF_e_proxyv () 
 {
-        declare "_ls_proxy_full" ;
-        declare -gx "ALL_PROXY" ;
-        declare -gx "HTTP_PROXY" ;
-        declare -gx "HTTPS_PROXY" ;
-        declare -gx "all_proxy" ;
-        declare -gx "http_proxy" ;
-        declare -gx "https_proxy" ;
-        #       #
         if [[ "${1}" == ",unset" ]] ; then
                 unset -v "ALL_PROXY" ;
                 unset -v "HTTP_PROXY" ;
@@ -398,18 +411,17 @@ function _GF_e_proxyv ()
         else
                 echo "${2:?}" 1>"/dev/null" || return ;
                 #       #
-                _ls_proxy_full="${1}://127.0.0.1:${2}" ;
-                ALL_PROXY="${_ls_proxy_full}" ;
-                all_proxy="${_ls_proxy_full}" ;
-                HTTP_PROXY="${_ls_proxy_full}" ;
-                http_proxy="${_ls_proxy_full}" ;
-                HTTPS_PROXY="${_ls_proxy_full}" ;
-                https_proxy="${_ls_proxy_full}" ;
+                declare _ls_proxy_full="${1}://127.0.0.1:${2}" ;
+                declare -gx ALL_PROXY="${_ls_proxy_full}" ;
+                declare -gx HTTP_PROXY="${_ls_proxy_full}" ;
+                declare -gx HTTPS_PROXY="${_ls_proxy_full}" ;
+                declare -gx all_proxy="${_ls_proxy_full}" ;
+                declare -gx http_proxy="${_ls_proxy_full}" ;
+                declare -gx https_proxy="${_ls_proxy_full}" ;
         fi
 }
 declare -fr "_GF_e_proxyv"
 alias e,proxyv='_GF_e_proxyv'
-
 
 
 
@@ -423,14 +435,15 @@ function _GF_fc_dpkge ()
         #       #
         set -e ;
         #       #
-        declare -g "_gs_1_base" ;
-        declare -g "_gs_1_ext" ;
+        declare "_gs_1_base" ;
+        #       #
+        declare _gs_1_ext="${1}_ext" ;
         #       #
         _gs_1_base="$(basename "${1:?}")" ;
-        _gs_1_ext="${1}_ext" ;
         #       #
         if [[ ! -e "${_gs_1_ext}" ]] ; then
                 mkdir -pv "${_gs_1_ext}" ;
+                #       #
                 cp -iv "${1}" "${_gs_1_ext}/" ;
         else
                 '_GF_p_echo' "33m" "WARNING: The path exists." ;
@@ -453,7 +466,6 @@ alias fc,dpkge='_GF_fc_dpkge'
 
 
 
-
 #### 3_git
 ## variable
 # environment
@@ -465,17 +477,17 @@ export GIT_EDITOR="nvim"
 alias gitc='git -P'
 alias gitl='git -p'
 alias ,gitsub='git submodule'
+alias ,gitadda='git -P add -v -A'
+alias ,gitcleanf='git -P clean -fxd'
 #       #
 function _GF__gitcdst () 
 {
         cd "${1:-"."}" ;
         pwd ;
         #       #
-        git status 2>"/dev/null" ;
-        #       #
-        if [[ "${?}" == "0" ]] ; then
+        if (git status 2>"/dev/null") ; then
                 '_GF_p_title' "# git count-objects #" ;
-                git count-objects -Hv ;
+                git -P count-objects -Hv ;
                 #       #
                 '_GF_p_title' "# git remote #" ;
                 git -P remote -v ;
@@ -492,4 +504,3 @@ function _GF__gitcdst ()
 }
 declare -fr "_GF__gitcdst"
 alias ,gitcdst='_GF__gitcdst'
-
