@@ -19,6 +19,7 @@ _ga_exec_checks += --type file
 _ga_exec_checks += .
 _ga_exec_checks += "./dpkg/usr/bin"
 _ga_exec_checks += "./dpkg/usr/share/bwrapsh/main/base"
+_ga_exec_checks += "./dpkg/usr/share/bwrapsh/main/patch/bash"
 _ga_exec_checks += "./dpkg/usr/share/bwrapsh/extra/profile"
 _ga_exec_checks += "./example/usr/local/share/bwrapsh/main/init"
 _ga_exec_checks += "./example/usr/local/share/bwrapsh/extra/profile"
@@ -47,6 +48,7 @@ _ga_exec_checkb += --color=always
 _ga_exec_checkb += -a
 _ga_exec_checkb += -x
 _ga_exec_checkb += --
+
 
 ## mkdir
 _ga_exec_mkdir += '/usr/bin/install'
