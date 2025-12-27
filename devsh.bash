@@ -275,7 +275,7 @@ function _gF_unit_dpkg ()
                 --root-owner-group
                 --build
                 "./build/dpkg"
-                "./export/${_gs_build_version}"
+                "./export/${_gs_build_package}"
         )
         #               #
         "${_la_exec_dpkg[@]}" ;
@@ -287,7 +287,7 @@ function _gF_unit_dpkg ()
         _la_exec_shasum=(
                 '/usr/bin/shasum'
                 --algorithm 512
-                "${_gs_build_version}"
+                "${_gs_build_package}"
         )
         #               #
         "${_la_exec_shasum[@]}" > "${_gs_build_package}.shasum" ;
@@ -352,8 +352,8 @@ case "${_gs_1_opt}" in
                 '_gF_unit_precopy'
                 '_gF_unit_shasum'
                 '_gF_unit_postcopy'
-                '_gF_unit_dpkg'
                 '_gF_unit_checkb'
+                '_gF_unit_dpkg'
                 ;;
         "sync-local")
                 '_gF_unit_sync'
