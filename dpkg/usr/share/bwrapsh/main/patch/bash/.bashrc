@@ -425,6 +425,42 @@ alias e,proxyv='_GF_e_proxyv'
 
 
 
+
+#### 3_develop
+### devsh
+## command
+# short
+function _GF__devsh () 
+{
+        declare -a "_la_exec_bash" ;
+        declare -a "_la_exec_shellcheck" ;
+        #       #
+        _la_exec_bash=(
+                bash
+                --noprofile
+                --norc
+                "./devsh.bash"
+                "${@}"
+        )
+        #       #
+        _la_exec_shellcheck=(
+                shellcheck
+                --norc
+                -a
+                -x
+                "./devsh.bash"
+        )
+        #       #
+        if ("${_la_exec_shellcheck[@]}") ; then
+                "${_la_exec_bash[@]}" ;
+        fi
+}
+declare -fr "_GF__devsh"
+alias ,devsh='_GF__devsh'
+
+
+
+
 #### 3_dpkg
 ### dpkg
 ## command
