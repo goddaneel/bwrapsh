@@ -290,7 +290,7 @@ function _gF_unit_dpkg ()
                 "${_gs_build_version}"
         )
         #               #
-        "${_la_exec_shasum[@]}" > "${_gs_build_package}.shasum"
+        "${_la_exec_shasum[@]}" > "${_gs_build_package}.shasum" ;
         #               #
         exit ) ;
 }
@@ -360,4 +360,5 @@ case "${_gs_1_opt}" in
                 ;;
         *)
                 '_gF_tool_echo' "31m" "ERROR: Unkown Option."
+                ;;
 esac
