@@ -439,7 +439,7 @@ function _GF__devsh ()
                 bash
                 --noprofile
                 --norc
-                "./devsh.bash"
+                "./DEVSH.bash"
                 "${@}"
         )
         #       #
@@ -448,7 +448,7 @@ function _GF__devsh ()
                 --norc
                 -a
                 -x
-                "./devsh.bash"
+                "./DEVSH.bash"
         )
         #       #
         if ("${_la_exec_shellcheck[@]}") ; then
