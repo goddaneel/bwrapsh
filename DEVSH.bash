@@ -94,6 +94,7 @@ function _gF_unit_mkdir ()
                 "./build/dpkg/usr/share/bwrapsh/main/base"
                 "./build/dpkg/usr/share/bwrapsh/main/info"
                 "./build/dpkg/usr/share/bwrapsh/main/patch/bash"
+                "./build/dpkg/usr/share/bwrapsh/main/patch/git"
                 "./build/dpkg/usr/share/bwrapsh/main/patch/icewm"
                 "./build/dpkg/usr/share/bwrapsh/extra/profile"
                 "./export"
@@ -161,6 +162,20 @@ function _gF_unit_precopy ()
                 "./build/dpkg/usr/share/bwrapsh/main/patch/bash/"
                 --
                 "./dpkg/usr/share/bwrapsh/main/patch/bash/.bashrc"
+        )
+        #               #
+        "${_la_exec_install[@]}" ;
+        #               #
+        #               #
+        _la_exec_install=(
+                '/usr/bin/install'
+                -v
+                -p
+                -m 0644
+                -t
+                "./build/dpkg/usr/share/bwrapsh/main/patch/git/"
+                --
+                "./dpkg/usr/share/bwrapsh/main/patch/git/.gitconfig"
         )
         #               #
         "${_la_exec_install[@]}" ;

@@ -163,21 +163,6 @@ function lessb ()
         "${_la_exec_batcat[@]}" ;
 }
 declare -fr "lessb"
-#       #
-function batl ()
-{
-        declare -a "_la_exec_batcat" ;
-        #       #
-        _la_exec_batcat=(
-                batcat
-                --paging="auto"
-                -l
-                "${@}"
-        )
-        #       #
-        "${_la_exec_batcat[@]}" ;
-}
-declare -fr "batl"
 
 
 
@@ -228,10 +213,6 @@ alias fdfh='fdfind -H'
 
 
 #### 1_manage
-### bash
-## command
-# short
-alias bashno='bash --noprofile --norc'
 
 
 
@@ -304,29 +285,6 @@ alias p,shasumc='_GF_p_shasumc'
 
 
 
-### shellcheck
-## command
-# alias
-alias shcheck='shellcheck'
-
-# short
-function _GF__shcheckc () 
-{
-        declare -a "_la_exec_shellcheck" ;
-        #       #
-        _la_exec_shellcheck=(
-                shellcheck
-                --norc
-                "${@}"
-        )
-        #       #
-        "${_la_exec_shellcheck[@]}" ;
-}
-declare -fr "_GF__shcheckc"
-alias ,shcheckc='_GF__shcheckc'
-
-
-
 ### fzf
 ## command
 # environment
@@ -372,6 +330,7 @@ alias p,copypath='_GF_p_copypath'
 
 
 
+
 #### 2_display
 ### wl-clipboard
 ## command
@@ -383,6 +342,70 @@ alias wlpaste='wl-paste'
 alias wlcopyc='wl-copy -c'
 alias wlcopyn='wl-copy -n'
 alias wlpasten='wl-paste -n'
+
+
+
+
+#### 2_develop
+### shellcheck
+## command
+# alias
+alias shcheck='shellcheck'
+
+# short
+function _GF__devsh () 
+{
+        declare "_ls_bash_path" ;
+        declare -a "_la_bash_list" ;
+        declare -a "_la_exec_bash" ;
+        declare -a "_la_exec_shellcheck" ;
+        #       #
+        unset -v "_ls_bash_path" ;
+        #       #
+        if [[ "${1}" == ",," ]] ; then
+                _la_bash_list=(
+                        "DEVSH.bash"
+                        "DEVSH.sh"
+                )
+        elif [[ -n "${1}" ]] ; then
+                _la_bash_list=(
+                        "${1}"
+                )
+        fi
+        #       #
+        for _ls_loop in "${_la_bash_list[@]}" ; do
+                if [[ -e "./${_ls_loop}" ]] ; then
+                        _ls_bash_path="./${_ls_loop}" ;
+                fi
+        done
+        #       #
+        shift "1" ;
+        #       #
+        _la_exec_bash=(
+                bash
+                --noprofile
+                --norc
+                "${_ls_bash_path}"
+                "${@}"
+        )
+        #       #
+        _la_exec_shellcheck=(
+                shellcheck
+                --norc
+                -a
+                -x
+                "${_ls_bash_path}"
+        )
+        #       #
+        if [[ -z "${_ls_bash_path}" ]] ; then
+                '_GF_p_echo' "31m" "ERROR: Invalid bash file path." ;
+                return "1" ;
+        elif ("${_la_exec_shellcheck[@]}") ; then
+                "${_la_exec_bash[@]}" ;
+        fi
+}
+declare -fr "_GF__devsh"
+alias ,devsh='_GF__devsh'
 
 
 
@@ -422,41 +445,6 @@ function _GF_e_proxyv ()
 }
 declare -fr "_GF_e_proxyv"
 alias e,proxyv='_GF_e_proxyv'
-
-
-
-
-#### 3_develop
-### devsh
-## command
-# short
-function _GF__devsh () 
-{
-        declare -a "_la_exec_bash" ;
-        declare -a "_la_exec_shellcheck" ;
-        #       #
-        _la_exec_bash=(
-                bash
-                --noprofile
-                --norc
-                "./DEVSH.bash"
-                "${@}"
-        )
-        #       #
-        _la_exec_shellcheck=(
-                shellcheck
-                --norc
-                -a
-                -x
-                "./DEVSH.bash"
-        )
-        #       #
-        if ("${_la_exec_shellcheck[@]}") ; then
-                "${_la_exec_bash[@]}" ;
-        fi
-}
-declare -fr "_GF__devsh"
-alias ,devsh='_GF__devsh'
 
 
 

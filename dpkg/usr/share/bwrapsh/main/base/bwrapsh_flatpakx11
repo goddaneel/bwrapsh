@@ -329,6 +329,7 @@ _ga_exec_bwrapicewm=(
         --setenv "_ES_BWRAPSH_TYPE" "${_gs_init_type}"
         --setenv "_ES_BWRAPSH_NAME" "${_gs_init_name}"
         --overlay-src "/usr/share/bwrapsh/main/patch/bash"
+        --overlay-src "/usr/share/bwrapsh/main/patch/git"
         --tmp-overlay "${HOME}"
         --ro-bind-try "${HOME}/.config/gtkrc"{,}
         --ro-bind-try "${HOME}/.config/gtkrc-2.0"{,}
