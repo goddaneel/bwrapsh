@@ -394,6 +394,7 @@ function _GF__devsh ()
                 --norc
                 -a
                 -x
+                --shell="bash"
                 "${_ls_bash_path}"
         )
         #       #
