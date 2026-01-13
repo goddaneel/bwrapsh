@@ -2,7 +2,7 @@
 
 
 ## name
-declare -ga "_ga_exec_sparkle"
+declare -ga "_ga_exec_codium"
 
 
 ## load

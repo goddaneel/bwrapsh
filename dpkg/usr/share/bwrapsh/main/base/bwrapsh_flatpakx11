@@ -300,15 +300,16 @@ _ga_exec_bwrapicewm=(
         --tmpfs "/run"
         --tmpfs "/tmp"
         --tmpfs "/home"
-        --ro-bind "/etc"{,}
-        --ro-bind "/srv"{,}
-        --ro-bind "/usr/bin"{,}
-        --ro-bind "/usr/include"{,}
-        --ro-bind "/usr/lib"{,}
-        --ro-bind "/usr/lib64"{,}
-        --ro-bind "/usr/libexec"{,}
-        --ro-bind "/usr/share"{,}
-        --ro-bind "/usr/src"{,}
+        --ro-bind-try "/etc"{,}
+        --ro-bind-try "/srv"{,}
+        --ro-bind-try "/usr/bin"{,}
+        --ro-bind-try "/usr/include"{,}
+        --ro-bind-try "/usr/lib"{,}
+        --ro-bind-try "/usr/lib64"{,}
+        --ro-bind-try "/usr/libexec"{,}
+        --ro-bind-try "/usr/share"{,}
+        --ro-bind-try "/usr/src"{,}
+        --ro-bind-try "/opt"{,}
         --symlink "/usr/bin" "/bin"
         --symlink "/usr/lib" "/lib"
         --symlink "/usr/lib64" "/lib64"
@@ -318,10 +319,10 @@ _ga_exec_bwrapicewm=(
         --tmpfs "${XDG_RUNTIME_DIR}"
         --tmpfs "${HOME}"
         --unsetenv "PS1"
-        --dev-bind "/dev/dri"{,}
-        --ro-bind "/sys/dev/char"{,}
-        --ro-bind "/sys/devices/pci0000:00"{,}
-        --ro-bind "${XDG_RUNTIME_DIR}/${WAYLAND_DISPLAY}"{,}
+        --dev-bind-try "/dev/dri"{,}
+        --ro-bind-try "/sys/dev/char"{,}
+        --ro-bind-try "/sys/devices/pci0000:00"{,}
+        --ro-bind-try "${XDG_RUNTIME_DIR}/${WAYLAND_DISPLAY}"{,}
         --setenv "WAYLAND_DISPLAY" "${WAYLAND_DISPLAY}"
         --ro-bind "${_gs_path_x11socket}"{,}
         --setenv "DISPLAY" ":${_gi_init_x11}"
@@ -338,11 +339,6 @@ _ga_exec_bwrapicewm=(
         --ro-bind-try "${HOME}/.config/gtk-3.0/gtk.css"{,}
         --ro-bind-try "${HOME}/.config/gtk-3.0/settings.ini"{,}
         --ro-bind-try "${HOME}/.config/gtk-3.0/window_decorations.css"{,}
-        --ro-bind-try "${HOME}/.config/gtk-4.0/assets"{,}
-        --ro-bind-try "${HOME}/.config/gtk-4.0/color.css"{,}
-        --ro-bind-try "${HOME}/.config/gtk-4.0/gtk.css"{,}
-        --ro-bind-try "${HOME}/.config/gtk-4.0/settings.ini"{,}
-        --ro-bind-try "${HOME}/.config/gtk-4.0/window_decorations.css"{,}
         --ro-bind-try "${HOME}/.config/user-dirs.locale"{,}
         --ro-bind-try "/dev/null" "/usr/share/icewm/keys"
         --ro-bind-try "/dev/null" "/usr/share/icewm/menu"
