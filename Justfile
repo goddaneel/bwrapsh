@@ -1,31 +1,24 @@
-#!/bin/bash
+set positional-arguments
+set shell := ["bash", "-uc"]
 
 
-### init
-## set
-set -e
+_gs_control_version := `'/usr/bin/grep' "Version:" "./dpkg/DEBIAN/control"`
+_gs_build_version := replace(_gs_control_version, "Version: ", "")
+_gs_build_package := "bwrapsh_" + _gs_build_version + "_all.deb"
 
 
-### function
-## tool
-function _gF_tool_echo () 
-{
-        echo -e "\n${3}\033[${1:?}${2:?}\033[0m" ;
-}
-declare -fr '_gF_tool_echo'
+default:
+        just --list --unsorted
 
+clean:
+        '/usr/bin/git' clean -fxd
 
-## unit
-function _gF_unit_clean () 
-{
-        '/usr/bin/git' clean -fxd ;
-}
-declare -fr '_gF_unit_clean'
-
-function _gF_unit_checks () 
-{
-        declare -a "_la_exec_check" ;
-        #               #
+checks:
+        #!/bin/bash
+        set -euxo pipefail
+        #	#
+        declare -a "_la_exec_check"
+        #	#
         _la_exec_check=(
                 '/usr/bin/fdfind'
                 --hidden
@@ -47,15 +40,15 @@ function _gF_unit_checks ()
                 -x
                 --
         )
-        #               #
-        "${_la_exec_check[@]}" ;
-}
-declare -fr '_gF_unit_checks'
+        #	#
+        "${_la_exec_check[@]}"
 
-function _gF_unit_checkb () 
-{
-        declare -a "_la_exec_check" ;
-        #               #
+checkb:
+        #!/bin/bash
+        set -euxo pipefail
+        #	#
+        declare -a "_la_exec_check"
+        #	#
         _la_exec_check=(
                 '/usr/bin/fdfind'
                 --hidden
@@ -73,15 +66,15 @@ function _gF_unit_checkb ()
                 -x
                 --
         )
-        #               #
-        "${_la_exec_check[@]}" ;
-}
-declare -fr '_gF_unit_checkb'
+        #	#
+        "${_la_exec_check[@]}"
 
-function _gF_unit_mkdir () 
-{
-        declare -a "_la_exec_install" ;
-        #               #
+mkdir:
+        #!/bin/bash
+        set -euxo pipefail
+        #	#
+        declare -a "_la_exec_install"
+        #	#
         _la_exec_install=(
                 '/usr/bin/install'
                 -v
@@ -99,17 +92,17 @@ function _gF_unit_mkdir ()
                 "./build/dpkg/usr/share/bwrapsh/extra/profile"
                 "./export"
         )
-        #               #
-        "${_la_exec_install[@]}" ;
-}
-declare -fr '_gF_unit_mkdir'
+        #	#
+        "${_la_exec_install[@]}"
 
-function _gF_unit_precopy () 
-{
-        declare -a "_la_exec_install" ;
-        declare -a "_la_exec_fdfind" ;
-        #               #
-        #               #
+precopy:
+        #!/bin/bash
+        set -euxo pipefail
+        #	#
+        declare -a "_la_exec_install"
+        declare -a "_la_exec_fdfind"
+        #	#
+        #	#
         _la_exec_install=(
                 '/usr/bin/install'
                 -v
@@ -120,10 +113,10 @@ function _gF_unit_precopy ()
                 --
                 "./dpkg/usr/bin/bwrapsh"
         )
-        #               #
-        "${_la_exec_install[@]}" ;
-        #               #
-        #               #
+        #	#
+        "${_la_exec_install[@]}"
+        #	#
+        #	#
         _la_exec_install=(
                 '/usr/bin/install'
                 -v
@@ -135,10 +128,10 @@ function _gF_unit_precopy ()
                 "./dpkg/usr/share/bwrapsh/main/base/bwrapsh_dbusproxy"
                 "./dpkg/usr/share/bwrapsh/main/base/bwrapsh_flatpakx11"
         )
-        #               #
-        "${_la_exec_install[@]}" ;
-        #               #
-        #               #
+        #	#
+        "${_la_exec_install[@]}"
+        #	#
+        #	#
         _la_exec_install=(
                 '/usr/bin/install'
                 -v
@@ -149,10 +142,10 @@ function _gF_unit_precopy ()
                 --
                 "./LICENSE"
         )
-        #               #
-        "${_la_exec_install[@]}" ;
-        #               #
-        #               #
+        #	#
+        "${_la_exec_install[@]}"
+        #	#
+        #	#
         _la_exec_install=(
                 '/usr/bin/install'
                 -v
@@ -163,10 +156,10 @@ function _gF_unit_precopy ()
                 --
                 "./dpkg/usr/share/bwrapsh/main/patch/bash/.bashrc"
         )
-        #               #
-        "${_la_exec_install[@]}" ;
-        #               #
-        #               #
+        #	#
+        "${_la_exec_install[@]}"
+        #	#
+        #	#
         _la_exec_install=(
                 '/usr/bin/install'
                 -v
@@ -177,12 +170,12 @@ function _gF_unit_precopy ()
                 --
                 "./dpkg/usr/share/bwrapsh/main/patch/git/.gitconfig"
         )
-        #               #
-        "${_la_exec_install[@]}" ;
-        #               #
-        #               #
-        echo "${_gs_build_version}" > "./build/create/info/version" ;
-        #               #
+        #	#
+        "${_la_exec_install[@]}"
+        #	#
+        #	#
+        echo "{{_gs_build_version}}" > "./build/create/info/version"
+        #	#
         _la_exec_fdfind=(
                 '/usr/bin/fdfind'
                 --type file
@@ -198,10 +191,10 @@ function _gF_unit_precopy ()
                 "./build/dpkg/usr/share/bwrapsh/main/info/"
                 --
         )
-        #               #
-        "${_la_exec_fdfind[@]}" ;
-        #               #
-        #               #
+        #	#
+        "${_la_exec_fdfind[@]}"
+        #	#
+        #	#
         _la_exec_fdfind=(
                 '/usr/bin/fdfind'
                 --type file
@@ -216,10 +209,10 @@ function _gF_unit_precopy ()
                 "./build/dpkg/usr/share/bwrapsh/main/patch/icewm/"
                 --
         )
-        #               #
-        "${_la_exec_fdfind[@]}" ;
-        #               #
-        #               #
+        #	#
+        "${_la_exec_fdfind[@]}"
+        #	#
+        #	#
         _la_exec_fdfind=(
                 '/usr/bin/fdfind'
                 --type file
@@ -234,15 +227,15 @@ function _gF_unit_precopy ()
                 "./build/dpkg/usr/share/bwrapsh/extra/profile/"
                 --
         )
-        #               #
-        "${_la_exec_fdfind[@]}" ;
-}
-declare -fr '_gF_unit_precopy'
+        #	#
+        "${_la_exec_fdfind[@]}"
 
-function _gF_unit_postcopy () 
-{
-        declare -a "_la_exec_install" ;
-        #               #
+postcopy:
+        #!/bin/bash
+        set -euxo pipefail
+        #	#
+        declare -a "_la_exec_install"
+        #	#
         _la_exec_install=(
                 '/usr/bin/install'
                 -v
@@ -254,17 +247,17 @@ function _gF_unit_postcopy ()
                 "./dpkg/DEBIAN/control"
                 "./build/create/DEBIAN/shasums"
         )
-        #               #
-        "${_la_exec_install[@]}" ;
-}
-declare -fr '_gF_unit_postcopy'
+        #	#
+        "${_la_exec_install[@]}"
 
-function _gF_unit_shasum () 
-{
-        ( cd "./dpkg" ;
-        #               #
-        declare -a "_la_exec_fdfind" ;
-        #               #
+shasum:
+        #!/bin/bash
+        set -euxo pipefail
+        #	#
+        cd "./dpkg"
+        #	#
+        declare -a "_la_exec_fdfind"
+        #	#
         _la_exec_fdfind=(
                 '/usr/bin/fdfind'
                 --strip-cwd-prefix
@@ -274,47 +267,43 @@ function _gF_unit_shasum ()
                 '/usr/bin/shasum'
                 --algorithm 256
         )
-        #               #
-        "${_la_exec_fdfind[@]}" > "../build/create/DEBIAN/shasums" ;
-        #               #
-        exit ) ;
-}
-declare -fr '_gF_unit_shasum'
+        #	#
+        "${_la_exec_fdfind[@]}" > "../build/create/DEBIAN/shasums"
 
-function _gF_unit_dpkg () 
-{
-        declare -a "_la_exec_dpkg" ;
-        #               #
+dpkg:
+        #!/bin/bash
+        set -euxo pipefail
+        #	#
+        declare -a "_la_exec_dpkg"
+        #	#
         _la_exec_dpkg=(
                 '/usr/bin/dpkg-deb'
                 --root-owner-group
                 --build
                 "./build/dpkg"
-                "./export/${_gs_build_package}"
+                "./export/{{_gs_build_package}}"
         )
-        #               #
-        "${_la_exec_dpkg[@]}" ;
-        #               #
-        ( cd "./export" ;
-        #               #
-        declare -a "_la_exec_shasum" ;
-        #               #
+        #	#
+        "${_la_exec_dpkg[@]}"
+        #	#
+        cd "./export"
+        #	#
+        declare -a "_la_exec_shasum"
+        #	#
         _la_exec_shasum=(
                 '/usr/bin/shasum'
                 --algorithm 512
-                "${_gs_build_package}"
+                "{{_gs_build_package}}"
         )
-        #               #
-        "${_la_exec_shasum[@]}" > "${_gs_build_package}.shasum" ;
-        #               #
-        exit ) ;
-}
-declare -fr '_gF_unit_dpkg'
+        #	#
+        "${_la_exec_shasum[@]}" > "{{_gs_build_package}}.shasum"
 
-function _gF_unit_sync () 
-{
+sync:
+        #!/bin/bash
+        set -euxo pipefail
+        #	#
         declare -a "_la_exec_rsync"
-        #               #
+        #	#
         _la_exec_rsync=(
                 '/usr/bin/rsync'
                 --info=progress2
@@ -327,53 +316,14 @@ function _gF_unit_sync ()
                 "/usr/local/share/bwrapsh"
                 "./example/"
         )
-        #               #
-        "${_la_exec_rsync[@]}" ;
-}
-declare -fr '_gF_unit_sync'
+        #	#
+        "${_la_exec_rsync[@]}"
 
-
-
-### variable
-## name
-declare -g "_gs_control_version"
-declare -g "_gs_build_version"
-declare -g "_gs_build_package"
-
-
-## value
-declare -g _gs_1_opt="${1}"
-
-
-## command
-_gs_control_version="$('/usr/bin/grep' "Version:" "./dpkg/DEBIAN/control")"
-_gs_build_version="${_gs_control_version##"Version: "}"
-_gs_build_package="bwrapsh_${_gs_build_version}_all.deb"
-
-
-
-### exec
-## case
-case "${_gs_1_opt}" in
-        "clean-all")
-                '_gF_unit_clean'
-                ;;
-        "check-all")
-                '_gF_unit_checks'
-                ;;
-        "build-deb")
-                '_gF_unit_clean'
-                '_gF_unit_mkdir'
-                '_gF_unit_precopy'
-                '_gF_unit_shasum'
-                '_gF_unit_postcopy'
-                '_gF_unit_checkb'
-                '_gF_unit_dpkg'
-                ;;
-        "sync-local")
-                '_gF_unit_sync'
-                ;;
-        *)
-                '_gF_tool_echo' "31m" "ERROR: Unkown Option."
-                ;;
-esac
+build-deb:
+        just clean
+        just mkdir
+        just precopy
+        just shasum
+        just postcopy
+        just checkb
+        just dpkg
