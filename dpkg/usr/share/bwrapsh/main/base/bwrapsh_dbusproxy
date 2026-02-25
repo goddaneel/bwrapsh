@@ -46,8 +46,13 @@ declare -ga "_ga_arg3_bwrapsh"
 ## function
 function _gF_part_over () 
 {
-        '/usr/bin/kill' -15 "${_gi_proc_userbus:?}" ;
-        '/usr/bin/kill' -15 "${_gi_proc_systembus:?}" ;
+        if [[ -n "${_gi_proc_userbus}" ]] ; then
+                '/usr/bin/kill' -15 "${_gi_proc_userbus}" ;
+        fi
+        #       #
+        if [[ -n "${_gi_proc_systembus}" ]] ; then
+                '/usr/bin/kill' -15 "${_gi_proc_systembus}" ;
+        fi
 }
 declare -F "_gF_part_over"
 
@@ -61,10 +66,6 @@ fi
 
 if [[ -z "${_gs_init_name}" ]] ; then
         '_gF_tool_exit' "0" "1"
-fi
-
-if [[ -z "${_gs_mode_multi}" ]] ; then
-        _gs_mode_multi="false"
 fi
 
 
@@ -111,6 +112,12 @@ fi
 ### init
 ## load
 '_gF_tool_load' "init"
+
+
+## mode
+if [[ -z "${_gs_mode_multi}" ]] ; then
+        _gs_mode_multi="false"
+fi
 
 
 
@@ -162,10 +169,10 @@ if [[ "${_gs_part_userbus}" == "true" ]] ; then
         '_gF_tool_exit' "1"
         #       #
         (
-        "${_ga_exec_userbus[@]}"
-        exit ) &
-else
-        true
+                "${_ga_exec_userbus[@]}"
+                exit ) &
+        else
+                true
 fi
 
 
@@ -197,7 +204,7 @@ done
 
 ## part
 if [[ -z "${_gs_part_systembus}" ]] ; then
-        _gs_part_systembus="true"
+        _gs_part_systembus="false"
 fi
 
 
@@ -237,10 +244,10 @@ if [[ "${_gs_part_systembus}" == "true" ]] ; then
         '_gF_tool_exit' "1"
         #       #
         (
-        "${_ga_exec_systembus[@]}"
-        exit ) &
-else
-        true
+                "${_ga_exec_systembus[@]}"
+                exit ) &
+        else
+                true
 fi
 
 
