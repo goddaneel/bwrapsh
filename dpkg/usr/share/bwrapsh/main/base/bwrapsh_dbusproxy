@@ -168,16 +168,12 @@ if [[ "${_gs_part_userbus}" == "true" ]] ; then
         '/usr/bin/mkdir' -pv "${_gs_dirs_userbus}"
         '_gF_tool_exit' "1"
         #       #
-        (
-                "${_ga_exec_userbus[@]}"
-                exit ) &
-        else
-                true
+        ("${_ga_exec_userbus[@]}") &
+        #       #
+        '_gF_tool_stps' "userbus" "xdg-dbus-proxy"
+else
+        true
 fi
-
-
-## watch
-'_gF_tool_stps' "userbus" "xdg-dbus-proxy"
 
 
 ## wait
@@ -243,16 +239,12 @@ if [[ "${_gs_part_systembus}" == "true" ]] ; then
         '/usr/bin/mkdir' -pv "${_gs_dirs_systembus}"
         '_gF_tool_exit' "1"
         #       #
-        (
-                "${_ga_exec_systembus[@]}"
-                exit ) &
-        else
-                true
+        ("${_ga_exec_systembus[@]}") &
+        #       #
+        '_gF_tool_stps' "systembus" "xdg-dbus-proxy"
+else
+        true
 fi
-
-
-## watch
-'_gF_tool_stps' "systembus" "xdg-dbus-proxy"
 
 
 ## wait
