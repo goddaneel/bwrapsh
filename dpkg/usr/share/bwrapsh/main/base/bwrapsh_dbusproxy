@@ -19,6 +19,7 @@ declare -g "_gs_init_type"
 declare -g "_gs_init_name"
 declare -g "_gs_init_exec"
 declare -g "_gs_mode_test"
+declare -g "_gs_mode_multi"
 declare -g "_gs_mode_network"
 declare -g "_gs_part_userbus"
 declare -g "_gs_part_systembus"
@@ -60,6 +61,10 @@ fi
 
 if [[ -z "${_gs_init_name}" ]] ; then
         '_gF_tool_exit' "0" "1"
+fi
+
+if [[ -z "${_gs_mode_multi}" ]] ; then
+        _gs_mode_multi="false"
 fi
 
 
@@ -126,7 +131,7 @@ _gs_path_userbus="${_gs_dirs_userbus}/${_gs_init_name}"
 
 
 ## check
-if [[ "${_gs_part_userbus}" == "true" ]] ; then
+if [[ "${_gs_mode_multi}" != "true" && "${_gs_part_userbus}" == "true" ]] ; then
         if ('/usr/bin/ss' -a | '/usr/bin/grep' --color "${_gs_path_userbus}") ; then
                 '_gF_tool_echo' "0" "33m" "WARNING" "The program is running."
                 '_gF_tool_exit' "0" "1"
@@ -202,7 +207,7 @@ _gs_path_systembus="${_gs_dirs_systembus}/${_gs_init_name}"
 
 
 ## check
-if [[ "${_gs_part_systembus}" == "true" ]] ; then
+if [[ "${_gs_mode_multi}" != "true" && "${_gs_part_userbus}" == "true" ]] ; then
         if ('/usr/bin/ss' -a | '/usr/bin/grep' --color "${_gs_path_systembus}") ; then
                 '_gF_tool_echo' "0" "33m" "WARNING" "The program is running."
                 '_gF_tool_exit' "0" "1"
@@ -405,6 +410,8 @@ _ga_exec_bwrapsh=(
         --dev-bind-try "/dev/dri"{,}
         --ro-bind-try "/sys/dev/char"{,}
         --ro-bind-try "/sys/devices/pci0000:00"{,}
+        --ro-bind-try "/var/lib/dpkg"{,}
+        --ro-bind-try "/var/lib/flatpak"{,}
         --ro-bind-try "${XDG_RUNTIME_DIR}/${WAYLAND_DISPLAY}"{,}
         --setenv "WAYLAND_DISPLAY" "${WAYLAND_DISPLAY}"
         --setenv "XDG_SESSION_TYPE" "wayland"
