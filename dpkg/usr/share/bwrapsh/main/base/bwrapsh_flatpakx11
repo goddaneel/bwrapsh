@@ -48,6 +48,8 @@ declare -ga "_ga_arg3_flatpak"
 ## function
 function _gF_part_over () 
 {
+        declare -i "_li_stat_killflatpak" ;
+        #       #
         if [[ "${_gs_mode_killflatpak}" != "true" ]] ; then
                 false ;
         elif ('/usr/bin/flatpak' ps | '/usr/bin/grep' --color "${_gs_init_name}") ; then
@@ -56,8 +58,10 @@ function _gF_part_over ()
                 false ;
         fi
         #       #
+        _li_stat_killflatpak="${?}" ;
+        #       #
         if [[ "${_gs_mode_x11}" != "auto" ]] ; then
-                return "${?}" ;
+                return "${_li_stat_killflatpak}" ;
         fi
         #       #
         if [[ -n "${_gi_proc_bwrapicewm}" ]] ; then
