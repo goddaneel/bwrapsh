@@ -5,7 +5,6 @@
 ### default
 ## name
 declare -i "_gi_loop"
-declare -i "_gi_stat_end"
 declare -a "_ga_exec_userbus"
 declare -a "_ga_exec_systembus"
 declare -a "_ga_exec_bwrapsh"
@@ -115,10 +114,6 @@ fi
 '_gF_tool_load' "init"
 
 
-## end
-_gi_stat_end="1"
-
-
 ## mode
 if [[ -z "${_gs_mode_multi}" ]] ; then
         _gs_mode_multi="false"
@@ -176,8 +171,6 @@ if [[ "${_gs_part_userbus}" == "true" ]] ; then
         ("${_ga_exec_userbus[@]}") &
         #       #
         '_gF_tool_stps' "userbus" "xdg-dbus-proxy"
-else
-        true
 fi
 
 
@@ -247,8 +240,6 @@ if [[ "${_gs_part_systembus}" == "true" ]] ; then
         ("${_ga_exec_systembus[@]}") &
         #       #
         '_gF_tool_stps' "systembus" "xdg-dbus-proxy"
-else
-        true
 fi
 
 
@@ -457,16 +448,8 @@ _ga_exec_bwrapsh=(
 "${_ga_exec_bwrapsh[@]}"
 
 
-## end
-_gi_stat_end="${?}"
-
-
 
 ### over
 ## kill
 '_gF_part_over'
-
-
-## end
-exit "${_gi_stat_end}"
 

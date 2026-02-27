@@ -6,7 +6,6 @@
 ## name
 declare -x "DISPLAY"
 declare -x "XAUTHORITY"
-declare -i "_gi_stat_end"
 declare -i "_gi_stat_ss"
 declare -g "_gs_bash_ps1"
 declare -g "_gs_bash_ps0"
@@ -129,10 +128,6 @@ fi
 ### init
 ## load
 '_gF_tool_load' "init"
-
-
-## end
-_gi_stat_end="1"
 
 
 
@@ -269,8 +264,6 @@ if [[ "${_gs_part_xwayland}" == "true" ]] ; then
         ("${_ga_exec_xwayland[@]}") &
         #       #
         '_gF_tool_stps' "xwayland" "Xwayland"
-else
-        true
 fi
 
 
@@ -374,8 +367,6 @@ if [[ "${_gs_part_bwrapicewm}" == "true" ]] ; then
         ("${_ga_exec_bwrapicewm[@]}") &
         #       #
         '_gF_tool_stps' "bwrapicewm" "bwrap"
-else
-        true
 fi
 
 
@@ -494,16 +485,8 @@ _ga_exec_flatpak=(
 "${_ga_exec_flatpak[@]}"
 
 
-## end
-_gi_stat_end="${?}"
-
-
 
 ### over
 ## kill
 '_gF_part_over'
-
-
-## end
-exit "${_gi_stat_end}"
 
