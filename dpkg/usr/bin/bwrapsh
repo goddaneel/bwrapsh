@@ -67,8 +67,8 @@ function _gF_tool_stps ()
         #       #
         _li_proc="$("${_la_exec_pgrep[@]}")" ;
         #       #
-        declare -gi "_gi_ppid_${1:?}"="${_li_ppid}" ;
         declare -gi "_gi_proc_${1:?}"="${_li_proc}" ;
+        declare -gi "_gi_ppid_${1:?}"="${_li_ppid}" ;
 }
 declare -Fr "_gF_tool_stps"
 

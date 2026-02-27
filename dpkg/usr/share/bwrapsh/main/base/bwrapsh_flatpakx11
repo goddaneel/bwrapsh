@@ -62,24 +62,20 @@ function _gF_part_over ()
                 return "${_li_stat_killflatpak}" ;
         fi
         #       #
-        if [[ -n "${_gi_ppid_bwrapicewm}" && "${_gi_ppid_bwrapicewm}" != "0" ]] ; then
-                '/usr/bin/kill' -15 "${_gi_ppid_bwrapicewm}" ;
-                #       #
-                wait "${_gi_ppid_bwrapicewm}" ;
-        fi
-        #       #
-        if [[ -n "${_gi_ppid_xwayland}" && "${_gi_ppid_xwayland}" != "0" ]] ; then
-                '/usr/bin/kill' -15 "${_gi_ppid_xwayland}" ;
-        fi
-        #       #
         if [[ -n "${_gi_proc_bwrapicewm}" && "${_gi_proc_bwrapicewm}" != "0" ]] ; then
                 '/usr/bin/kill' -15 "${_gi_proc_bwrapicewm}" ;
-                #       #
-                wait "${_gi_proc_bwrapicewm}" ;
+        fi
+        #       #
+        if [[ -n "${_gi_ppid_bwrapicewm}" && "${_gi_ppid_bwrapicewm}" != "0" ]] ; then
+                '/usr/bin/kill' -15 "${_gi_ppid_bwrapicewm}" ;
         fi
         #       #
         if [[ -n "${_gi_proc_xwayland}" && "${_gi_proc_xwayland}" != "0" ]] ; then
                 '/usr/bin/kill' -15 "${_gi_proc_xwayland}" ;
+        fi
+        #       #
+        if [[ -n "${_gi_ppid_xwayland}" && "${_gi_ppid_xwayland}" != "0" ]] ; then
+                '/usr/bin/kill' -15 "${_gi_ppid_xwayland}" ;
         fi
 }
 declare -F "_gF_part_over"
