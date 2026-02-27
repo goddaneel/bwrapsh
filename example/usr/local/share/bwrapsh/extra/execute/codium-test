@@ -23,7 +23,6 @@ _ga_exec_codium=(
         '/usr/bin/bwrapsh'
         dbusproxy
         "codium"
-        "$(pwd)"
 )
 
 

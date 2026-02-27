@@ -10,6 +10,7 @@ _gs_init_exec="/usr/bin/codium"
 _gs_mode_network="true"
 
 _ga_arg1_bwrapsh=(
+        --ro-bind-try "/_and/program"{,}
         --overlay-src "/usr/share/bwrapsh/main/patch/bash"
         --tmp-overlay "${HOME}"
         --overlay-src "${HOME}/.pki"
@@ -26,11 +27,5 @@ _ga_arg1_bwrapsh=(
         --symlink "/_and/config/nvim" "${HOME}/.config/nvim"
         --setenv "ELECTRON_OZONE_PLATFORM_HINT" "auto"
         "${_ga_arg1_bwrapsh_codium[@]}"
-)
-
-_ga_arg3_bwrapsh=(
-        --verbose
-        --enable-wayland-ime
-        --enable-features=WebRTCPipeWireCapturer
 )
 
