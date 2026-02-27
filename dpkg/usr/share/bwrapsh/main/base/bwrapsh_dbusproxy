@@ -451,5 +451,5 @@ _ga_exec_bwrapsh=(
 
 ### over
 ## kill
-'_gF_part_over'
+'_gF_tool_exit' "2"
 

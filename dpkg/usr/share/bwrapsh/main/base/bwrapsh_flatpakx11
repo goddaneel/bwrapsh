@@ -64,6 +64,8 @@ function _gF_part_over ()
         #       #
         if [[ -n "${_gi_proc_bwrapicewm}" && "${_gi_proc_bwrapicewm}" != "0" ]] ; then
                 '/usr/bin/kill' -15 "${_gi_proc_bwrapicewm}" ;
+                #       #
+                wait "${_gi_proc_bwrapicewm}" ;
         fi
         #       #
         if [[ -n "${_gi_proc_xwayland}" && "${_gi_proc_xwayland}" != "0" ]] ; then
@@ -488,5 +490,5 @@ _ga_exec_flatpak=(
 
 ### over
 ## kill
-'_gF_part_over'
+'_gF_tool_exit' "2"
 
