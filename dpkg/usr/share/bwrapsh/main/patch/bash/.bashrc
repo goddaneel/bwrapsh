@@ -410,6 +410,14 @@ alias ,devsh='_GF__devsh'
 
 
 
+### pkg-config
+## command
+# short
+alias ,pkgversion='pkg-config --modversion'
+alias ,pkgcflags='pkg-config --libs --cflags'
+
+
+
 
 #### 2_program
 ### execute

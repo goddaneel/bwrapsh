@@ -6,6 +6,7 @@
 ## name
 declare -x "DISPLAY"
 declare -x "XAUTHORITY"
+declare -i "_gi_stat_end"
 declare -i "_gi_stat_ss"
 declare -g "_gs_bash_ps1"
 declare -g "_gs_bash_ps0"
@@ -51,11 +52,9 @@ function _gF_part_over ()
         declare -i "_li_stat_killflatpak" ;
         #       #
         if [[ "${_gs_mode_killflatpak}" != "true" ]] ; then
-                false ;
+                true ;
         elif ('/usr/bin/flatpak' ps | '/usr/bin/grep' --color "${_gs_init_name}") ; then
                 '/usr/bin/flatpak' kill -v "${_gs_init_name}" ;
-        else
-                false ;
         fi
         #       #
         _li_stat_killflatpak="${?}" ;
@@ -64,12 +63,11 @@ function _gF_part_over ()
                 return "${_li_stat_killflatpak}" ;
         fi
         #       #
-        if [[ -n "${_gi_proc_bwrapicewm}" ]] ; then
+        if [[ -n "${_gi_proc_bwrapicewm}" && "${_gi_proc_bwrapicewm}" != "0" ]] ; then
                 '/usr/bin/kill' -15 "${_gi_proc_bwrapicewm}" ;
-                wait "${!}" ;
         fi
         #       #
-        if [[ -n "${_gi_proc_xwayland}" ]] ; then
+        if [[ -n "${_gi_proc_xwayland}" && "${_gi_proc_xwayland}" != "0" ]] ; then
                 '/usr/bin/kill' -15 "${_gi_proc_xwayland}" ;
         fi
 }
@@ -131,6 +129,10 @@ fi
 ### init
 ## load
 '_gF_tool_load' "init"
+
+
+## end
+_gi_stat_end="1"
 
 
 
@@ -304,6 +306,7 @@ _ga_exec_bwrapicewm=(
         --proc "/proc"
         --dev "/dev"
         --tmpfs "/var"
+        --tmpfs "/var/tmp"
         --tmpfs "/run"
         --tmpfs "/tmp"
         --tmpfs "/home"
@@ -333,6 +336,7 @@ _ga_exec_bwrapicewm=(
         --ro-bind-try "/var/lib/flatpak"{,}
         --ro-bind-try "${XDG_RUNTIME_DIR}/${WAYLAND_DISPLAY}"{,}
         --setenv "WAYLAND_DISPLAY" "${WAYLAND_DISPLAY}"
+        --setenv "APPIMAGE_EXTRACT_AND_RUN" "1"
         --ro-bind "${_gs_path_x11socket}"{,}
         --setenv "DISPLAY" ":${_gi_init_x11}"
         --setenv "XDG_SESSION_TYPE" "x11"
@@ -490,8 +494,16 @@ _ga_exec_flatpak=(
 "${_ga_exec_flatpak[@]}"
 
 
+## end
+_gi_stat_end="${?}"
+
+
 
 ### over
 ## kill
 '_gF_part_over'
+
+
+## end
+exit "${_gi_stat_end}"
 

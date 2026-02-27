@@ -5,6 +5,7 @@
 ### default
 ## name
 declare -i "_gi_loop"
+declare -i "_gi_stat_end"
 declare -a "_ga_exec_userbus"
 declare -a "_ga_exec_systembus"
 declare -a "_ga_exec_bwrapsh"
@@ -112,6 +113,10 @@ fi
 ### init
 ## load
 '_gF_tool_load' "init"
+
+
+## end
+_gi_stat_end="1"
 
 
 ## mode
@@ -385,6 +390,7 @@ _ga_exec_bwrapsh=(
         --proc "/proc"
         --dev "/dev"
         --tmpfs "/var"
+        --tmpfs "/var/tmp"
         --tmpfs "/run"
         --tmpfs "/tmp"
         --tmpfs "/home"
@@ -414,6 +420,7 @@ _ga_exec_bwrapsh=(
         --ro-bind-try "${XDG_RUNTIME_DIR}/${WAYLAND_DISPLAY}"{,}
         --setenv "WAYLAND_DISPLAY" "${WAYLAND_DISPLAY}"
         --setenv "XDG_SESSION_TYPE" "wayland"
+        --setenv "APPIMAGE_EXTRACT_AND_RUN" "1"
         --unsetenv "GTK_IM_MODULE"
         --unsetenv "QT_IM_MODULE"
         --unsetenv "SDL_IM_MODULE"
@@ -450,8 +457,16 @@ _ga_exec_bwrapsh=(
 "${_ga_exec_bwrapsh[@]}"
 
 
+## end
+_gi_stat_end="${?}"
+
+
 
 ### over
 ## kill
 '_gF_part_over'
+
+
+## end
+exit "${_gi_stat_end}"
 
