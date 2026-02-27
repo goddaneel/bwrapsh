@@ -62,6 +62,16 @@ function _gF_part_over ()
                 return "${_li_stat_killflatpak}" ;
         fi
         #       #
+        if [[ -n "${_gi_ppid_bwrapicewm}" && "${_gi_ppid_bwrapicewm}" != "0" ]] ; then
+                '/usr/bin/kill' -15 "${_gi_ppid_bwrapicewm}" ;
+                #       #
+                wait "${_gi_ppid_bwrapicewm}" ;
+        fi
+        #       #
+        if [[ -n "${_gi_ppid_xwayland}" && "${_gi_ppid_xwayland}" != "0" ]] ; then
+                '/usr/bin/kill' -15 "${_gi_ppid_xwayland}" ;
+        fi
+        #       #
         if [[ -n "${_gi_proc_bwrapicewm}" && "${_gi_proc_bwrapicewm}" != "0" ]] ; then
                 '/usr/bin/kill' -15 "${_gi_proc_bwrapicewm}" ;
                 #       #
@@ -252,6 +262,7 @@ _ga_exec_xwayland=(
         '/usr/bin/Xwayland'
         ":${_gi_init_x11}"
         -nolisten tcp
+        -noreset
         -decorate
         -hidpi
         -dpi "${_gs_init_dpi:-"125"}"

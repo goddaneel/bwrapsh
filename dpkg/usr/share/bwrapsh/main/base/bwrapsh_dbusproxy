@@ -46,6 +46,14 @@ declare -ga "_ga_arg3_bwrapsh"
 ## function
 function _gF_part_over () 
 {
+        if [[ -n "${_gi_ppid_userbus}" ]] ; then
+                '/usr/bin/kill' -15 "${_gi_ppid_userbus}" ;
+        fi
+        #       #
+        if [[ -n "${_gi_ppid_systembus}" ]] ; then
+                '/usr/bin/kill' -15 "${_gi_ppid_systembus}" ;
+        fi
+        #       #
         if [[ -n "${_gi_proc_userbus}" ]] ; then
                 '/usr/bin/kill' -15 "${_gi_proc_userbus}" ;
         fi
