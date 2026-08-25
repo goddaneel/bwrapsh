@@ -17,15 +17,13 @@ _ga_arg1_bwrapsh=(
         --tmp-overlay "${HOME}/.pki"
         --overlay-src "${HOME}/.vscode-oss"
         --tmp-overlay "${HOME}/.vscode-oss"
+        --overlay-src "${HOME}/.vscode-oss-shared"
+        --tmp-overlay "${HOME}/.vscode-oss-shared"
         --overlay-src "${HOME}/.config/VSCodium"
         --tmp-overlay "${HOME}/.config/VSCodium"
         --overlay-src "${HOME}/.config/VSCodium/User"
         --overlay-src "/_and/config/vscodium/User"
         --tmp-overlay "${HOME}/.config/VSCodium/User"
-        --overlay-src "/_and/config/nvim"
-        --tmp-overlay "/_and/config/nvim"
-        --symlink "/_and/config/nvim" "${HOME}/.config/nvim"
-        --setenv "ELECTRON_OZONE_PLATFORM_HINT" "auto"
         "${_ga_arg1_bwrapsh_codium[@]}"
 )
 

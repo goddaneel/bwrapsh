@@ -26,4 +26,3 @@ _ga_exec_codium=(
 
 ## execute
 "${_ga_exec_codium[@]}"
-

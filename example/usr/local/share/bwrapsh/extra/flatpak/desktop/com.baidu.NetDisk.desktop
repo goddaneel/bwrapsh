@@ -1,0 +1,7 @@
+[Desktop Entry]
+Type=Application
+Name={BWRAPSH} Baidu Netdisk
+Icon=com.baidu.NetDisk
+Exec='/usr/bin/bwrapsh' flatpakx11 "com.baidu.NetDisk" _null
+X-Flatpak=com.baidu.NetDisk
+

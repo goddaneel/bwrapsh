@@ -1,0 +1,7 @@
+[Desktop Entry]
+Type=Application
+Name={BWRAPSH} Feishu
+Icon=cn.feishu.Feishu
+Exec='/usr/bin/bwrapsh' flatpakx11 "cn.feishu.Feishu" _null
+X-Flatpak=cn.feishu.Feishu
+
